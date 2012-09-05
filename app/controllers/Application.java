@@ -25,7 +25,7 @@ public class Application extends Controller {
 
 	public static Result init() {
 
-		Logger.debug("init: START");
+		Logger.debug("init(): START");
 		
 		Result result = null;
 		
@@ -40,7 +40,7 @@ public class Application extends Controller {
 			result = ok();
 		}
 		
-		Logger.debug("init: END result = " + result.toString());
+		Logger.debug("init(): END. Result = " + result.toString());
 		
 		return result; 
 	}
@@ -51,6 +51,8 @@ public class Application extends Controller {
 		// {"addemployee" : <employeeInfo>}
 		// employeeInfo: {"name" : <value>, "min_hours_day" : <value>, "max_hours_day" : <value>, 
 		// "min_hours_week" : <value>, "max_hours_week" : <value>, "skills" : [<skill1>, <skill2>, ... <skillN>]}
+		
+		Logger.debug("addEmployee(): START");
 		
 		Result result = null;
 		JsonNode json = request().body().asJson();
@@ -90,9 +92,11 @@ public class Application extends Controller {
 					result = badRequest("Parameter error: maxHoursWeek");
 				}
 		    	
+				// TODO: handle skills field.
+				
 				if (success) {
 					engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
-					result = ok("success");
+					result = ok();
 				}
 		    	
 		    } else {
@@ -102,19 +106,71 @@ public class Application extends Controller {
 			result = badRequest("Request is invalid");
 		}
 		
+		Logger.debug("addEmployee(): END. Result = " + result.toString());
+		
 		return result;
 	}
 
 	public static Result getEmployees() {
+		Logger.debug("getEmployees(): START");
+		Result result = null;
 		EngineController ec = engineController; //TODO: should be obtained via session manager
 		ObjectNode jsonResponse = getEmployeesJsonResponse(ec);
+		result = ok(jsonResponse);
+		Logger.debug("getEmployees(): END. Result = " + result.toString());
 		return ok(jsonResponse);  
 	}
 
 	public static Result getSkills() {
+		Logger.debug("getSkills(): START");
+		Result result = null;
 		EngineController ec = engineController; //TODO: should be obtained via session manager
 		ObjectNode jsonResponse = getSkillsJsonReponse(ec);
-		return ok(jsonResponse);  
+		result = ok(jsonResponse);
+		Logger.debug("getSkills(): END. Result = " + result.toString());
+		return result;
+	}
+	
+	public static Result addSkill() {
+		
+		// format
+		// {"addskill" : <skillInfo>}
+		// skillInfo: {"name" : <value>, "employees" : [<employee1>, <employee2>, ... <employeeN>]}
+		
+		Logger.debug("addSkill: START");
+		
+		Result result = null;
+		JsonNode json = request().body().asJson();
+		if (json != null) {
+			JsonNode skillInfo = json.path("addskill");
+		    if(skillInfo != null) {
+		      
+		    	boolean success = true;
+		    	
+				String name = skillInfo.path("name").asText();
+				Logger.debug("name = " + name);
+				if (name == null) {
+					success = false;
+					result = badRequest("Parameter error: name. Value: " + name);
+				}
+				
+				if (success) {
+					engineController.getSkillDirectory().createNewSkill(name);
+					result = ok();
+				}
+				
+				// TODO: handle employees field.
+		    } else {
+		    	result = badRequest("Parameter error: skillInfo. Value: " + skillInfo);
+		    }
+		    
+		} else {
+			result = badRequest("Request is invalid");
+		}
+		
+		Logger.debug("addSkill: END. Result = " + result.toString());
+		
+		return result;
 	}
 
 	private static ObjectNode getEmployeesJsonResponse(EngineController engineController) {
@@ -184,7 +240,7 @@ public class Application extends Controller {
 			}
 			
 			skillInfo.put("name", skillList.get(i).getName());
-			skillInfo.put("skills", skillEmployeesArray);
+			skillInfo.put("employees", skillEmployeesArray);
 			
 			skillInfoArray.add(skillInfo);
 		}

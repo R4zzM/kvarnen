@@ -9,6 +9,7 @@ GET   /init                         controllers.Application.init()
 GET   /employees                    controllers.Application.getEmployees()
 GET   /skills                       controllers.Application.getSkills()
 POST  /addemployee                  controllers.Application.addEmployee()
+POST  /addskill                  	controllers.Application.addSkill()
 GET     /*file               	    controllers.Assets.at(path="/public/html", file)
 
 

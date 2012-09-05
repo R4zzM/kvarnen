@@ -16,20 +16,67 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <script src="util.js"></script> 
-    <script src="http://code.jquery.com/jquery-1.8.1.js"></script>
+    <script type="text/javascript">
+      function init() {
+        var httpRequest = XMLHttpRequest();
+        httpRequest.onreadystatechange = function() {
+          if (httpRequest.readyState === 4) {
+            if (!httpRequest.status === 200) {
+              alert('Init request failed!');
+            }
+          }
+        };
+        httpRequest.open('GET', 'http://localhost:9000/init', true);
+        httpRequest.send(null);
+      }
+
+function getSkills() { 
+
+  var httpRequest = XMLHttpRequest();
+  httpRequest.onreadystatechange = function() {
+    if (httpRequest.readyState === 4) {
+      printIntoSpanNode(httpRequest.responseText, "skillPrintArea"); //TODO change
+    }
+  };
+  httpRequest.open('GET', 'http://localhost:9000/skills', true);
+  httpRequest.send(null);      
+
+}
+
+function getEmployees() { 
+
+  var httpRequest = XMLHttpRequest();
+  httpRequest.onreadystatechange = function() {
+    if (httpRequest.readyState === 4) {
+      printIntoSpanNode(httpRequest.responseText, "employeePrintArea"); //TODO change
+    }
+  };
+  httpRequest.open('GET', 'http://localhost:9000/employees', true);
+  httpRequest.send(null);      
+}
+
+function printIntoSpanNode(text, spanId) {
+  var spanNode = document.getElementById(spanId);
+  while( spanNode.firstChild ) {
+    spanNode.removeChild(spanNode.firstChild);
+  }
+  spanNode.appendChild(document.createTextNode(text)); 
+}
+
+</script>
 
   </head>
 
-  <body onLoad="initWebApp()">
+  <body onLoad="init()">
     <div>
       <header>
       <h1>Kvarnen</h1>
       </header>
 
-      <a href="http://localhost:9000/init">init</a> 
-      <a href="http://localhost:9000/employees">employees</a> 		
-
+      <div><p><a href="#" onClick="getEmployees()">personal</a></p></div>
+      <span id="employeePrintArea"></span>
+      <div id="skillsLink"><p><a href="#" onClick="getSkills()">positioner</a></p></div>
+      <span id="skillPrintArea"></span>
       <nav>
       <p>
       <a href="add_employee.html">Lägg till personal</a>
