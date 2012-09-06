@@ -17,6 +17,38 @@
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
+ 	   <script type="text/javascript">
+
+ 	   function submitEmployeeAsJson() {
+
+ 	     var firstName = document.getElementById("employeeFirstNameInput").value;
+ 	     var lastName = document.getElementById("employeeLastNameInput").value;
+ 	     var minHoursWeek = document.getElementById("minHoursPerWeek").value;
+ 	     var maxHoursWeek = document.getElementById("maxHoursPerWeek").value;
+ 	     var minHoursDay = document.getElementById("minHoursPerDay").value;
+ 	     var maxHoursDay = document.getElementById("maxHoursPerDay").value;
+
+ 	     var jsonObject = {"addemployee" : {"name" : firstName + " " + lastName, "minHoursWeek" : minHoursWeek, "maxHoursWeek" : maxHoursWeek, "minHoursDay" : minHoursDay, "maxHoursDay" : maxHoursDay, "skills" : []}};
+ 	     var jsonString = JSON.stringify(jsonObject);
+
+ 	     var httpRequest = XMLHttpRequest();
+
+ 	     httpRequest.onreadystatechange = function() {
+
+ 	       if (httpRequest.readyState === 4) {
+ 	         if (!httpRequest.status === 200) {
+ 	           alert('Non-200 response received!'); // TODO
+ 	         }
+ 	       }
+ 	     };
+
+ 	     httpRequest.open('POST', 'http://localhost:9000/addemployee', true); // TODO: localhost. 
+ 	     httpRequest.setRequestHeader('Content-Type', 'application/json');
+ 	     httpRequest.send(jsonString);
+ 	   }
+
+ 	   </script>
+
 	</head>
 
 	<body>
@@ -25,15 +57,16 @@
 				<h1>Lägg till personal</h1>
 			</header>
 			<div id="input">
-				<form action="http://localhost:9000/actions/adduser" method="POST">
+				<form id="addEmployeeForm">
 					Förnamn:
-					<input type="text" name="firstname"/>
+					<input id="employeeFirstNameInput" type="text" name="Förnamn"/>
 					<br/>
 					Efternamn:
-					<input type="text" name="lastname"/>
+					<input id="employeeLastNameInput" type="text" name="EFternamn"/>
 					<br/>
-					Minsta arbetstid per vecka:
-					<select name="min_hours_week">
+
+					Minsta arbetstid per vecka:	
+					<select id="minHoursPerWeek" name="min_hours_week">
 						<option value="0">0</option>
 						<option value="1">1</option>
 						<option value="2">2</option>
@@ -50,7 +83,7 @@
 					</select>
 					<br/>
 					Mesta arbetstid per vecka:
-					<select name="max_hours_week:">
+					<select id="maxHoursPerWeek" name="max_hours_week:">
 						<option value="5">5</option>
 						<option value="10">10</option>
 						<option value="15">15</option>
@@ -67,7 +100,7 @@
 					</select>
 					<br/>
 					Minsta arbetstid per dag:
-					<select name="min_hours_day">
+					<select id="maxHoursPerDay" name="min_hours_day">
 						<option value="0">0</option>
 						<option value="1">1</option>
 						<option value="2">2</option>
@@ -82,7 +115,7 @@
 					</select>
 					<br/>
 					Mesta arbetstid per dag:
-					<select name="max_hours_day">
+					<select id="minHoursPerDay" name="max_hours_day">
 						<option value="0">0</option>
 						<option value="1">1</option>
 						<option value="2">2</option>
@@ -102,7 +135,7 @@
 					</select>
 					<br/>
 					<br/>
-					<input type="submit" value="Sparbacka"/>
+					<input type="submit" value="Sparbacka" onClick="submitEmployeeAsJson()"/>
 					<input type="reset" value="Rensa"/>
 				</form>
 			</div>
