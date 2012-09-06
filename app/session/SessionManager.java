@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import play.Logger;
+
 import engine.EngineController;
 
 public class SessionManager {
@@ -22,7 +24,12 @@ public class SessionManager {
 	}
 	
 	private SessionManager() {
-		sessionsDirPath = "/home/rasmus/tmp/www/kvarnen/sessions/";
+		if (System.getProperty("os.name").startsWith("Windows")) {
+			sessionsDirPath = "/Users/erasmat/tmp/www/kvarnen/sessions/";
+		} else { // Unix / Linux
+			sessionsDirPath = "/home/rasmus/tmp/www/kvarnen/sessions/";
+		}
+		Logger.debug("SessionManager(): sessionsDirPath:" + sessionsDirPath);
 	}
 	
 	public EngineController newSession() throws Exception {
