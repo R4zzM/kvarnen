@@ -29,7 +29,7 @@ public class SessionManager {
 		} else { // Unix / Linux
 			sessionsDirPath = "/home/rasmus/tmp/www/kvarnen/sessions/";
 		}
-		Logger.debug("SessionManager(): sessionsDirPath:" + sessionsDirPath);
+		Logger.debug("SessionManager(): Using session path: " + sessionsDirPath);
 	}
 	
 	public EngineController newSession() throws Exception {
