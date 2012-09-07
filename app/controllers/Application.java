@@ -100,8 +100,13 @@ public class Application extends Controller {
 				// TODO: handle skills field.
 				
 				if (success) {
-					engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
-					result = ok();
+					Employee newEmployee = engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
+					
+					// create the response
+					ObjectNode response = Json.newObject();
+					response.put("id", newEmployee.getId());
+					
+					result = ok(response);
 				}
 		    	
 		    } else {
@@ -162,8 +167,12 @@ public class Application extends Controller {
 				}
 				
 				if (success) {
-					engineController.getSkillDirectory().createNewSkill(name);
-					result = ok();
+					Skill skill = engineController.getSkillDirectory().createNewSkill(name);
+					
+					ObjectNode response = Json.newObject();
+					response.put("id", skill.getId());
+					
+					result = ok(response);
 				}
 				
 				// TODO: handle employees field.

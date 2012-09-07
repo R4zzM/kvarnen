@@ -1,103 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
+<head>
+  <meta charset="utf-8">
+  <title>Schemaläggaren</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Schemaläggaren">
+  <meta name="author" content="Rasmus Mattsson">
+  <link href="css/bootstrap.css" rel="stylesheet">
 
-    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-    Remove this if you use the .htaccess -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <!-- Placeholder to override css from bootstrap -->
+  <style type="text/css">
 
-    <title>index</title>
-    <meta name="description" content="" />
-    <meta name="author" content="Rasmus Mattsson" />
-    <meta name="viewport" content="width=device-width; initial-scale=1.0" />
+  </style>
 
-    <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
-    <script type="text/javascript">
-      function init() {
-        var httpRequest = XMLHttpRequest();
-        httpRequest.onreadystatechange = function() {
-          if (httpRequest.readyState === 4) {
-            if (!httpRequest.status === 200) {
-              alert('Init request failed!');
-            }
-          }
-        };
-        httpRequest.open('GET', 'http://localhost:9000/init', true);
-        httpRequest.send(null);
-      }
-
-function getSkills() { 
-
-  var httpRequest = XMLHttpRequest();
-  httpRequest.onreadystatechange = function() {
-    if (httpRequest.readyState === 4) {
-      printIntoSpanNode(httpRequest.responseText, "skillPrintArea"); //TODO change
-    }
-  };
-  httpRequest.open('GET', 'http://localhost:9000/skills', true);
-  httpRequest.send(null);      
-
-}
-
-function getEmployees() { 
-
-  var httpRequest = XMLHttpRequest();
-  httpRequest.onreadystatechange = function() {
-    if (httpRequest.readyState === 4) {
-      printIntoSpanNode(httpRequest.responseText, "employeePrintArea"); //TODO change
-    }
-  };
-  httpRequest.open('GET', 'http://localhost:9000/employees', true);
-  httpRequest.send(null);      
-}
-
-function printIntoSpanNode(text, spanId) {
-  var spanNode = document.getElementById(spanId);
-  while( spanNode.firstChild ) {
-    spanNode.removeChild(spanNode.firstChild);
-  }
-  spanNode.appendChild(document.createTextNode(text)); 
-}
-
-</script>
-
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
   </head>
+  <body>
 
-  <body onLoad="init()">
-    <div>
-      <header>
-      <h1>Kvarnen</h1>
-      </header>
+    <div class="container">
 
-      <div><p><a href="#" onClick="getEmployees()">personal</a></p></div>
-      <span id="employeePrintArea"></span>
-      <div id="skillsLink"><p><a href="#" onClick="getSkills()">positioner</a></p></div>
-      <span id="skillPrintArea"></span>
-      <nav>
-      <p>
-      <a href="add_employee.html">Lägg till personal</a>
-      </p>
-      <p>
-      <a href="add_skill.html">Lägg till postion</a>
-      </p>
-      <p>
-      <a href="generate_schedule.html">Generera schema</a>
-      </p>
-      </nav>
-
-      <div>
-
+      <div class="page-header">
+        <h1>Schemaläggaren</h1>
       </div>
 
-      <footer>
-      <p>
-      &copy; Copyright  by Rasmus Mattsson
-      </p>
-      </footer>
+      <div class="row">
+        <div class="span4">
+          <div class="well">
+            <ul class="nav nav-list">
+              <li id="skills" class="nav-header">Positioner</li>
+              <li class="divider"</li>
+              <li><a href="#" id="addSkill">[Skapa ny position]</a></li>
+              <li id="employees" class="nav-header">Personal</li>
+              <li class="divider"></li>
+              <li><a href="#" id="addEmployee">[Skapa ny anställd]</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="span7">
+
+          <!-- Form to add employees -->
+          <form id ="addEmployeeForm" class="form-horizontal">
+            <div class="control-group">
+              <label class="control-label" for="employeeFirstNameInput">Namn</label>
+              <div class="controls">
+                <input type="text" id="employeeFirstNameInput">
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="minHoursPerDay">Min tid per dag</label>
+              <div class="controls">
+                <select id="minHoursPerDay">
+                  <option>0</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="maxHoursPerDay">Max tid per dag</label>
+              <div class="controls">
+                <select id="maxHoursPerDay">
+                  <option>0</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="minHoursPerWeek">Min tid per vecka</label>
+              <div class="controls">
+                <select id="minHoursPerWeek">
+                  <option>0</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="maxHoursPerWeek">Max tid per vecka</label>
+              <div class="controls">
+                <select id="maxHoursPerWeek">
+                  <option>0</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="addEmployeeButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-success" onClick="sendAddEmployeeRequest()">Skapa</button>
+              </div>
+            </div>
+
+            <div id="updateEmployeeButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary" onClick="sendUpdateEmployeeRequest()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="sendRemoveEmployeeRequest()">Radera</button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Form to add skills -->
+          <form id="addSkillForm" class="form-horizontal">
+            <div class="control-group">
+              <label class="control-label" for="skillFormNameInput">Namn</label>
+              <div class="controls">
+                <input type="text" id="skillFormNameInput">
+              </div>
+            </div>
+
+            <div id="addSkillButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-success" onClick="sendAddSkillRequest();">Skapa</button>
+              </div>
+            </div>
+
+            <div id="updateSkillButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary" onClick="sendUpdateSkillRequest()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="sendRemoveSkillRequest()">Radera</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
     </div>
+
+    <!-- Scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+    var skills = [];
+    var employees = [];
+
+    function init() {
+      var httpRequest = XMLHttpRequest();
+      httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState === 4) {
+          if (!httpRequest.status === 200) {
+            alert('Init request failed!');
+          }
+        }
+      };
+      httpRequest.open('GET', 'http://localhost:9000/init', true);
+      httpRequest.send(null);
+    }
+
+    function sendAddEmployeeRequest() {
+      var firstName = document.getElementById("employeeFirstNameInput").value;
+      var minHoursWeek = document.getElementById("minHoursPerWeek").value;
+      var maxHoursWeek = document.getElementById("maxHoursPerWeek").value;
+      var minHoursDay = document.getElementById("minHoursPerDay").value;
+      var maxHoursDay = document.getElementById("maxHoursPerDay").value;
+
+      var employeeObject = {"name" : firstName, "minHoursWeek" : minHoursWeek, "maxHoursWeek" : maxHoursWeek, "minHoursDay" : minHoursDay, "maxHoursDay" : maxHoursDay, "skills" : []};
+      var jsonRequestObject = {"addemployee" : employeeObject};
+
+      var httpRequest = XMLHttpRequest();
+
+      // response handler
+      httpRequest.onreadystatechange = function() {
+
+        if (httpRequest.readyState === 4) {
+          if (httpRequest.status === 200) {
+
+            // Set the id of the contact
+            JSON.parse(httpRequest.responseText, function (key, value) {
+              if (key === "id") {
+                 employeeObject.id = value;
+              }
+            });
+
+            // Add to list of all contacts 
+            employees.push(employeeObject);
+
+            // add clickable entry in the list
+            $("<li><a href=\"#\" onClick=\"showEmployeeUpdateForm(" + employeeObject.id + ")\">" + firstName + "</a></li>").insertAfter("li#employees"); // TODO: add onClick attribute.
+          } else {
+            alert('Non-200 response received!'); // TODO add nice twitter bootstrap error message.
+          }
+        }
+      };
+
+      httpRequest.open('POST', 'http://localhost:9000/addemployee', true); // TODO: localhost. 
+      httpRequest.setRequestHeader('Content-Type', 'application/json');
+      httpRequest.send(JSON.stringify(jsonRequestObject));
+    }
+
+    function sendAddSkillRequest() {
+      var skillName = document.getElementById("skillFormNameInput").value;
+      var skillObject = {"name" : skillName};
+      var jsonRequestObject = {"addskill" : skillObject};
+      var httpRequest = XMLHttpRequest();
+
+      // Response handler
+      httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState === 4) {
+          if (httpRequest.status === 200) {
+
+            // Set the id of the contact
+            JSON.parse(httpRequest.responseText, function (key, value) {
+              if (key === "id") {
+                 skillObject.id = value;
+              }
+            });
+
+            // Add to list of all contacts 
+            skills.push(skillObject);
+
+            // add clickable entry in the list
+            $("<li><a href=\"#\" onClick=\"showSkillUpdateForm(" + skillObject.id + ")\">" + skillName + "</a></li>").insertAfter("li#skills");
+
+          } else {
+            alert('There was a problem with the request.'); // TODO!
+          }
+        }
+      };
+
+      httpRequest.open('POST', 'http://localhost:9000/addskill', true);
+      httpRequest.setRequestHeader('Content-Type', 'application/json');
+      httpRequest.send(JSON.stringify(jsonRequestObject));
+    }
+
+    function getSkillsFromServer() {
+
+      var httpRequest = XMLHttpRequest();
+      httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState === 4) {
+          // printIntoSpanNode(httpRequest.responseText, "skillPrintArea"); //TODO change
+        }
+      };
+      httpRequest.open('GET', 'http://localhost:9000/skills', true);
+      httpRequest.send(null);  
+
+    }
+
+    function getSkill(id) {
+      for each (var skill in skills) {
+        if(skill.id === id) {
+          return skill;
+        }
+      }
+      return null;
+    }
+
+    function getEmployeesFromServer() { 
+
+      var httpRequest = XMLHttpRequest();
+      httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState === 4) {
+          // printIntoSpanNode(httpRequest.responseText, "employeePrintArea"); //TODO change
+        }
+      };
+      httpRequest.open('GET', 'http://localhost:9000/employees', true);
+      httpRequest.send(null);      
+    }
+
+    function getEmployee(id) {
+      for each (var employee in employees) {
+        if(employee.id === id) {
+          return employee;
+        }
+      }
+      return null;
+    }
+
+    function showSkillAddForm() {
+      hideAllForms();
+      $("input#skillFormNameInput").val("");
+      $("form#addSkillForm").show();
+      $("div#addSkillButton").show();
+      $("div#updateSkillButton").hide();
+    }
+
+    function showSkillUpdateForm(id) {
+      hideAllForms();
+      $("input#skillFormNameInput").val(getSkill(id).name);
+      $("form#addSkillForm").show();
+      $("div#addSkillButton").hide();
+      $("div#updateSkillButton").show();
+    }
+
+    function showEmployeeAddForm() {
+      hideAllForms();
+      $("input#employeeFirstNameInput").val("");
+      $("form#addEmployeeForm").show();
+      $("div#addEmployeeButton").show();
+      $("div#updateEmployeeButton").hide();
+    }
+
+    function showEmployeeUpdateForm(id) {
+      hideAllForms();
+      $("input#employeeFirstNameInput").val(getEmployee(id).name);
+      $("form#addEmployeeForm").show();
+      $("div#addEmployeeButton").hide();
+      $("div#updateEmployeeButton").show();
+    }
+
+    function hideAllForms() {
+      $("#addEmployeeForm").hide();
+      $("#addSkillForm").hide();
+    }
+
+    $(document).ready(function () {
+      init();
+      hideAllForms();
+
+      $("a#addEmployee").click(function() {
+        showEmployeeAddForm();
+      });
+
+      $("a#addSkill").click(function() {
+        showSkillAddForm();
+      });
+
+    });
+    </script>
   </body>
-</html>
+  </html>
