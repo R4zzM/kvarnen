@@ -1,7 +1,3 @@
-function ClientSingleton() {
-
-}
-
 var skills = [];
 var employees = [];
 
@@ -16,9 +12,6 @@ function init() {
   };
   httpRequest.open('GET', 'http://localhost:9000/init', true);
   httpRequest.send(null);    
-}
-
-
 }
 
 function sendAddEmployeeRequest() {
