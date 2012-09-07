@@ -19,16 +19,16 @@ import views.html.*;
 
 public class Application extends Controller {
 
-//	private static Logger logger = (Logger) LoggerFactory.getLogger(Application.class);
-	
+	//	private static Logger logger = (Logger) LoggerFactory.getLogger(Application.class);
+
 	private static EngineController engineController = null;
 
 	public static Result init() {
 
 		Logger.debug("init(): START");
-		
+
 		Result result = null;
-		
+
 		if (engineController == null) {
 			try {
 				engineController = SessionManager.getInstance().newSession(); //TODO: should be redone
@@ -39,89 +39,167 @@ public class Application extends Controller {
 		} else {
 			result = ok();
 		}
-		
+
 		Logger.debug("init(): END. Result = " + result.toString());
-		
+
 		return result; 
 	}
-	
+
 	public static Result addEmployee() {
-		
+
 		// format
 		// {"addemployee" : <employeeInfo>}
 		// employeeInfo: {"name" : <value>, "min_hours_day" : <value>, "max_hours_day" : <value>, 
 		// "min_hours_week" : <value>, "max_hours_week" : <value>, "skills" : [<skill1>, <skill2>, ... <skillN>]}
-		
+
 		Logger.debug("addEmployee(): START");
-		
+
 		Result result = null;
 		JsonNode json = request().body().asJson();
 		if (json != null) {
 			JsonNode employeeInfo = json.path("addemployee");
-		    if(employeeInfo != null) {
-		      
-		    	boolean success = true;
-		    	
+			if(employeeInfo != null) {
+
+				boolean success = true;
+
 				String name = employeeInfo.path("name").asText();
 				if (name == null) {
 					success = false;
 					Logger.error("Parameter error: name. Value: " + name);
 					result = badRequest("Parameter error: name. Value: " + name);
 				}
-				
+
 				int minHoursDay = employeeInfo.path("minHoursDay").asInt(-1);
 				if (minHoursDay == -1) {
 					success = false;
 					Logger.error("Parameter error: minHoursDay");
 					result = badRequest("Parameter error: minHoursDay");
 				}
-				
+
 				int maxHoursDay = employeeInfo.path("maxHoursDay").asInt(-1);
 				if (maxHoursDay == -1) {
 					success = false;
 					Logger.error("Parameter error: maxHoursDay");
 					result = badRequest("Parameter error: maxHoursDay");
 				}
-				
+
 				int minHoursWeek = employeeInfo.path("minHoursWeek").asInt(-1);
 				if (minHoursWeek == -1) {
 					success = false;
 					Logger.error("Parameter error: minHoursWeek");
 					result = badRequest("Parameter error: minHoursWeek");
 				}
-				
+
 				int maxHoursWeek = employeeInfo.path("maxHoursWeek").asInt(-1);
 				if (maxHoursWeek == -1) {
 					success = false;
 					Logger.error("Parameter error: maxHoursWeek");
 					result = badRequest("Parameter error: maxHoursWeek");
 				}
-		    	
+
 				// TODO: handle skills field.
-				
+
 				if (success) {
 					Employee newEmployee = engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
-					
+
 					// create the response
 					ObjectNode response = Json.newObject();
 					response.put("id", newEmployee.getId());
-					
+
 					result = ok(response);
 				}
-		    	
-		    } else {
-		    	Logger.error("Missing parameter: addemployee");
-		    	return badRequest("Missing parameter: addemployee");
-		    }
+
+			} else {
+				Logger.error("Missing parameter: addemployee");
+				return badRequest("Missing parameter: addemployee");
+			}
 		} else {
 			Logger.error("Request is invalid");
 			result = badRequest("Request is invalid");
 		}
-		
+
 		Logger.debug("addEmployee(): END. Result = " + result.toString());
-		
+
 		return result;
 	}
+
+	//	public static Result updateEmployee() {
+	//		
+	//		// format
+	//		// {"addemployee" : <employeeInfo>}
+	//		// employeeInfo: {"name" : <value>, "min_hours_day" : <value>, "max_hours_day" : <value>, 
+	//		// "min_hours_week" : <value>, "max_hours_week" : <value>, "skills" : [<skill1>, <skill2>, ... <skillN>]}
+	//		
+	//		Logger.debug("addEmployee(): START");
+	//		
+	//		Result result = null;
+	//		JsonNode json = request().body().asJson();
+	//		if (json != null) {
+	//			JsonNode employeeInfo = json.path("addemployee");
+	//		    if(employeeInfo != null) {
+	//		      
+	//		    	boolean success = true;
+	//		    	
+	//				String name = employeeInfo.path("name").asText();
+	//				if (name == null) {
+	//					success = false;
+	//					Logger.error("Parameter error: name. Value: " + name);
+	//					result = badRequest("Parameter error: name. Value: " + name);
+	//				}
+	//				
+	//				int minHoursDay = employeeInfo.path("minHoursDay").asInt(-1);
+	//				if (minHoursDay == -1) {
+	//					success = false;
+	//					Logger.error("Parameter error: minHoursDay");
+	//					result = badRequest("Parameter error: minHoursDay");
+	//				}
+	//				
+	//				int maxHoursDay = employeeInfo.path("maxHoursDay").asInt(-1);
+	//				if (maxHoursDay == -1) {
+	//					success = false;
+	//					Logger.error("Parameter error: maxHoursDay");
+	//					result = badRequest("Parameter error: maxHoursDay");
+	//				}
+	//				
+	//				int minHoursWeek = employeeInfo.path("minHoursWeek").asInt(-1);
+	//				if (minHoursWeek == -1) {
+	//					success = false;
+	//					Logger.error("Parameter error: minHoursWeek");
+	//					result = badRequest("Parameter error: minHoursWeek");
+	//				}
+	//				
+	//				int maxHoursWeek = employeeInfo.path("maxHoursWeek").asInt(-1);
+	//				if (maxHoursWeek == -1) {
+	//					success = false;
+	//					Logger.error("Parameter error: maxHoursWeek");
+	//					result = badRequest("Parameter error: maxHoursWeek");
+	//				}
+	//		    	
+	//				// TODO: handle skills field.
+	//				
+	//				if (success) {
+	//					Employee newEmployee = engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
+	//					
+	//					// create the response
+	//					ObjectNode response = Json.newObject();
+	//					response.put("id", newEmployee.getId());
+	//					
+	//					result = ok(response);
+	//				}
+	//		    	
+	//		    } else {
+	//		    	Logger.error("Missing parameter: addemployee");
+	//		    	return badRequest("Missing parameter: addemployee");
+	//		    }
+	//		} else {
+	//			Logger.error("Request is invalid");
+	//			result = badRequest("Request is invalid");
+	//		}
+	//		
+	//		Logger.debug("addEmployee(): END. Result = " + result.toString());
+	//		
+	//		return result;
+	//	}
 
 	public static Result getEmployees() {
 		Logger.debug("getEmployees(): START");
@@ -142,50 +220,121 @@ public class Application extends Controller {
 		Logger.debug("getSkills(): END. Result = " + result.toString());
 		return result;
 	}
-	
+
 	public static Result addSkill() {
-		
+
 		// format
 		// {"addskill" : <skillInfo>}
 		// skillInfo: {"name" : <value>, "employees" : [<employee1>, <employee2>, ... <employeeN>]}
-		
+
 		Logger.debug("addSkill: START");
-		
+
 		Result result = null;
 		JsonNode json = request().body().asJson();
 		if (json != null) {
 			JsonNode skillInfo = json.path("addskill");
-		    if(skillInfo != null) {
-		      
-		    	boolean success = true;
-		    	
+			if(skillInfo != null) {
+
+				boolean success = true;
+
 				String name = skillInfo.path("name").asText();
 				Logger.debug("name = " + name);
 				if (name == null) {
 					success = false;
 					result = badRequest("Parameter error: name. Value: " + name);
 				}
-				
+
 				if (success) {
 					Skill skill = engineController.getSkillDirectory().createNewSkill(name);
-					
+
 					ObjectNode response = Json.newObject();
 					response.put("id", skill.getId());
-					
+
 					result = ok(response);
 				}
-				
+
 				// TODO: handle employees field.
-		    } else {
-		    	result = badRequest("Parameter error: skillInfo. Value: " + skillInfo);
-		    }
-		    
+			} else {
+				result = badRequest("Parameter error: skillInfo. Value: " + skillInfo);
+			}
+
 		} else {
 			result = badRequest("Request is invalid");
 		}
-		
+
 		Logger.debug("addSkill: END. Result = " + result.toString());
-		
+
+		return result;
+	}
+
+	public static Result updateSkill() {
+
+		// format
+		// {"name" : <name>, "employees" : [<employee1>, <employee2>, ... <employeeN>]}
+
+		Logger.debug("updateSkill: START");
+
+		Result result = null;
+		JsonNode json = request().body().asJson();
+		if (json != null) {
+
+			boolean success = true;
+
+			String name = json.path("name").asText();
+			Logger.debug("name = " + name);
+			if (name == null) {
+				success = false;
+				result = badRequest("Parameter error: name. Value: " + name);
+			}
+
+			if (success) {
+				// TODO!!! Add update skill method!!
+//				Skill skill = engineController.getSkillDirectory().updateSkill(name); 
+				result = ok();
+			}
+
+			// TODO: handle employees field.
+
+		} else {
+			result = badRequest("Request is invalid");
+		}
+
+		Logger.debug("updateSkill: END. Result = " + result.toString());
+
+		return result;
+	}
+	
+	public static Result removeSkill() {
+
+		// format
+		// {"id" : <id>}
+
+		Logger.debug("removeSkill: START");
+
+		Result result = null;
+		JsonNode json = request().body().asJson();
+		if (json != null) {
+
+			boolean success = true;
+
+			int id = json.path("id").asInt(-1);
+			Logger.debug("id = " + id);
+			if (id == -1) {
+				success = false;
+				result = badRequest("Parameter error: id. Value: " + id);
+			}
+
+			if (success) {
+				engineController.getSkillDirectory().removeSkill(id); 
+				result = ok();
+			}
+			
+		} else {
+			result = badRequest("Request is invalid");
+		}
+
+		Logger.debug("removeSkill: END. Result = " + result.toString());
+
 		return result;
 	}
 
@@ -249,20 +398,20 @@ public class Application extends Controller {
 			// Create skillInfo json structure
 			ObjectNode skillInfo = Json.newObject();
 			ArrayNode skillEmployeesArray = Json.newObject().arrayNode();
-			
+
 			// fill in the skills array
 			for (int j = 0; j < employeesWithSkill.size(); j++) {
 				skillEmployeesArray.add(employeesWithSkill.get(j).getName());
 			}
-			
+
 			skillInfo.put("name", skillList.get(i).getName());
 			skillInfo.put("employees", skillEmployeesArray);
-			
+
 			skillInfoArray.add(skillInfo);
 		}
-		
+
 		skills.put("skills", skillInfoArray);
-		
+
 		return skills;
 	}
 }

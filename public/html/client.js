@@ -73,11 +73,11 @@ function sendAddSkillRequest() {
           }
         });
 
-        // Add to list of all contacts 
-        skills.push(skillObject);
+        // Add to list of all contacts
+         skills.push(skillObject);
 
         // add clickable entry in the list
-        $("<li><a href=\"#\" onClick=\"showSkillUpdateForm(" + skillObject.id + ")\">" + skillName + "</a></li>").insertAfter("li#skills");
+        $("<li id=\"skill-" + skillObject.id + "\"><a href=\"#\" onClick=\"showSkillUpdateForm(" + skillObject.id + ")\">" + skillName + "</a></li>").insertAfter("li#skills");
 
       } else {
         alert('There was a problem with the request.'); // TODO!
@@ -88,6 +88,29 @@ function sendAddSkillRequest() {
   httpRequest.open('POST', 'http://localhost:9000/addskill', true);
   httpRequest.setRequestHeader('Content-Type', 'application/json');
   httpRequest.send(JSON.stringify(jsonRequestObject));
+}
+
+function removeSkill(id) {
+  var jsonData = {"id" : id};
+
+  var httpRequest = XMLHttpRequest();
+
+  // Response handler
+  httpRequest.onreadystatechange = function() {
+    if (httpRequest.readyState === 4) {
+      if (httpRequest.status === 200) {
+
+        // Remove skill
+        removeSkill(id);
+
+        // Remove clickable entry in the list
+        $("li#skill-"+id).remove();
+
+      } else {
+        alert('There was a problem with the request.'); // TODO!
+      }
+    }
+}
 }
 
 function getSkillsFromServer() {
@@ -124,7 +147,13 @@ function getSkill(id) {
   return null;
 }
 
-
+function removeSkill(id) {
+  for (var i = 0; i < skills.length; i++) {
+    if(skill.id === id) {
+      skills.splice(1,1);
+    }
+  }
+}
 
 function getEmployee(id) {
   for each (var employee in employees) {
