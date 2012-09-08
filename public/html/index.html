@@ -34,9 +34,9 @@
         <div class="span4">
           <div class="well">
             <ul class="nav nav-list">
-              <li id="skills" class="nav-header">Positioner</li>
+              <li id="roles" class="nav-header">Positioner</li>
               <li class="divider"</li>
-              <li><a href="#" id="addSkill"><small>[Skapa ny position]</small></a></li>
+              <li><a href="#" id="addRole"><small>[Skapa ny position]</small></a></li>
               <li id="employees" class="nav-header">Personal</li>
               <li class="divider"></li>
               <li><a href="#" id="addEmployee"><small>[Skapa ny anställd]</small></a></li>
@@ -156,25 +156,25 @@
             </div>
           </form>
 
-          <!-- Form to add/update/remove skills -->
-          <form id="addSkillForm" class="form-horizontal">
+          <!-- Form to add/update/remove roles -->
+          <form id="addRoleForm" class="form-horizontal">
             <div class="control-group">
-              <label class="control-label" for="skillFormNameInput">Namn</label>
+              <label class="control-label" for="roleFormNameInput">Namn</label>
               <div class="controls">
-                <input type="text" id="skillFormNameInput">
+                <input type="text" id="roleFormNameInput">
               </div>
             </div>
 
-            <div id="addSkillButton" class="control-group">
+            <div id="addRoleButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-success" onClick="addSkill()">Skapa</button>
+                <button type="submit" class="btn btn-success" onClick="addRole()">Skapa</button>
               </div>
             </div>
 
-            <div id="updateSkillButton" class="control-group">
+            <div id="updateRoleButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-primary" onClick="updateSkill()">Uppdatera</button>
-                <button type="submit" class="btn btn-danger" onClick="removeSkill()">Radera</button>
+                <button type="submit" class="btn btn-primary" onClick="updateRole()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="removeRole()">Radera</button>
               </div>
             </div>
           </form>
@@ -203,7 +203,7 @@
       var minHoursDay = $("select#minHoursPerDay").val();
       var maxHoursDay = $("select#maxHoursPerDay").val();
 
-      var employeeObject = {"name" : name, "minHoursWeek" : minHoursWeek, "maxHoursWeek" : maxHoursWeek, "minHoursDay" : minHoursDay, "maxHoursDay" : maxHoursDay, "skills" : []};
+      var employeeObject = {"name" : name, "minHoursWeek" : minHoursWeek, "maxHoursWeek" : maxHoursWeek, "minHoursDay" : minHoursDay, "maxHoursDay" : maxHoursDay, "roles" : []};
 
       client.addEmployee(employeeObject, function (success, id) {
 
@@ -215,16 +215,16 @@
       });
     }
 
-    function addSkill() {
+    function addRole() {
       
       // Parse the DOM
-      var skillName = $("input#skillFormNameInput").val();
-      var skillObject = {"name" : skillName};
+      var roleName = $("input#roleFormNameInput").val();
+      var roleObject = {"name" : roleName};
 
-      client.addRole(skillObject, function (success, id) {
+      client.addRole(roleObject, function (success, id) {
 
         if (success) {
-          $("<li id=\"skill-" + id + "\"><a href=\"#\" onClick=\"showSkillUpdateForm(" + id + ")\">" + skillName + "</a></li>").insertAfter("li#skills");
+          $("<li id=\"role-" + id + "\"><a href=\"#\" onClick=\"showRoleUpdateForm(" + id + ")\">" + roleName + "</a></li>").insertAfter("li#roles");
         } else {
           alert('There was a problem with the request.'); // TODO add nice twitter bootstrap error message.
         }
@@ -232,20 +232,20 @@
       });
     }
 
-    function showSkillAddForm() {
+    function showRoleAddForm() {
       hideAllForms();
-      $("input#skillFormNameInput").val("");
-      $("form#addSkillForm").show();
-      $("div#addSkillButton").show();
-      $("div#updateSkillButton").hide();
+      $("input#roleFormNameInput").val("");
+      $("form#addRoleForm").show();
+      $("div#addRoleButton").show();
+      $("div#updateRoleButton").hide();
     }
 
-    function showSkillUpdateForm(id) {
+    function showRoleUpdateForm(id) {
       hideAllForms();
-      $("input#skillFormNameInput").val(client.getRole(id).name);
-      $("form#addSkillForm").show();
-      $("div#addSkillButton").hide();
-      $("div#updateSkillButton").show();
+      $("input#roleFormNameInput").val(client.getRole(id).name);
+      $("form#addRoleForm").show();
+      $("div#addRoleButton").hide();
+      $("div#updateRoleButton").show();
     }
 
     function showEmployeeAddForm() {
@@ -266,7 +266,7 @@
 
     function hideAllForms() {
       $("#addEmployeeForm").hide();
-      $("#addSkillForm").hide();
+      $("#addRoleForm").hide();
     }
 
     $(document).ready(function () {
@@ -285,8 +285,8 @@
         showEmployeeAddForm();
       });
 
-      $("a#addSkill").click(function() {
-        showSkillAddForm();
+      $("a#addRole").click(function() {
+        showRoleAddForm();
       });
 
     });
