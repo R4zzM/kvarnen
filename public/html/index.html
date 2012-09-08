@@ -49,12 +49,12 @@
 
         <div class="span7">
 
-          <!-- Form to add employees -->
+          <!-- Form to add/update/remove employees -->
           <form id ="addEmployeeForm" class="form-horizontal">
             <div class="control-group">
-              <label class="control-label" for="employeeFirstNameInput">Namn</label>
+              <label class="control-label" for="employeeNameInput">Namn</label>
               <div class="controls">
-                <input type="text" id="employeeFirstNameInput">
+                <input type="text" id="employeeNameInput">
               </div>
             </div>
 
@@ -144,19 +144,19 @@
 
             <div id="addEmployeeButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-success" onClick="sendAddEmployeeRequest()">Skapa</button>
+                <button type="submit" class="btn btn-success" onClick="addEmployee()">Skapa</button>
               </div>
             </div>
 
             <div id="updateEmployeeButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-primary" onClick="sendUpdateEmployeeRequest()">Uppdatera</button>
-                <button type="submit" class="btn btn-danger" onClick="sendRemoveEmployeeRequest()">Radera</button>
+                <button type="submit" class="btn btn-primary" onClick="updateEmployee()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="removeEmployee()">Radera</button>
               </div>
             </div>
           </form>
 
-          <!-- Form to add skills -->
+          <!-- Form to add/update/remove skills -->
           <form id="addSkillForm" class="form-horizontal">
             <div class="control-group">
               <label class="control-label" for="skillFormNameInput">Namn</label>
@@ -167,13 +167,13 @@
 
             <div id="addSkillButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-success" onClick="sendAddSkillRequest();">Skapa</button>
+                <button type="submit" class="btn btn-success" onClick="addSkill()">Skapa</button>
               </div>
             </div>
 
             <div id="updateSkillButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-primary" onClick="sendUpdateSkillRequest()">Uppdatera</button>
+                <button type="submit" class="btn btn-primary" onClick="updateSkill()">Uppdatera</button>
                 <button type="submit" class="btn btn-danger" onClick="removeSkill()">Radera</button>
               </div>
             </div>
@@ -183,11 +183,54 @@
       </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Sourced scripts -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="client.js"></script>
+
+    <!-- Inline script that controls the UI -->
     <script type="text/javascript">
+
+    // The js client that interfaces the backend. 
+    var client = Client.getInstance();
+
+    function addEmployee() {
+
+      // Parse the DOM
+      var name = $("input#employeeNameInput").val();
+      var minHoursWeek = $("select#minHoursPerWeek").val();
+      var maxHoursWeek = $("select#maxHoursPerWeek").val();
+      var minHoursDay = $("select#minHoursPerDay").val();
+      var maxHoursDay = $("select#maxHoursPerDay").val();
+
+      var employeeObject = {"name" : name, "minHoursWeek" : minHoursWeek, "maxHoursWeek" : maxHoursWeek, "minHoursDay" : minHoursDay, "maxHoursDay" : maxHoursDay, "skills" : []};
+
+      client.addEmployee(employeeObject, function (success, id) {
+
+        if (success) {
+          $("<li><a href=\"#\" onClick=\"showEmployeeUpdateForm(" + id + ")\">" + name + "</a></li>").insertAfter("li#employees");
+        } else {
+          alert('Non-200 response received!'); // TODO add nice twitter bootstrap error message.
+        }
+      });
+    }
+
+    function addSkill() {
+      
+      // Parse the DOM
+      var skillName = $("input#skillFormNameInput").val();
+      var skillObject = {"name" : skillName};
+
+      client.addRole(skillObject, function (success, id) {
+
+        if (success) {
+          $("<li id=\"skill-" + id + "\"><a href=\"#\" onClick=\"showSkillUpdateForm(" + id + ")\">" + skillName + "</a></li>").insertAfter("li#skills");
+        } else {
+          alert('There was a problem with the request.'); // TODO add nice twitter bootstrap error message.
+        }
+
+      });
+    }
 
     function showSkillAddForm() {
       hideAllForms();
@@ -199,7 +242,7 @@
 
     function showSkillUpdateForm(id) {
       hideAllForms();
-      $("input#skillFormNameInput").val(getSkill(id).name);
+      $("input#skillFormNameInput").val(client.getRole(id).name);
       $("form#addSkillForm").show();
       $("div#addSkillButton").hide();
       $("div#updateSkillButton").show();
@@ -207,7 +250,7 @@
 
     function showEmployeeAddForm() {
       hideAllForms();
-      $("input#employeeFirstNameInput").val("");
+      $("input#employeeNameInput").val("");
       $("form#addEmployeeForm").show();
       $("div#addEmployeeButton").show();
       $("div#updateEmployeeButton").hide();
@@ -215,7 +258,7 @@
 
     function showEmployeeUpdateForm(id) {
       hideAllForms();
-      $("input#employeeFirstNameInput").val(getEmployee(id).name);
+      $("input#employeeNameInput").val(client.getEmployee(id).name);
       $("form#addEmployeeForm").show();
       $("div#addEmployeeButton").hide();
       $("div#updateEmployeeButton").show();
@@ -227,7 +270,15 @@
     }
 
     $(document).ready(function () {
-      init();
+
+      client.init(function (success) {
+
+        if (!success) {
+          alert('Init request failed!');
+        }
+
+      });
+
       hideAllForms();
 
       $("a#addEmployee").click(function() {
@@ -239,6 +290,7 @@
       });
 
     });
+
     </script>
   </body>
   </html>
