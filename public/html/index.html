@@ -227,8 +227,10 @@
 
         if (success) {
           var id = data;
+          // TODO: Maybe there should be a function for this.
           $("<li id=\"employee-" + id + "\"><a href=\"#\" onClick=\"showEmployeeUpdateForm(" + id + ")\">" + name + "</a></li>").insertAfter("li#employees");
-          showSuccessAlert("Personen har lagts till!");
+          $("li#employee-" + id).hide();
+          $("li#employee-" + id).fadeIn("slow");
         } else {
           var error = data;
           showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + error);
@@ -246,9 +248,10 @@
 
         if (success) {
           var id = data;
-          $("li#employee-"+id).remove();
+          $("li#employee-" + id).fadeOut("slow", function () {
+            $("li#employee-" + id).remove();
+          });
           hideAllForms();
-          showSuccessAlert("Personen har tagits bort!");
         } else {
           var error = data;
           showErrorAlert("Borttagning av person misslyckades! Felmeddelande: " + error);
@@ -267,7 +270,8 @@
         if (success) {
           var id = data;
           $("<li id=\"role-" + id + "\"><a href=\"#\" onClick=\"showRoleUpdateForm(" + id + ")\">" + roleName + "</a></li>").insertAfter("li#roles");
-          showSuccessAlert("Rollen har lagts till!");
+          $("li#role-" + id).hide();
+          $("li#role-" + id).fadeIn("slow");
         } else {
           var error = data;
           showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + error);
@@ -284,7 +288,9 @@
       client.removeRole(requestData, function (success, data) {
 
       if (success) {
-         $("li#role-"+id).remove();
+         $("li#role-" + id).fadeOut("slow", function () {
+           $("li#role-" + id).remove();
+         });
          hideAllForms();
          showSuccessAlert("Rollen har tagits bort!");
       } else {
@@ -294,7 +300,7 @@
 
      });
     }
-
+ 
     function showRoleAddForm() {
       hideAllForms();
       $("input#roleFormNameInput").val("");
