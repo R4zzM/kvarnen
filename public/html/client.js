@@ -8,9 +8,9 @@ var Client = function () {
 
   // variables
   var employees = [];
-  var roles = [];
+  var roles = []; 
 
-  //methods
+  //public methods
   this.init = function(responseHandler) {
     var httpRequest = XMLHttpRequest();
 
@@ -58,7 +58,8 @@ var Client = function () {
           employees.push(employeeObject);
           responseHandler(true, employeeObject.id);
         } else {
-          responseHandler(false);
+          var errorMsg = getErrorMessage(httpRequest.responseText);
+          responseHandler(false, errorMsg);
         }
       }
     };
@@ -103,10 +104,10 @@ var Client = function () {
 
           // Add to list of all contacts
           roles.push(roleObject);
-
           responseHandler(true, roleObject.id);
-        } else {
-          responseHandler(false);
+        } else { // Non 200-reponse
+          var errorMsg = getErrorMessage(httpRequest.responseText);
+          responseHandler(false, errorMsg);
         }
       }
     };
@@ -138,14 +139,29 @@ var Client = function () {
 
          responseHandler(true, roleObject.id);
        } else {
-         responseHandler(false);
+         var errorMsg = getErrorMessage(httpRequest.responseText);
+         responseHandler(false, errorMsg);
        }
      }
    }
 
    httpRequest.open('POST', 'http://localhost:9000/removeskill', true);
    httpRequest.setRequestHeader('Content-Type', 'application/json');
-   httpRequest.send(JSON.stringify(requestData));
+   httpRequest.send(JSON.stringify(roleObject));
+ };
+
+   // private methods (TODO: intended, this is probably not best practice)
+ var getErrorMessage = function(jsonData) {
+
+    // parse the response to get the error message
+    var errorMsg;
+    console.log(jsonData);
+    JSON.parse(jsonData, function (key, value) {
+       if (key === "errorMsg") {
+        errorMsg = value;
+      }
+    });
+    return errorMsg;
  };
 
 };

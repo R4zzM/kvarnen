@@ -25,171 +25,186 @@
   <body>
 
     <div class="container">
-
+      <!-- Header -->
       <div class="page-header">
-        <h1>Schemaläggaren</h1>
+        <h2>Schemaläggaren</h2>
+      </div>
+
+      <!-- Status area -->
+      <div class="row">
+        <div class="span12" style="height:40px">
+          <div class="alert alert-success" id="alertSuccess">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+          </div>
+          <div class="alert alert-error" id="alertError">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+          </div>
+        </div>
       </div>
 
       <div class="row">
         <div class="span4">
           <div class="well">
             <ul class="nav nav-list">
-              <li id="roles" class="nav-header">Positioner</li>
-              <li class="divider"</li>
-              <li><a href="#" id="addRole"><small>[Skapa ny position]</small></a></li>
-              <li id="employees" class="nav-header">Personal</li>
-              <li class="divider"></li>
-              <li><a href="#" id="addEmployee"><small>[Skapa ny anställd]</small></a></li>
-              <li id="templates" class="nav-header">Mallar</li>
-              <li class="divider"></li>
-              <li><a href="#" id="addTemplate"><small>[Skapa ny mall]</small></a></li>
-            </ul>
+               <li id="employees" class="nav-header">Personal</li>
+               <li class="divider"></li>
+               <li><a href="#" id="addEmployee"><small>[Skapa ny anställd]</small></a></li>
+               <li id="roles" class="nav-header">Roller</li>
+               <li class="divider"</li>
+               <li><a href="#" id="addRole"><small>[Skapa ny position]</small></a></li>
+               <li id="templates" class="nav-header">Mallar</li>
+               <li class="divider"></li>
+               <li><a href="#" id="addTemplate"><small>[Skapa ny mall]</small></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="span7">
+
+            <!-- Form to add/update/remove employees -->
+            <form id ="addEmployeeForm" class="form-horizontal">
+              <div class="control-group">
+                <label class="control-label" for="employeeNameInput">Namn</label>
+                <div class="controls">
+                  <input type="text" id="employeeNameInput">
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label class="control-label" for="minHoursPerDay">Min tid per dag</label>
+                <div class="controls">
+                  <select id="minHoursPerDay">
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label class="control-label" for="maxHoursPerDay">Max tid per dag</label>
+                <div class="controls">
+                  <select id="maxHoursPerDay">
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label class="control-label" for="minHoursPerWeek">Min tid per vecka</label>
+                <div class="controls">
+                  <select id="minHoursPerWeek">
+                    <option>0</option>
+                    <option>5</option>
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                    <option>25</option>
+                    <option>30</option>
+                    <option>35</option>
+                    <option>40</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label class="control-label" for="maxHoursPerWeek">Max tid per vecka</label>
+                <div class="controls">
+                  <select id="maxHoursPerWeek">
+                    <option>0</option>
+                    <option>5</option>
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                    <option>25</option>
+                    <option>30</option>
+                    <option>35</option>
+                    <option>40</option>
+                    <option>45</option>
+                    <option>50</option>
+                    <option>55</option>
+                    <option>60</option>
+                    <option>65</option>
+                    <option>70</option>
+                    <option>75</option>
+                    <option>80</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="addEmployeeButton" class="control-group">
+                <div class="controls">
+                  <button type="submit" class="btn btn-success" onClick="addEmployee()">Skapa</button>
+                </div>
+              </div>
+
+              <div id="updateEmployeeButton" class="control-group">
+                <div class="controls">
+                  <button type="submit" class="btn btn-primary" onClick="updateEmployee()">Uppdatera</button>
+                  <button type="submit" class="btn btn-danger" onClick="removeEmployee()">Radera</button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Form to add/update/remove roles -->
+            <form id="addRoleForm" class="form-horizontal">
+
+              <input type="hidden" id="roleId">
+
+              <div class="control-group">
+                <label class="control-label" for="roleFormNameInput">Namn</label>
+                <div class="controls">
+                  <input type="text" id="roleFormNameInput">
+                </div>
+              </div>
+
+              <div id="addRoleButton" class="control-group">
+                <div class="controls">
+                  <button type="submit" class="btn btn-success" onClick="addRole()">Skapa</button>
+                </div>
+              </div>
+
+              <div id="updateRoleButton" class="control-group">
+                <div class="controls">
+                  <button type="submit" class="btn btn-primary" onClick="updateRole()">Uppdatera</button>
+                  <button type="submit" class="btn btn-danger" onClick="removeRole()">Radera</button>
+                </div>
+              </div>
+            </form>
+
           </div>
         </div>
-
-        <div class="span7">
-
-          <!-- Form to add/update/remove employees -->
-          <form id ="addEmployeeForm" class="form-horizontal">
-            <div class="control-group">
-              <label class="control-label" for="employeeNameInput">Namn</label>
-              <div class="controls">
-                <input type="text" id="employeeNameInput">
-              </div>
-            </div>
-
-            <div class="control-group">
-              <label class="control-label" for="minHoursPerDay">Min tid per dag</label>
-              <div class="controls">
-                <select id="minHoursPerDay">
-                  <option>0</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="control-group">
-              <label class="control-label" for="maxHoursPerDay">Max tid per dag</label>
-              <div class="controls">
-                <select id="maxHoursPerDay">
-                  <option>0</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                  <option>9</option>
-                  <option>10</option>
-                  <option>11</option>
-                  <option>12</option>
-                  <option>13</option>
-                  <option>14</option>
-                  <option>15</option>
-                  <option>16</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="control-group">
-              <label class="control-label" for="minHoursPerWeek">Min tid per vecka</label>
-              <div class="controls">
-                <select id="minHoursPerWeek">
-                  <option>0</option>
-                  <option>5</option>
-                  <option>10</option>
-                  <option>15</option>
-                  <option>20</option>
-                  <option>25</option>
-                  <option>30</option>
-                  <option>35</option>
-                  <option>40</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="control-group">
-              <label class="control-label" for="maxHoursPerWeek">Max tid per vecka</label>
-              <div class="controls">
-                <select id="maxHoursPerWeek">
-                  <option>0</option>
-                  <option>5</option>
-                  <option>10</option>
-                  <option>15</option>
-                  <option>20</option>
-                  <option>25</option>
-                  <option>30</option>
-                  <option>35</option>
-                  <option>40</option>
-                  <option>45</option>
-                  <option>50</option>
-                  <option>55</option>
-                  <option>60</option>
-                  <option>65</option>
-                  <option>70</option>
-                  <option>75</option>
-                  <option>80</option>
-                </select>
-              </div>
-            </div>
-
-            <div id="addEmployeeButton" class="control-group">
-              <div class="controls">
-                <button type="submit" class="btn btn-success" onClick="addEmployee()">Skapa</button>
-              </div>
-            </div>
-
-            <div id="updateEmployeeButton" class="control-group">
-              <div class="controls">
-                <button type="submit" class="btn btn-primary" onClick="updateEmployee()">Uppdatera</button>
-                <button type="submit" class="btn btn-danger" onClick="removeEmployee()">Radera</button>
-              </div>
-            </div>
-          </form>
-
-          <!-- Form to add/update/remove roles -->
-          <form id="addRoleForm" class="form-horizontal">
-            <div class="control-group">
-              <label class="control-label" for="roleFormNameInput">Namn</label>
-              <div class="controls">
-                <input type="text" id="roleFormNameInput">
-              </div>
-            </div>
-
-            <div id="addRoleButton" class="control-group">
-              <div class="controls">
-                <button type="submit" class="btn btn-success" onClick="addRole()">Skapa</button>
-              </div>
-            </div>
-
-            <div id="updateRoleButton" class="control-group">
-              <div class="controls">
-                <button type="submit" class="btn btn-primary" onClick="updateRole()">Uppdatera</button>
-                <button type="submit" class="btn btn-danger" onClick="removeRole()">Radera</button>
-              </div>
-            </div>
-          </form>
-
-        </div>
       </div>
-    </div>
 
-    <!-- Sourced scripts -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="client.js"></script>
+      <!-- Sourced scripts -->
+      <script src="js/jquery.min.js"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script src="client.js"></script>
 
-    <!-- Inline script that controls the UI -->
-    <script type="text/javascript">
+      <!-- Inline script that controls the UI -->
+      <script type="text/javascript">
 
     // The js client that interfaces the backend. 
     var client = Client.getInstance();
@@ -205,41 +220,56 @@
 
       var employeeObject = {"name" : name, "minHoursWeek" : minHoursWeek, "maxHoursWeek" : maxHoursWeek, "minHoursDay" : minHoursDay, "maxHoursDay" : maxHoursDay, "roles" : []};
 
-      client.addEmployee(employeeObject, function (success, id) {
+      client.addEmployee(employeeObject, function (success, data) {
 
         if (success) {
+          var id = data;
           $("<li><a href=\"#\" onClick=\"showEmployeeUpdateForm(" + id + ")\">" + name + "</a></li>").insertAfter("li#employees");
+          showSuccessAlert("Personen har lagts till!");
         } else {
-          alert('Non-200 response received!'); // TODO add nice twitter bootstrap error message.
+          var error = data;
+          showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + error);
         }
       });
     }
 
     function addRole() {
-      
+
       // Parse the DOM
       var roleName = $("input#roleFormNameInput").val();
       var roleObject = {"name" : roleName};
 
-      client.addRole(roleObject, function (success, id) {
+      client.addRole(roleObject, function (success, data) {
 
         if (success) {
+          var id = data;
           $("<li id=\"role-" + id + "\"><a href=\"#\" onClick=\"showRoleUpdateForm(" + id + ")\">" + roleName + "</a></li>").insertAfter("li#roles");
+          showSuccessAlert("Rollen har lagts till!");
         } else {
-          alert('There was a problem with the request.'); // TODO add nice twitter bootstrap error message.
+          var error = data;
+          showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + error);
         }
 
       });
     }
 
-    function removeRole() {
+    function removeRole(id) {
 
-        // TODO: implement!!
+      var id = $("input#roleId").val();
+      var requestData = {"id" : id};
 
-               // Remove clickable entry in the list
-         $("li#skill-"+id).remove();
+      client.removeRole(requestData, function (success, data) {
 
-         alert('There was a problem with the request.'); // TODO!
+      if (success) {
+         $("li#role-"+id).remove();
+         hideAllForms();
+         showSuccessAlert("Rollen har tagits bort!");
+      } else {
+         var error = data;
+         showErrorAlert("Borttagning kunde inte tas bort! Felmeddelande: " + error);
+      }
+
+     });
     }
 
     function showRoleAddForm() {
@@ -252,7 +282,12 @@
 
     function showRoleUpdateForm(id) {
       hideAllForms();
+
+      // Set the form values
+      $("input#roleId").val(id);
       $("input#roleFormNameInput").val(client.getRole(id).name);
+
+      // Show / Hide part of forms 
       $("form#addRoleForm").show();
       $("div#addRoleButton").hide();
       $("div#updateRoleButton").show();
@@ -274,9 +309,36 @@
       $("div#updateEmployeeButton").show();
     }
 
+    function showErrorAlert(message) {
+      hideAllAlerts();
+      $("#alertError").html(message);
+      $("#alertError").fadeIn();
+
+      // timeout the message
+      setTimeout(function () {
+        $("#alertError").fadeOut("slow");
+      }, 5000);
+    }
+
+    function showSuccessAlert(message) {
+      hideAllAlerts();
+      $("#alertSuccess").html(message);
+      $("#alertSuccess").fadeIn("fast");
+
+      // remove the message
+      setTimeout(function () {
+        $("#alertSuccess").fadeOut("slow");
+      }, 2000);
+    }
+
     function hideAllForms() {
       $("#addEmployeeForm").hide();
       $("#addRoleForm").hide();
+    }
+
+    function hideAllAlerts() {
+      $("#alertSuccess").hide();
+      $("#alertError").hide();
     }
 
     $(document).ready(function () {
@@ -290,6 +352,7 @@
       });
 
       hideAllForms();
+      hideAllAlerts();
 
       $("a#addEmployee").click(function() {
         showEmployeeAddForm();

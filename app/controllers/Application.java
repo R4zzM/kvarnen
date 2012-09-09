@@ -34,7 +34,7 @@ public class Application extends Controller {
 				engineController = SessionManager.getInstance().newSession(); //TODO: should be redone
 				result = ok();
 			} catch (Exception e) {
-				result = internalServerError("Exception when creating session. Msg: " + e.getMessage());
+				result = internalServerError(createJsonErrorMessage("Exception when creating session. Msg: " + e.getMessage()));
 			}
 		} else {
 			result = ok();
@@ -65,35 +65,35 @@ public class Application extends Controller {
 			if (name == null || name.equals("")) {
 				success = false;
 				Logger.error("Parameter error: name. Value: " + name);
-				result = badRequest("Parameter error: name. Value: " + name);
+				result = badRequest(createJsonErrorMessage("Parameter error: name. Value: " + name));
 			}
 
 			int minHoursDay = json.path("minHoursDay").asInt(-1);
 			if (minHoursDay == -1) {
 				success = false;
 				Logger.error("Parameter error: minHoursDay");
-				result = badRequest("Parameter error: minHoursDay");
+				result = badRequest(createJsonErrorMessage("Parameter error: minHoursDay"));
 			}
 
 			int maxHoursDay = json.path("maxHoursDay").asInt(-1);
 			if (maxHoursDay == -1) {
 				success = false;
 				Logger.error("Parameter error: maxHoursDay");
-				result = badRequest("Parameter error: maxHoursDay");
+				result = badRequest(createJsonErrorMessage("Parameter error: maxHoursDay"));
 			}
 
 			int minHoursWeek = json.path("minHoursWeek").asInt(-1);
 			if (minHoursWeek == -1) {
 				success = false;
 				Logger.error("Parameter error: minHoursWeek");
-				result = badRequest("Parameter error: minHoursWeek");
+				result = badRequest(createJsonErrorMessage("Parameter error: minHoursWeek"));
 			}
 
 			int maxHoursWeek = json.path("maxHoursWeek").asInt(-1);
 			if (maxHoursWeek == -1) {
 				success = false;
 				Logger.error("Parameter error: maxHoursWeek");
-				result = badRequest("Parameter error: maxHoursWeek");
+				result = badRequest(createJsonErrorMessage("Parameter error: maxHoursWeek"));
 			}
 
 			// TODO: handle skills field.
@@ -104,13 +104,12 @@ public class Application extends Controller {
 				// create the response
 				ObjectNode response = Json.newObject();
 				response.put("id", newEmployee.getId());
-
 				result = ok(response);
 			}
 
 		} else {
 			Logger.error("Request is invalid");
-			result = badRequest("Request is invalid");
+			result = badRequest(createJsonErrorMessage("Request is malformed"));
 		}
 
 		Logger.debug("addEmployee(): END. Result = " + result.toString());
@@ -234,7 +233,7 @@ public class Application extends Controller {
 			Logger.debug("name = " + name);
 			if (name == null || name.equals("")) {
 				success = false;
-				result = badRequest("Parameter error: name. Value: " + name);
+				result = badRequest(createJsonErrorMessage("Parameter error: name. Value: " + name));
 			}
 
 			if (success) {
@@ -244,12 +243,13 @@ public class Application extends Controller {
 				response.put("id", skill.getId());
 
 				result = ok(response);
+//				result = badRequest("{\"errorMsg\" : \"This is a fake error message!\"}");
 			}
 
 			// TODO: handle employees field.
 
 		} else {
-			result = badRequest("Request is invalid");
+			result = badRequest(createJsonErrorMessage("Request is malformed"));
 		}
 
 		Logger.debug("addSkill: END. Result = " + result.toString());
@@ -274,7 +274,7 @@ public class Application extends Controller {
 			Logger.debug("name = " + name);
 			if (name == null) {
 				success = false;
-				result = badRequest("Parameter error: name. Value: " + name);
+				result = badRequest(createJsonErrorMessage("Parameter error: name. Value: " + name));
 			}
 
 			if (success) {
@@ -286,7 +286,7 @@ public class Application extends Controller {
 			// TODO: handle employees field.
 
 		} else {
-			result = badRequest("Request is invalid");
+			result = badRequest(createJsonErrorMessage("Malformed request!"));
 		}
 
 		Logger.debug("updateSkill: END. Result = " + result.toString());
@@ -311,7 +311,8 @@ public class Application extends Controller {
 			Logger.debug("id = " + id);
 			if (id == -1) {
 				success = false;
-				result = badRequest("Parameter error: id. Value: " + id);
+				Logger.debug("removeSkill: Parameter error: id. Value: " + id);
+				result = badRequest(createJsonErrorMessage("Parameter error: id. Value: " + id));
 			}
 
 			if (success) {
@@ -320,7 +321,8 @@ public class Application extends Controller {
 			}
 
 		} else {
-			result = badRequest("Request is invalid");
+			Logger.debug("removeSkill: Invalid Request. Cannot parse json.");
+			result = badRequest(createJsonErrorMessage("Request is invalid"));
 		}
 
 		Logger.debug("removeSkill: END. Result = " + result.toString());
@@ -403,5 +405,12 @@ public class Application extends Controller {
 		skills.put("skills", skillInfoArray);
 
 		return skills;
+	}
+	
+	// Simple method to packet an error message as JSON.
+	private static String createJsonErrorMessage(String errorMsg) {
+		
+		String errorMessage = "{\"errorMsg\" : \"" + errorMsg + "\"}";
+		return errorMessage;
 	}
 }
