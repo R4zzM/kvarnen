@@ -63,6 +63,9 @@
 
             <!-- Form to add/update/remove employees -->
             <form id ="addEmployeeForm" class="form-horizontal">
+
+              <input type="hidden" id="employeeId">
+
               <div class="control-group">
                 <label class="control-label" for="employeeNameInput">Namn</label>
                 <div class="controls">
@@ -224,11 +227,31 @@
 
         if (success) {
           var id = data;
-          $("<li><a href=\"#\" onClick=\"showEmployeeUpdateForm(" + id + ")\">" + name + "</a></li>").insertAfter("li#employees");
+          $("<li id=\"employee-" + id + "\"><a href=\"#\" onClick=\"showEmployeeUpdateForm(" + id + ")\">" + name + "</a></li>").insertAfter("li#employees");
           showSuccessAlert("Personen har lagts till!");
         } else {
           var error = data;
           showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + error);
+        }
+      });
+    }
+
+    function removeEmployee() {
+
+      // Fetch the employee id 
+      var id = $("input#employeeId").val();
+      var requestData = {"id" : id};
+
+      client.removeEmployee(requestData, function (success, data) {
+
+        if (success) {
+          var id = data;
+          $("li#employee-"+id).remove();
+          hideAllForms();
+          showSuccessAlert("Personen har tagits bort!");
+        } else {
+          var error = data;
+          showErrorAlert("Borttagning av person misslyckades! Felmeddelande: " + error);
         }
       });
     }
@@ -303,7 +326,12 @@
 
     function showEmployeeUpdateForm(id) {
       hideAllForms();
+
+      // Set the form values
+      $("input#employeeId").val(id);
       $("input#employeeNameInput").val(client.getEmployee(id).name);
+
+      // Show / Hide part of forms 
       $("form#addEmployeeForm").show();
       $("div#addEmployeeButton").hide();
       $("div#updateEmployeeButton").show();

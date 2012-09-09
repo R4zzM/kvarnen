@@ -116,6 +116,44 @@ public class Application extends Controller {
 
 		return result;
 	}
+	
+	// TODO: Serious!! This is the same code as in removeSkill. The architecture should probably be rethought...
+	public static Result removeEmployee() {
+		
+		// format
+		// {"id" : <id>}
+
+		Logger.debug("removeEmployee: START");
+
+		Result result = null;
+		JsonNode json = request().body().asJson();
+		if (json != null) {
+
+			boolean success = true;
+
+			int id = json.path("id").asInt(-1);
+			Logger.debug("id = " + id);
+			if (id == -1) {
+				success = false;
+				Logger.debug("removeEmployee: Parameter error: id. Value: " + id);
+				result = badRequest(createJsonErrorMessage("Parameter error: id. Value: " + id));
+			}
+
+			if (success) {
+				engineController.getEmployeeDirectory().removeEmployee(id); 
+				result = ok();
+			}
+
+		} else {
+			Logger.debug("removeEmployee: Invalid Request. Cannot parse json.");
+			result = badRequest(createJsonErrorMessage("Request is invalid"));
+		}
+
+		Logger.debug("removeEmployee: END. Result = " + result.toString());
+
+		return result;
+		
+	}
 
 	//	public static Result updateEmployee() {
 	//		

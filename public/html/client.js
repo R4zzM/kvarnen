@@ -68,8 +68,32 @@ var Client = function () {
 
   };
 
-  this.removeEmployee = function(employeeObject, responseHandler) {
+  this.removeEmployee = function(requestData, responseHandler) {
+    var httpRequest = XMLHttpRequest();
 
+     // Response handler
+     httpRequest.onreadystatechange = function() {
+       if (httpRequest.readyState === 4) {
+         if (httpRequest.status === 200) {
+
+         // Remove role from list
+         for (var i = 0; i < employees.length; i++) {
+           if(employees[i].id === requestData.id) {
+             employees.splice(i,i);
+           }
+         }
+         
+         responseHandler(true, requestData.id);
+       } else {
+         var errorMsg = getErrorMessage(httpRequest.responseText);
+         responseHandler(false, errorMsg);
+       }
+     }
+   };
+
+   httpRequest.open('POST', 'http://localhost:9000/removeemployee', true);
+   httpRequest.setRequestHeader('Content-Type', 'application/json');
+   httpRequest.send(JSON.stringify(requestData));
   };
 
   this.getRole = function(id) {
