@@ -47,12 +47,7 @@ var Client = function () {
       if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200) {
 
-          // Set the id of the contact
-          JSON.parse(httpRequest.responseText, function (key, value) {
-            if (key === "id") {
-             employeeObject.id = value;
-           }
-         });
+          employeeObject.id = getIdFromJsonBody(httpRequest.responseText);
 
           // Add to list of all contacts 
           employees.push(employeeObject);
@@ -95,12 +90,7 @@ var Client = function () {
       if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200) {
 
-          // Set the id of the contact
-          JSON.parse(httpRequest.responseText, function (key, value) {
-            if (key === "id") {
-             roleObject.id = value;
-           }
-         });
+          roleObject.id = getIdFromJsonBody(httpRequest.responseText);
 
           // Add to list of all contacts
           roles.push(roleObject);
@@ -150,18 +140,29 @@ var Client = function () {
    httpRequest.send(JSON.stringify(roleObject));
  };
 
-   // private methods (TODO: intended, this is probably not best practice)
+  // private methods (TODO: intended, this is probably not best practice)
  var getErrorMessage = function(jsonData) {
 
     // parse the response to get the error message
     var errorMsg;
-    console.log(jsonData);
     JSON.parse(jsonData, function (key, value) {
        if (key === "errorMsg") {
         errorMsg = value;
       }
     });
     return errorMsg;
+ };
+
+  var getIdFromJsonBody = function(jsonData) {
+
+    // parse the response to get the id
+    var id;
+    JSON.parse(jsonData, function (key, value) {
+       if (key === "id") {
+        id = value;
+      }
+    });
+    return id;
  };
 
 };
