@@ -47,168 +47,176 @@
         <div class="span4">
           <div class="well">
             <ul class="nav nav-list">
-               <li id="employees" class="nav-header">Personal</li>
-               <li class="divider"></li>
-               <li><a href="#" id="addEmployee"><small>[Skapa ny anställd]</small></a></li>
-               <li id="roles" class="nav-header">Roller</li>
-               <li class="divider"</li>
+             <li id="employees" class="nav-header">Personal</li>
+             <li class="divider"></li>
+             <li><a href="#" id="addEmployee"><small>[Skapa ny anställd]</small></a></li>
+             <li id="roles" class="nav-header">Roller</li>
+             <li class="divider"</li>
                <li><a href="#" id="addRole"><small>[Skapa ny position]</small></a></li>
                <li id="templates" class="nav-header">Mallar</li>
                <li class="divider"></li>
                <li><a href="#" id="addTemplate"><small>[Skapa ny mall]</small></a></li>
-              </ul>
+             </ul>
+           </div>
+         </div>
+
+         <div class="span7">
+
+          <!-- Form to add/update/remove employees -->
+          <form id ="addEmployeeForm" class="form-horizontal">
+
+            <input type="hidden" id="employeeId">
+
+            <div class="control-group">
+              <label class="control-label" for="employeeNameInput">Namn</label>
+              <div class="controls">
+                <input type="text" id="employeeNameInput">
+              </div>
             </div>
-          </div>
 
-          <div class="span7">
-
-            <!-- Form to add/update/remove employees -->
-            <form id ="addEmployeeForm" class="form-horizontal">
-
-              <input type="hidden" id="employeeId">
-
-              <div class="control-group">
-                <label class="control-label" for="employeeNameInput">Namn</label>
-                <div class="controls">
-                  <input type="text" id="employeeNameInput">
-                </div>
+            <div class="control-group">
+              <label class="control-label" for="minHoursPerDay">Min tid per dag</label>
+              <div class="controls">
+                <select id="minHoursPerDay">
+                  <option>0</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                </select>
               </div>
+            </div>
 
-              <div class="control-group">
-                <label class="control-label" for="minHoursPerDay">Min tid per dag</label>
-                <div class="controls">
-                  <select id="minHoursPerDay">
-                    <option>0</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                  </select>
-                </div>
+            <div class="control-group">
+              <label class="control-label" for="maxHoursPerDay">Max tid per dag</label>
+              <div class="controls">
+                <select id="maxHoursPerDay">
+                  <option>0</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
+                  <option>11</option>
+                  <option>12</option>
+                  <option>13</option>
+                  <option>14</option>
+                  <option>15</option>
+                  <option>16</option>
+                </select>
               </div>
+            </div>
 
-              <div class="control-group">
-                <label class="control-label" for="maxHoursPerDay">Max tid per dag</label>
-                <div class="controls">
-                  <select id="maxHoursPerDay">
-                    <option>0</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
-                    <option>10</option>
-                    <option>11</option>
-                    <option>12</option>
-                    <option>13</option>
-                    <option>14</option>
-                    <option>15</option>
-                    <option>16</option>
-                  </select>
-                </div>
+            <div class="control-group">
+              <label class="control-label" for="minHoursPerWeek">Min tid per vecka</label>
+              <div class="controls">
+                <select id="minHoursPerWeek">
+                  <option>0</option>
+                  <option>5</option>
+                  <option>10</option>
+                  <option>15</option>
+                  <option>20</option>
+                  <option>25</option>
+                  <option>30</option>
+                  <option>35</option>
+                  <option>40</option>
+                </select>
               </div>
+            </div>
 
-              <div class="control-group">
-                <label class="control-label" for="minHoursPerWeek">Min tid per vecka</label>
-                <div class="controls">
-                  <select id="minHoursPerWeek">
-                    <option>0</option>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>15</option>
-                    <option>20</option>
-                    <option>25</option>
-                    <option>30</option>
-                    <option>35</option>
-                    <option>40</option>
-                  </select>
-                </div>
+            <div class="control-group">
+              <label class="control-label" for="maxHoursPerWeek">Max tid per vecka</label>
+              <div class="controls">
+                <select id="maxHoursPerWeek">
+                  <option>0</option>
+                  <option>5</option>
+                  <option>10</option>
+                  <option>15</option>
+                  <option>20</option>
+                  <option>25</option>
+                  <option>30</option>
+                  <option>35</option>
+                  <option>40</option>
+                  <option>45</option>
+                  <option>50</option>
+                  <option>55</option>
+                  <option>60</option>
+                  <option>65</option>
+                  <option>70</option>
+                  <option>75</option>
+                  <option>80</option>
+                </select>
               </div>
+            </div>
 
-              <div class="control-group">
-                <label class="control-label" for="maxHoursPerWeek">Max tid per vecka</label>
-                <div class="controls">
-                  <select id="maxHoursPerWeek">
-                    <option>0</option>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>15</option>
-                    <option>20</option>
-                    <option>25</option>
-                    <option>30</option>
-                    <option>35</option>
-                    <option>40</option>
-                    <option>45</option>
-                    <option>50</option>
-                    <option>55</option>
-                    <option>60</option>
-                    <option>65</option>
-                    <option>70</option>
-                    <option>75</option>
-                    <option>80</option>
-                  </select>
-                </div>
+            <div id="addEmployeeButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-success" onClick="addEmployee()">Skapa</button>
               </div>
+            </div>
 
-              <div id="addEmployeeButton" class="control-group">
-                <div class="controls">
-                  <button type="submit" class="btn btn-success" onClick="addEmployee()">Skapa</button>
-                </div>
+            <div id="updateEmployeeButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary" onClick="updateEmployee()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="removeEmployee()">Radera</button>
               </div>
+            </div>
+          </form>
 
-              <div id="updateEmployeeButton" class="control-group">
-                <div class="controls">
-                  <button type="submit" class="btn btn-primary" onClick="updateEmployee()">Uppdatera</button>
-                  <button type="submit" class="btn btn-danger" onClick="removeEmployee()">Radera</button>
-                </div>
+          <!-- Form to add/update/remove roles -->
+          <form id="addRoleForm" class="form-horizontal">
+
+            <input type="hidden" id="roleId">
+
+            <div class="control-group">
+              <label class="control-label" for="roleFormNameInput">Namn</label>
+              <div class="controls">
+                <input type="text" id="roleFormNameInput">
               </div>
-            </form>
+            </div>
 
-            <!-- Form to add/update/remove roles -->
-            <form id="addRoleForm" class="form-horizontal">
-
-              <input type="hidden" id="roleId">
-
-              <div class="control-group">
-                <label class="control-label" for="roleFormNameInput">Namn</label>
-                <div class="controls">
-                  <input type="text" id="roleFormNameInput">
-                </div>
+            <div class="control-group">
+              <div class="controls">
+                <label class="checkbox">Rasmus Mattsson<input type="checkbox" id="inlineCheckbox1" value="option1"></label>
+                <label class="checkbox">Palle Kuling<input type="checkbox" id="inlineCheckbox2" value="option2"></label>
+                <label class="checkbox">Berit<input type="checkbox" id="inlineCheckbox3" value="option3"></label>
               </div>
+            </div>
 
-              <div id="addRoleButton" class="control-group">
-                <div class="controls">
-                  <button type="submit" class="btn btn-success" onClick="addRole()">Skapa</button>
-                </div>
+            <div id="addRoleButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-success" onClick="addRole()">Skapa</button>
               </div>
+            </div>
 
-              <div id="updateRoleButton" class="control-group">
-                <div class="controls">
-                  <button type="submit" class="btn btn-primary" onClick="updateRole()">Uppdatera</button>
-                  <button type="submit" class="btn btn-danger" onClick="removeRole()">Radera</button>
-                </div>
+            <div id="updateRoleButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary" onClick="updateRole()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="removeRole()">Radera</button>
               </div>
-            </form>
+            </div>
+          </form>
 
-          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Sourced scripts -->
-      <script src="js/jquery.min.js"></script>
-      <script src="js/bootstrap.min.js"></script>
-      <script src="client.js"></script>
+    <!-- Sourced scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="client.js"></script>
 
-      <!-- Inline script that controls the UI -->
-      <script type="text/javascript">
+    <!-- Inline script that controls the UI -->
+    <script type="text/javascript">
 
     // The js client that interfaces the backend. 
     var client = Client.getInstance();
@@ -288,20 +296,20 @@
 
       client.removeRole(requestData, function (success, data) {
 
-      if (success) {
+        if (success) {
          $("li#role-" + id).fadeOut("slow", function () {
            $("li#role-" + id).remove();
          });
          hideAllForms();
          showSuccessAlert("Rollen har tagits bort!");
-      } else {
+       } else {
          var error = data;
          showErrorAlert("Borttagning kunde inte tas bort! Felmeddelande: " + error);
-      }
+       }
 
      });
     }
- 
+
     function showRoleAddForm() {
       hideAllForms();
       $("input#roleFormNameInput").val("");
