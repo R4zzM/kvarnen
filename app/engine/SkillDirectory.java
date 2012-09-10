@@ -3,53 +3,43 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SkillDirectory implements Serializable {
+import engine.uid.OutOfUidsException;
 
-//	public static SkillDirectory instance = null;
+public class SkillDirectory implements Serializable {
 
 	private static final long serialVersionUID = 5351924136181947002L;
 
-	private List<SkillImpl> allSkills = null;
-
-	private int nextSkillId;
+	private EngineController ec = null;
 	
-	public SkillDirectory() {
+	private List<SkillImpl> allSkills = null;
+	
+	public SkillDirectory(EngineController ec) {
+		this.ec = ec;
 		allSkills = new ArrayList<SkillImpl>();
-		nextSkillId = 1;
 	}
 
-//	public static SkillDirectory getInstance() {
-//		if (instance == null) {
-//			instance = new SkillDirectory();
-//		}
-//		return instance;
-//	}
-
-	public Skill createNewSkill(String name) {
-		SkillImpl skill = new SkillImpl(name, nextSkillId);
+	public Skill createNewSkill(String name) throws OutOfUidsException {
+		int uid = ec.getUidManager().generateRoleUid();
+		SkillImpl skill = new SkillImpl(name, uid);
 		allSkills.add(skill);
-		nextSkillId++;
 		return (Skill)skill;
 	}
 
-	public void removeSkill(String name) {
-		SkillImpl skill = null;
-		for (int i = 0; i < allSkills.size(); i++) {
-			skill = allSkills.get(i);
-			if (skill.getName().equals(name)) {
-				allSkills.remove(skill);
-			}
-		}
-	}
-
-	public void removeSkill(int id) {
+	public Skill removeSkill(int id) {
 		SkillImpl skill = null;
 		for (int i = 0; i < allSkills.size(); i++) {
 			skill = allSkills.get(i);
 			if (skill.getId() == id) {
 				allSkills.remove(skill);
+				break;
 			}
 		}
+		return skill;
+	}
+	
+	// TODO: implement (sometime in the future...)
+	public Skill updateSkill(Skill skill) {
+		return null;
 	}
 
 	/**
@@ -57,7 +47,7 @@ public class SkillDirectory implements Serializable {
 	 * @param skillId
 	 * @return
 	 */
-	public int[] getEmployeeIdsForSkillId(int skillId) {
+	public int[] getAssociatedEmployees(int skillId) {
 		int[] employeeIds = null;
 		Skill skill = getSkill(skillId);
 		if (skill != null) {
@@ -70,27 +60,24 @@ public class SkillDirectory implements Serializable {
 		return employeeIds;
 	}
 
-	public Skill addEmployeeToSkill(Employee employee, Skill skill) throws Exception {
+	public Skill associateEmployeeWithSkill(int employeeId, int skillId) throws Exception {
 
-		//Check that employee is still in directory
-		if (!allSkills.contains(skill)) {
-			throw new Exception("Exception in addEmployeeToSkill: no such skill exist in directory");
+		Employee employee = ec.getEmployeeDirectory().getEmployee(employeeId);
+		if (employee == null) {
+			throw new Exception("Employee does not exist!");
+		}
+		
+		Skill skill = getSkill(skillId);
+		if (skill == null) {
+			throw new Exception("Skill does not exist!");
 		}
 
-		SkillImpl skillImpl = null;
-		for (int i = 0; i < allSkills.size(); i++) {
-			if (allSkills.get(i).equals(skill)) {
-				skillImpl = allSkills.get(i);
-			}
-		}
+		skill.addEmployee(employee);
 
-		skillImpl.addEmployee(employee);
-
-		return skillImpl;
-
+		return skill;
 	}
 	
-	private Skill getSkill(int skillId) {
+	public Skill getSkill(int skillId) {
 		Skill skill = null;
 		for (int i = 0; i < allSkills.size(); i++) {
 			skill = allSkills.get(i);
@@ -155,11 +142,8 @@ public class SkillDirectory implements Serializable {
 		public int getId() {
 			return id;
 		}
-
-		public void setId(int id) {
-			this.id = id;
-		}
 		
+		@Override
 		public String toString() {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Skill: " + name + " --- Employees: ");

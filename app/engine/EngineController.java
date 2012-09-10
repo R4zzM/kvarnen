@@ -6,6 +6,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import engine.uid.OutOfUidsException;
+import engine.uid.UidManager;
+
 import JaCoP.constraints.Alldifferent;
 import JaCoP.constraints.XeqC;
 import JaCoP.constraints.XgtC;
@@ -34,18 +37,20 @@ public class EngineController implements Serializable {
 	
 	private EmployeeDirectory employeeDirectory = null;
 	private SkillDirectory skillDirectory = null;
+	private UidManager uidManager = null;
 	
 	public EngineController() {
 		sessionId = generateSessionId();
-		employeeDirectory = new EmployeeDirectory();
-		skillDirectory = new SkillDirectory();
+		employeeDirectory = new EmployeeDirectory(this);
+		skillDirectory = new SkillDirectory(this);
+		uidManager = new UidManager();
 	}
 	
-	public EngineController(String sessionId) {
-		this.sessionId = sessionId;
-		employeeDirectory = new EmployeeDirectory();
-		skillDirectory = new SkillDirectory();
-	}
+//	public EngineController(String sessionId) {
+//		this.sessionId = sessionId;
+//		employeeDirectory = new EmployeeDirectory(this);
+//		skillDirectory = new SkillDirectory();
+//	}
 	
 	public EmployeeDirectory getEmployeeDirectory() {
 		return employeeDirectory;
@@ -53,6 +58,10 @@ public class EngineController implements Serializable {
 	
 	public SkillDirectory getSkillDirectory() {
 		return skillDirectory;
+	}
+	
+	public UidManager getUidManager() {
+		return uidManager;
 	}
 	
 	public String getSessionId() {
@@ -65,15 +74,28 @@ public class EngineController implements Serializable {
 	
 	// TODO: temp method.
 	public void simpleTest() {
-		// Create some data.
-		Employee catharina = employeeDirectory.createNewEmployee("Catharina Johansson", 0, 12 ,0, 120);
-		Employee julia = employeeDirectory.createNewEmployee("Julia Collinius", 4, 10, 20, 60);
-		Employee ida = employeeDirectory.createNewEmployee("Ida Collinius", 4, 10, 20, 70);
-		Employee hans = employeeDirectory.createNewEmployee("Hans Johansson", 0, 12, 0, 40);
 		
-		Skill kitchen = skillDirectory.createNewSkill("Kitchen");
-		Skill cafe = skillDirectory.createNewSkill("Cafe");
-		Skill washing = skillDirectory.createNewSkill("Washing");
+		// Create some data.
+		Employee catharina = null;
+		Employee julia = null;
+		Employee ida = null;
+		Employee hans = null;
+		
+		Skill kitchen = null;
+		Skill cafe = null;
+		Skill washing = null;
+		try {
+			catharina = employeeDirectory.createNewEmployee("Catharina Johansson", 0, 12 ,0, 120);
+			julia = employeeDirectory.createNewEmployee("Julia Collinius", 1, 10, 0, 60);
+			ida = employeeDirectory.createNewEmployee("Ida Collinius", 1, 10, 0, 70);
+			hans = employeeDirectory.createNewEmployee("Hans Johansson", 0, 12, 0, 40);
+			
+			kitchen = skillDirectory.createNewSkill("Kitchen");
+			cafe = skillDirectory.createNewSkill("Cafe");
+			washing = skillDirectory.createNewSkill("Washing");
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 		
 		// skills to employees
 		julia.addSkill(cafe);
@@ -119,40 +141,46 @@ public class EngineController implements Serializable {
 		
 		startTime.set(Calendar.HOUR_OF_DAY, 8);
 		endTime.set(Calendar.HOUR_OF_DAY, 12);
-		week.tuesday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
-		week.wednesday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
-		week.thursday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
-		week.friday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
-		week.saturday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
-		week.sunday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
 		
-		startTime.set(Calendar.HOUR_OF_DAY, 8);
-		endTime.set(Calendar.HOUR_OF_DAY, 16);
-		week.tuesday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		week.wednesday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		week.thursday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		week.friday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		week.saturday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		week.sunday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		
-		startTime.set(Calendar.HOUR_OF_DAY, 12);
-		endTime.set(Calendar.HOUR_OF_DAY, 16);
-		week.tuesday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		week.wednesday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		week.thursday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		week.friday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		week.saturday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		week.sunday().newPosition(cafe, startTime.getTime(), endTime.getTime());
-		
-		startTime.set(Calendar.HOUR_OF_DAY, 14);
-		endTime.set(Calendar.HOUR_OF_DAY, 18);
-		week.tuesday().newPosition(washing, startTime.getTime(), endTime.getTime());
-		week.wednesday().newPosition(washing, startTime.getTime(), endTime.getTime());
-		week.thursday().newPosition(washing, startTime.getTime(), endTime.getTime());
-		week.friday().newPosition(washing, startTime.getTime(), endTime.getTime());
-		week.saturday().newPosition(washing, startTime.getTime(), endTime.getTime());
-		week.sunday().newPosition(washing, startTime.getTime(), endTime.getTime());
-		
+		try {
+			week.tuesday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
+			week.wednesday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
+			week.thursday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
+			week.friday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
+			week.saturday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
+			week.sunday().newPosition(kitchen, startTime.getTime(), endTime.getTime());
+			
+			startTime.set(Calendar.HOUR_OF_DAY, 8);
+			endTime.set(Calendar.HOUR_OF_DAY, 16);
+			week.tuesday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			week.wednesday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			week.thursday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			week.friday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			week.saturday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			week.sunday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			
+			startTime.set(Calendar.HOUR_OF_DAY, 12);
+			endTime.set(Calendar.HOUR_OF_DAY, 16);
+			week.tuesday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			week.wednesday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			week.thursday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			week.friday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			week.saturday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			week.sunday().newPosition(cafe, startTime.getTime(), endTime.getTime());
+			
+			startTime.set(Calendar.HOUR_OF_DAY, 14);
+			endTime.set(Calendar.HOUR_OF_DAY, 18);
+			week.tuesday().newPosition(washing, startTime.getTime(), endTime.getTime());
+			week.wednesday().newPosition(washing, startTime.getTime(), endTime.getTime());
+			week.thursday().newPosition(washing, startTime.getTime(), endTime.getTime());
+			week.friday().newPosition(washing, startTime.getTime(), endTime.getTime());
+			week.saturday().newPosition(washing, startTime.getTime(), endTime.getTime());
+			week.sunday().newPosition(washing, startTime.getTime(), endTime.getTime());
+
+		} catch (OutOfUidsException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+				
 		// prepare schedule
 		boolean success = true;
 		try {

@@ -5,17 +5,15 @@ import java.util.List;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.slf4j.LoggerFactory;
 
 import engine.Employee;
 import engine.EngineController;
 import engine.Skill;
+import engine.uid.OutOfUidsException;
 import play.*;
 import play.libs.Json;
 import play.mvc.*;
 import session.SessionManager;
-
-import views.html.*;
 
 public class Application extends Controller {
 
@@ -99,17 +97,23 @@ public class Application extends Controller {
 			// TODO: handle skills field.
 
 			if (success) {
-				Employee newEmployee = engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
-
-				// create the response
-				ObjectNode response = Json.newObject();
-				response.put("id", newEmployee.getId());
-				result = ok(response);
+				Employee newEmployee = null;
+				try {
+					newEmployee = engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
+					
+					// create the response
+					ObjectNode response = Json.newObject();
+					response.put("id", newEmployee.getId());
+					result = ok(response);
+				} catch (OutOfUidsException e) {
+					Logger.error("addEmployee(): Exception caught. Msg: " + e.getMessage());
+					result = internalServerError(createJsonErrorMessage(e.getMessage()));
+				}
 			}
 
 		} else {
-			Logger.error("Request is invalid");
-			result = badRequest(createJsonErrorMessage("Request is malformed"));
+			Logger.info("addEmployee(): Malformed Request: " + request().body().asText());
+			result = badRequest(createJsonErrorMessage("Malformed request!"));
 		}
 
 		Logger.debug("addEmployee(): END. Result = " + result.toString());
@@ -275,14 +279,18 @@ public class Application extends Controller {
 			}
 
 			if (success) {
-				Skill skill = engineController.getSkillDirectory().createNewSkill(name);
+				try {
+					Skill skill = engineController.getSkillDirectory().createNewSkill(name);
 
-				ObjectNode response = Json.newObject();
-				response.put("id", skill.getId());
+					ObjectNode response = Json.newObject();
+					response.put("id", skill.getId());
+					result = ok(response);
 
-				result = ok(response);
-//				result = badRequest("{\"errorMsg\" : \"This is a fake error message!\"}");
-			}
+				} catch (OutOfUidsException e) {
+					Logger.error("addSkill: Exception caught. Msg:" + e.getMessage());
+					result = internalServerError(createJsonErrorMessage(e.getMessage()));
+				}
+							}
 
 			// TODO: handle employees field.
 

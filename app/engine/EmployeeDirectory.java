@@ -4,59 +4,36 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import engine.uid.OutOfUidsException;
+
 /**
  * A directory that keeps track of all employees that has been created.
  * @author erasmat
  *
  */
 public class EmployeeDirectory implements Serializable {
-
-//	private static EmployeeDirectory instance = null;
 	
 	private static final long serialVersionUID = -6076501613861408850L;
 
-	private int nextEmployeeId;
+	private EngineController ec = null;
 	
 	private List<EmployeeImpl> allEmployees = null;
 	
-	// Singleton
-	public EmployeeDirectory() {
+	public EmployeeDirectory(EngineController ec) {
+		this.ec = ec;
 		allEmployees = new ArrayList<EmployeeImpl>();
-		nextEmployeeId = 1;
 	}
-	
-//	public static EmployeeDirectory getInstance() {
-//		if (instance == null) {
-//			instance = new EmployeeDirectory();
-//		}
-//		return instance;
-//	}
 	
 	/**
 	 * Creates a new employee, adds it to the directory and returns it to the caller.
 	 * @param name
 	 * @throws Exception
 	 */
-	public Employee createNewEmployee(String name, int minHoursPerDay, int maxHoursPerDay, int minHoursPerWeek, int maxHoursPerWeek) {
-		EmployeeImpl employee = new EmployeeImpl(name, nextEmployeeId, minHoursPerDay, maxHoursPerDay, minHoursPerWeek, maxHoursPerWeek);
+	public Employee createNewEmployee(String name, int minHoursPerDay, int maxHoursPerDay, int minHoursPerWeek, int maxHoursPerWeek) throws OutOfUidsException {
+		int uid = ec.getUidManager().generateEmployeeUid();
+		EmployeeImpl employee = new EmployeeImpl(name, uid, minHoursPerDay, maxHoursPerDay, minHoursPerWeek, maxHoursPerWeek);
 		allEmployees.add(employee);
-		nextEmployeeId++;
 		return employee;
-	}
-	
-	/**
-	 * Removes an employee by name if it exists. If not it silently returns.
-	 * @param name
-	 * @throws Exception
-	 */
-	public void removeEmployee(String name) {
-		Employee employee = null;
-		for (int i = 0; i < allEmployees.size(); i++) {
-			employee = allEmployees.get(i);
-			if (employee.getName().equals(name)) {
-				allEmployees.remove(employee);
-			}
-		}
 	}
 	
 	/**
@@ -64,36 +41,12 @@ public class EmployeeDirectory implements Serializable {
 	 * @param id
 	 * @throws Exception
 	 */
-	public void removeEmployee(int id) {
+	public Employee removeEmployee(int id) {
 		Employee employee = null;
 		for (int i = 0; i < allEmployees.size(); i++) {
 			employee = allEmployees.get(i);
 			if (employee.getId() == id) {
 				allEmployees.remove(employee);
-			}
-		}
-	}
-	
-	/**
-	 * Fetches an employee by id from the directory.
-	 * @param id
-	 * @return
-	 */
-	public Employee getById(int id) {
-		Employee employee = getEmployee(id);
-		return employee;
-	}
-	
-	/**
-	 * Fetches an employee by name from the directory.
-	 * @param name
-	 * @return
-	 */
-	public Employee getByName(String name) {
-		Employee employee = null;
-		for (int i = 0; i < allEmployees.size(); i++) {
-			if (allEmployees.get(i).getName().equals(name)) {
-				employee = allEmployees.get(i);
 			}
 		}
 		return employee;
@@ -118,10 +71,6 @@ public class EmployeeDirectory implements Serializable {
 		return employeeImpl;
 	}
 	
-	public int peekNextId() {
-		return nextEmployeeId;
-	}
-	
 	public int nEmployees() {
 		return allEmployees.size();
 	}
@@ -139,11 +88,10 @@ public class EmployeeDirectory implements Serializable {
 	// Returns all employees that does not have vacation for the day of the date.
 	// TODO: implement
 	public List<Employee> getAvailableEmployees(Date day) {
-		
 		return null;
 	}
 	
-	private Employee getEmployee(int id) {
+	public Employee getEmployee(int id) {
 		Employee employee = null;
 		for (int i = 0; i < allEmployees.size(); i++) {
 			employee = allEmployees.get(i);

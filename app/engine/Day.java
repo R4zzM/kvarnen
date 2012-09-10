@@ -6,12 +6,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import engine.uid.OutOfUidsException;
+
 import JaCoP.constraints.Alldifferent;
 import JaCoP.constraints.GCC;
 import JaCoP.constraints.Stretch;
 import JaCoP.constraints.XeqC;
 import JaCoP.constraints.XgtC;
 import JaCoP.core.IntVar;
+import JaCoP.core.IntervalDomain;
 import JaCoP.core.Store;
 
 /**
@@ -42,7 +45,7 @@ public class Day implements Serializable {
 	private List<Position> positions = null;
 
 	// Id that will be given to the next position that is created
-	private int nextPositionId;
+//	private int nextPositionId;
 
 	// The store.
 	private Store store = null;
@@ -54,16 +57,17 @@ public class Day implements Serializable {
 		this.ec = ec;
 		this.day = day;
 		this.positions = new ArrayList<Position>();
-		nextPositionId = 1;
+//		nextPositionId = 1;
 	}
 
 	/* (non-Javadoc)
 	 * @see Day#newPosition(Skill, java.util.Date, java.util.Date)
 	 */
-	public Position newPosition(Skill skill, Date startTime, Date endTime) {
-		Position position = new Position(skill, nextPositionId, startTime, endTime);
+	public Position newPosition(Skill skill, Date startTime, Date endTime) throws OutOfUidsException {
+		int uid = ec.getUidManager().generatePositionUid();
+		Position position = new Position(skill, uid, startTime, endTime);
 		positions.add(position);
-		nextPositionId++;
+//		nextPositionId++;
 		return position;
 	}
 
@@ -130,7 +134,8 @@ public class Day implements Serializable {
 		int max = 0;
 		for (int i = 0; i < populatedSchedule.length; i++) {
 			for (int j = 0; j < populatedSchedule[i].length; j++) {
-				populatedSchedule[i][j] = new IntVar(store, i + "," + j, min, max);
+				populatedSchedule[i][j] = new IntVar(store, i + "," + j);
+				populatedSchedule[i][j].setDomain(new IntervalDomain(min, max)); // must be done to handle large uids. Probably makes search slower though...
 				populatedScheduleVariables.add(populatedSchedule[i][j]);
 			}
 		}
@@ -190,7 +195,7 @@ public class Day implements Serializable {
 		for (int i = 0; i < populatedSchedule.length; i++) {
 			for (int j = 0; j < populatedSchedule[i].length; j++) {
 				if (templateSchedule[i][j] != 0) {
-					int[] employeesWithSkill = ec.getSkillDirectory().getEmployeeIdsForSkillId(templateSchedule[i][j]);
+					int[] employeesWithSkill = ec.getSkillDirectory().getAssociatedEmployees(templateSchedule[i][j]);
 					Arrays.sort(employeesWithSkill); // required by JaCoP addDom() method.
 					for (int k = 0;  k < employeesWithSkill.length; k++) {
 						populatedSchedule[i][j].addDom(employeesWithSkill[k], employeesWithSkill[k]); // The domain is the potential employees. 
