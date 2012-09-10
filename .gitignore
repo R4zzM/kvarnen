@@ -2,6 +2,8 @@ logs
 project/project
 project/target
 target
+tmp
+.settings
 .target
 .history
 .classpath
