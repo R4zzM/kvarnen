@@ -27,6 +27,7 @@
     <div class="container">
 
       <!-- Status area -->
+      <!--
       <div class="row">
         <div class="span12">
           <div class="alert alert-success" id="alertSuccess">
@@ -37,6 +38,7 @@
           </div>
         </div>
       </div>
+    -->
 
       <!-- Header -->
       <div class="page-header">
@@ -206,6 +208,13 @@
             </div>
           </form>
 
+          <div class="alert alert-success" id="alertSuccess">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+          </div>
+          <div class="alert alert-error" id="alertError">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+          </div>
+
         </div>
       </div>
     </div>
@@ -301,7 +310,6 @@
            $("li#role-" + id).remove();
          });
          hideAllForms();
-         showSuccessAlert("Rollen har tagits bort!");
        } else {
          var error = data;
          showErrorAlert("Borttagning kunde inte tas bort! Felmeddelande: " + error);
