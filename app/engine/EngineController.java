@@ -36,13 +36,13 @@ public class EngineController implements Serializable {
 	private String sessionId = null;
 	
 	private EmployeeDirectory employeeDirectory = null;
-	private SkillDirectory skillDirectory = null;
+	private RoleDirectory skillDirectory = null;
 	private UidManager uidManager = null;
 	
 	public EngineController() {
 		sessionId = generateSessionId();
 		employeeDirectory = new EmployeeDirectory(this);
-		skillDirectory = new SkillDirectory(this);
+		skillDirectory = new RoleDirectory(this);
 		uidManager = new UidManager();
 	}
 	
@@ -56,7 +56,7 @@ public class EngineController implements Serializable {
 		return employeeDirectory;
 	}
 	
-	public SkillDirectory getSkillDirectory() {
+	public RoleDirectory getSkillDirectory() {
 		return skillDirectory;
 	}
 	
@@ -81,34 +81,34 @@ public class EngineController implements Serializable {
 		Employee ida = null;
 		Employee hans = null;
 		
-		Skill kitchen = null;
-		Skill cafe = null;
-		Skill washing = null;
+		Role kitchen = null;
+		Role cafe = null;
+		Role washing = null;
 		try {
 			catharina = employeeDirectory.createNewEmployee("Catharina Johansson", 0, 12 ,0, 120);
 			julia = employeeDirectory.createNewEmployee("Julia Collinius", 1, 10, 0, 60);
 			ida = employeeDirectory.createNewEmployee("Ida Collinius", 1, 10, 0, 70);
 			hans = employeeDirectory.createNewEmployee("Hans Johansson", 0, 12, 0, 40);
 			
-			kitchen = skillDirectory.createNewSkill("Kitchen");
-			cafe = skillDirectory.createNewSkill("Cafe");
-			washing = skillDirectory.createNewSkill("Washing");
+			kitchen = skillDirectory.createNewRole("Kitchen");
+			cafe = skillDirectory.createNewRole("Cafe");
+			washing = skillDirectory.createNewRole("Washing");
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
 		
 		// skills to employees
-		julia.addSkill(cafe);
-		julia.addSkill(washing);
+		julia.addRole(cafe);
+		julia.addRole(washing);
 		
-		ida.addSkill(cafe);
-		ida.addSkill(washing);
+		ida.addRole(cafe);
+		ida.addRole(washing);
 		
-		catharina.addSkill(kitchen);
-		catharina.addSkill(cafe);
-		catharina.addSkill(washing);
+		catharina.addRole(kitchen);
+		catharina.addRole(cafe);
+		catharina.addRole(washing);
 		
-		hans.addSkill(washing);
+		hans.addRole(washing);
 		
 		// employees to skills
 		kitchen.addEmployee(catharina);

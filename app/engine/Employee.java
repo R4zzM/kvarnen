@@ -5,17 +5,17 @@ import java.util.List;
 
 public interface Employee extends Serializable {
 
-	public abstract int getId();
+	public abstract int getUid();
 
 	public abstract String getName();
 
 	public abstract void setName(String name);
 
-	public abstract List<Skill> getSkills();
+	public abstract List<Role> getRoles();
 
-	public abstract void addSkill(Skill skill);
+	public abstract void addRole(Role role);
 
-	public abstract boolean hasSkill(Skill skill);
+	public abstract boolean hasRole(Role role);
 	
 	public abstract int getMinHoursPerDay(); // If scheduled at all...
 	

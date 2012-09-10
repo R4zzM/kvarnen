@@ -8,7 +8,7 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import engine.Employee;
 import engine.EngineController;
-import engine.Skill;
+import engine.Role;
 import engine.uid.OutOfUidsException;
 import play.*;
 import play.libs.Json;
@@ -103,7 +103,7 @@ public class Application extends Controller {
 					
 					// create the response
 					ObjectNode response = Json.newObject();
-					response.put("id", newEmployee.getId());
+					response.put("id", newEmployee.getUid());
 					result = ok(response);
 				} catch (OutOfUidsException e) {
 					Logger.error("addEmployee(): Exception caught. Msg: " + e.getMessage());
@@ -280,10 +280,10 @@ public class Application extends Controller {
 
 			if (success) {
 				try {
-					Skill skill = engineController.getSkillDirectory().createNewSkill(name);
+					Role skill = engineController.getSkillDirectory().createNewRole(name);
 
 					ObjectNode response = Json.newObject();
-					response.put("id", skill.getId());
+					response.put("id", skill.getUid());
 					result = ok(response);
 
 				} catch (OutOfUidsException e) {
@@ -362,7 +362,7 @@ public class Application extends Controller {
 			}
 
 			if (success) {
-				engineController.getSkillDirectory().removeSkill(id); 
+				engineController.getSkillDirectory().removeRole(id); 
 				result = ok();
 			}
 
@@ -394,7 +394,7 @@ public class Application extends Controller {
 			int maxHoursDay = employeeList.get(i).getMaxHoursPerDay();
 			int minHoursWeek = employeeList.get(i).getMinHoursPerWeek();
 			int maxHoursWeek = employeeList.get(i).getMaxHoursPerWeek();
-			List<Skill> skills =  employeeList.get(i).getSkills();
+			List<Role> skills =  employeeList.get(i).getRoles();
 
 			// Create employeeInfo json structure
 			ObjectNode employeeInfo = Json.newObject();
@@ -428,7 +428,7 @@ public class Application extends Controller {
 		ObjectNode skills = Json.newObject();
 		ArrayNode skillInfoArray = Json.newObject().arrayNode();
 
-		List<Skill> skillList = engineController.getSkillDirectory().getAllSkills();
+		List<Role> skillList = engineController.getSkillDirectory().getAllRoles();
 		for (int i = 0; i < skillList.size(); i++) {
 
 			List<Employee> employeesWithSkill = skillList.get(i).getEmployees();

@@ -63,7 +63,7 @@ public class Day implements Serializable {
 	/* (non-Javadoc)
 	 * @see Day#newPosition(Skill, java.util.Date, java.util.Date)
 	 */
-	public Position newPosition(Skill skill, Date startTime, Date endTime) throws OutOfUidsException {
+	public Position newPosition(Role skill, Date startTime, Date endTime) throws OutOfUidsException {
 		int uid = ec.getUidManager().generatePositionUid();
 		Position position = new Position(skill, uid, startTime, endTime);
 		positions.add(position);
@@ -242,7 +242,7 @@ public class Day implements Serializable {
 				List<Employee> employees = ec.getEmployeeDirectory().getAllEmployees();
 				for (int j = 0; j < employees.size(); j++) {
 					Employee employee = employees.get(j);
-					int id = employee.getId();
+					int id = employee.getUid();
 					int minHoursPerDay = employee.getMinHoursPerDay();
 					int maxHoursPerDay = employee.getMaxHoursPerDay();
 					employeeIds[j + 1] = id;

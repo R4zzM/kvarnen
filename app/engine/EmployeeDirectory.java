@@ -45,14 +45,14 @@ public class EmployeeDirectory implements Serializable {
 		Employee employee = null;
 		for (int i = 0; i < allEmployees.size(); i++) {
 			employee = allEmployees.get(i);
-			if (employee.getId() == id) {
+			if (employee.getUid() == id) {
 				allEmployees.remove(employee);
 			}
 		}
 		return employee;
 	}
 	
-	public Employee addSkillToEmployee(Skill skill, Employee employee) throws Exception {
+	public Employee addRoleToEmployee(Role role, Employee employee) throws Exception {
 		
 		//Check that employee is still in directory
 		if (!allEmployees.contains(employee)) {
@@ -66,7 +66,7 @@ public class EmployeeDirectory implements Serializable {
 			}
 		}
 		
-		employeeImpl.addSkill(skill);
+		employeeImpl.addRole(role);
 		
 		return employeeImpl;
 	}
@@ -95,7 +95,7 @@ public class EmployeeDirectory implements Serializable {
 		Employee employee = null;
 		for (int i = 0; i < allEmployees.size(); i++) {
 			employee = allEmployees.get(i);
-			if (employee.getId() == id) {
+			if (employee.getUid() == id) {
 				break;
 			}
 		}
@@ -112,7 +112,7 @@ public class EmployeeDirectory implements Serializable {
 		private int maxHoursPerDay;
 		private int minHoursPerWeek;
 		private int maxHoursPerWeek;
-		private List<Skill> skills = null;
+		private List<Role> roles = null;
 		
 		public EmployeeImpl(String name, int id, int minHoursPerDay, int maxHoursPerDay, int minHoursPerWeek, int maxHoursPerWeek) {
 			this.name = name;
@@ -121,11 +121,11 @@ public class EmployeeDirectory implements Serializable {
 			this.maxHoursPerDay = maxHoursPerDay;
 			this.minHoursPerWeek = minHoursPerWeek;
 			this.maxHoursPerWeek = maxHoursPerWeek;
-			skills = new ArrayList<Skill>();
+			roles = new ArrayList<Role>();
 		}
 
 		@Override
-		public int getId() {
+		public int getUid() {
 			return id;
 		}
 
@@ -140,22 +140,18 @@ public class EmployeeDirectory implements Serializable {
 		}
 
 		@Override
-		public List<Skill> getSkills() {
-			return skills;
+		public List<Role> getRoles() {
+			return roles;
 		}
 		
 		@Override
-		public boolean hasSkill(Skill skill) {
-			return skills.contains(skill);
+		public boolean hasRole(Role role) {
+			return roles.contains(role);
 		}
 		
-		public void setId (int id) {
-			this.id = id;
-		}
-		
-		public void addSkill(Skill skill) {
-			if (!skills.contains(skill)) {
-				skills.add(skill);
+		public void addRole(Role role) {
+			if (!roles.contains(role)) {
+				roles.add(role);
 			}
 		}
 		
@@ -173,10 +169,10 @@ public class EmployeeDirectory implements Serializable {
 		public String toString() {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Name: " + name + "(" + id + ") --- Skills: ");
-			for (int i = 0; i < skills.size(); i++) {
-				sb.append(skills.get(i).getName());
-				sb.append("(" + skills.get(i).getId() + ")");
-				if (i < skills.size() - 1) {
+			for (int i = 0; i < roles.size(); i++) {
+				sb.append(roles.get(i).getName());
+				sb.append("(" + roles.get(i).getUid() + ")");
+				if (i < roles.size() - 1) {
 					sb.append(", ");
 				}
 			}

@@ -8,15 +8,15 @@ public class Position implements Serializable {
 
 	private static final long serialVersionUID = -7774061094243002475L;
 	
-	private Skill skill = null;
+	private Role role = null;
 	private Date start = null;
 	private Date end = null;
 	private Employee assignedEmployee = null;
-	private int id;
+	private int uid;
 	
-	public Position (Skill skill, int id, Date start, Date end) {
-		this.skill = skill;
-		this.id = id;
+	public Position (Role role, int uid, Date start, Date end) {
+		this.role = role;
+		this.uid = uid;
 		this.start = start;
 		this.end = end;
 	}
@@ -37,12 +37,12 @@ public class Position implements Serializable {
 		this.end = end;
 	}
 	
-	public Skill getSkill() {
-		return skill;
+	public Role getRole() {
+		return role;
 	}
 
-	public void setSkill(Skill skill) {
-		this.skill = skill;
+	public void setRole(Role role) {
+		this.role = role;
 	}
 	
 	public int getDurationInHours() {
@@ -64,7 +64,7 @@ public class Position implements Serializable {
 	}
 	
 	public int getId() {
-		return id;
+		return uid;
 	}
 
 }
