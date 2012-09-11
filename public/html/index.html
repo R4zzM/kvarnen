@@ -219,22 +219,23 @@
     function addEmployee() {
 
       // Parse the DOM
-      var name = $("input#employeeNameInput").val();
-      var minHoursWeek = $("select#minHoursPerWeek").val();
-      var maxHoursWeek = $("select#maxHoursPerWeek").val();
-      var minHoursDay = $("select#minHoursPerDay").val();
-      var maxHoursDay = $("select#maxHoursPerDay").val();
-
-      var employeeObject = {"name" : name, "minHoursWeek" : minHoursWeek, "maxHoursWeek" : maxHoursWeek, "minHoursDay" : minHoursDay, "maxHoursDay" : maxHoursDay, "roles" : []};
+      var employeeObject = 
+      {
+        "name" : $("input#employeeNameInput").val(), 
+        "minHoursWeek" : $("select#minHoursPerWeek").val(), 
+        "maxHoursWeek" : $("select#maxHoursPerWeek").val(), 
+        "minHoursDay" : $("select#minHoursPerDay").val(), 
+        "maxHoursDay" : $("select#maxHoursPerDay").val() 
+      };
 
       client.addEmployee(employeeObject, function (success, data) {
 
         if (success) {
-          var id = data;
+          var addedEmployee = data;
           // TODO: Maybe there should be a function for this.
-          $("<li id=\"employee-" + id + "\"><a href=\"#\" onClick=\"showEmployeeUpdateForm(" + id + ")\">" + name + "</a></li>").insertAfter("li#employees");
-          $("li#employee-" + id).hide();
-          $("li#employee-" + id).fadeIn("slow");
+          $("<li id=\"" + addedEmployee.uid + "\"><a href=\"#\" onClick=\"showEmployeeUpdateForm(" + addedEmployee.uid + ")\">" + addedEmployee.name + "</a></li>").insertAfter("li#employees");
+          $("li#" + addedEmployee.uid).hide();
+          $("li#" + addedEmployee.uid).fadeIn("slow");
         } else {
           var error = data;
           showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + error);
@@ -244,16 +245,18 @@
 
     function removeEmployee() {
 
-      // Fetch the employee id 
-      var id = $("input#employeeId").val();
-      var requestData = {"id" : id};
+      // Parse the DOM to fetch the employee id 
+      var requestData = 
+      {
+        "id" : $("input#employeeId").val()
+      };
 
       client.removeEmployee(requestData, function (success, data) {
 
         if (success) {
-          var id = data;
-          $("li#employee-" + id).fadeOut("slow", function () {
-            $("li#employee-" + id).remove();
+          var uid = data;
+          $("li#" + uid).fadeOut("slow", function () {
+            $("li#" + uid).remove();
           });
           hideAllForms();
         } else {
@@ -266,16 +269,18 @@
     function addRole() {
 
       // Parse the DOM
-      var roleName = $("input#roleFormNameInput").val();
-      var roleObject = {"name" : roleName};
+      var roleObject = 
+      {
+        "name" : $("input#roleFormNameInput").val()
+      };
 
       client.addRole(roleObject, function (success, data) {
 
         if (success) {
           var id = data;
-          $("<li id=\"role-" + id + "\"><a href=\"#\" onClick=\"showRoleUpdateForm(" + id + ")\">" + roleName + "</a></li>").insertAfter("li#roles");
-          $("li#role-" + id).hide();
-          $("li#role-" + id).fadeIn("slow");
+          $("<li id=\"" + id + "\"><a href=\"#\" onClick=\"showRoleUpdateForm(" + id + ")\">" + roleObject.name + "</a></li>").insertAfter("li#roles");
+          $("li#" + id).hide();
+          $("li#" + id).fadeIn("slow");
         } else {
           var error = data;
           showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + error);
@@ -286,14 +291,16 @@
 
     function removeRole(id) {
 
-      var id = $("input#roleId").val();
-      var requestData = {"id" : id};
+      var requestData = 
+      {
+        "id" : $("input#roleId").val()
+      };
 
       client.removeRole(requestData, function (success, data) {
 
         if (success) {
-         $("li#role-" + id).fadeOut("slow", function () {
-           $("li#role-" + id).remove();
+         $("li#" + requestData.id).fadeOut("slow", function () {
+           $("li#" + requestData.id).remove();
          });
          hideAllForms();
        } else {

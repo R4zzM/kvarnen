@@ -28,9 +28,9 @@ var Client = function () {
     httpRequest.send(null); 
   };
 
-  this.getEmployee = function(id) {
+  this.getEmployee = function(uid) {
     for each (var employee in employees) {
-      if(employee.id === id) {
+      if(employee.uid === uid) {
         return employee;
       }
     }
@@ -47,11 +47,11 @@ var Client = function () {
       if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200) {
 
-          employeeObject.id = getIdFromJsonBody(httpRequest.responseText);
+          employeeObject.uid = getIdFromJsonBody(httpRequest.responseText);
 
           // Add to list of all contacts 
           employees.push(employeeObject);
-          responseHandler(true, employeeObject.id);
+          responseHandler(true, employeeObject);
         } else {
           var errorMsg = getErrorMessage(httpRequest.responseText);
           responseHandler(false, errorMsg);
@@ -78,7 +78,7 @@ var Client = function () {
 
          // Remove role from list
          for (var i = 0; i < employees.length; i++) {
-           if(employees[i].id === requestData.id) {
+           if(employees[i].uid === requestData.id) {
              employees.splice(i,i);
            }
          }
