@@ -173,10 +173,8 @@
             </div>
 
             <div class="control-group">
-              <div class="controls">
-                <label class="checkbox">Rasmus Mattsson<input type="checkbox" id="inlineCheckbox1" value="option1"></label>
-                <label class="checkbox">Palle Kuling<input type="checkbox" id="inlineCheckbox2" value="option2"></label>
-                <label class="checkbox">Berit<input type="checkbox" id="inlineCheckbox3" value="option3"></label>
+              <div class="controls" id="employeesWithRole">
+                <!-- Employees that has skill here. Added dynamically-->
               </div>
             </div>
 
@@ -268,12 +266,26 @@
 
     function addRole() {
 
-      // Parse the DOM
+      // get all the employees that has the role (= checkbox is checked)
+      var employeeUids = [];
+      $("input.employeeWithRole").each(function (idx, checkboxObject) {
+        if (checkboxObject.checked) {
+          console.log("checked");
+          employeeUids.push(checkboxObject.uid);
+        } else {
+          console.log("not checked");
+        }
+      });
+
+      // create request structure
       var roleObject = 
       {
-        "name" : $("input#roleFormNameInput").val()
+        "name" : $("input#roleFormNameInput").val(),
+        "employeeUids" : employeeUids
       };
+      // TODO: Continue here!!
 
+      // add the role
       client.addRole(roleObject, function (success, data) {
 
         if (success) {
@@ -281,6 +293,7 @@
           $("<li id=\"" + uid + "\"><a href=\"#\" onClick=\"showRoleUpdateForm(" + uid + ")\">" + roleObject.name + "</a></li>").insertAfter("li#roles");
           $("li#" + uid).hide();
           $("li#" + uid).fadeIn("slow");
+          console.log(roleObject.employeeUids);
         } else {
           var error = data;
           showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + error);
@@ -312,8 +325,17 @@
     }
 
     function showRoleAddForm() {
+      
       hideAllForms();
+
       $("input#roleFormNameInput").val("");
+      $("div#employeesWithRole").empty();
+
+      var employees = client.getEmployees();
+      $.each(employees, function (idx, employee) {
+        $("div#employeesWithRole").append("<label class=\"checkbox\">" + employee.name + "<input class=\"employeeWithRole\" type=\"checkbox\" id=\"" + employee.uid + "\"></label>");
+      });
+
       $("form#addRoleForm").show();
       $("div#addRoleButton").show();
       $("div#updateRoleButton").hide();
@@ -325,6 +347,23 @@
       // Set the form values
       $("input#roleId").val(uid);
       $("input#roleFormNameInput").val(client.getRole(uid).name);
+      $("div#employeesWithRole").empty();
+console.log("before!");
+      // add the employee with role checkbuttons and set checked state
+      var employees = client.getEmployees();
+      $.each(employees, function (idx, employee) {
+
+        var roleObject = client.getRole(uid);
+        console.log(roleObject.employeeUids);
+        if ($.inArray(employee.uid, roleObject.employeeUids) >= 0) {
+          console.log("yes!");
+          $("div#employeesWithRole").append("<label class=\"checkbox\">" + employee.name + "<input class=\"employeeWithRole\" type=\"checkbox\" checked=\"on\" id=\"" + employee.uid + "\"></label>"); 
+        } else {
+          console.log("no!");
+          $("div#employeesWithRole").append("<label class=\"checkbox\">" + employee.name + "<input class=\"employeeWithRole\" type=\"checkbox\" id=\"" + employee.uid + "\"></label>");  
+        }
+        
+      });
 
       // Show / Hide part of forms 
       $("form#addRoleForm").show();
@@ -334,6 +373,7 @@
 
     function showEmployeeAddForm() {
       hideAllForms();
+        
       $("input#employeeNameInput").val("");
       $("form#addEmployeeForm").show();
       $("div#addEmployeeButton").show();

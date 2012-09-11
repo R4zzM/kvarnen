@@ -37,6 +37,10 @@ var Client = function () {
     return null;
   };
 
+  this.getEmployees = function() {
+    return employees;
+  };
+
   this.addEmployee = function(employeeObject, responseHandler) {
 
     var httpRequest = XMLHttpRequest();
@@ -78,7 +82,7 @@ var Client = function () {
 
          // Remove role from list
          for (var i = 0; i < employees.length; i++) {
-           if(employees[i].uid === requestData.id) {
+           if(employees[i].uid === requestData.uid) {
              employees.splice(i,i);
            }
          }
