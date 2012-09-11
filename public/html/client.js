@@ -83,7 +83,7 @@ var Client = function () {
            }
          }
          
-         responseHandler(true, requestData.id);
+         responseHandler(true, requestData.uid);
        } else {
          var errorMsg = getErrorMessage(httpRequest.responseText);
          responseHandler(false, errorMsg);
@@ -96,9 +96,9 @@ var Client = function () {
    httpRequest.send(JSON.stringify(requestData));
   };
 
-  this.getRole = function(id) {
+  this.getRole = function(uid) {
     for each (var role in roles) {
-      if(role.id === id) {
+      if(role.uid === uid) {
         return role;
       }
     }
@@ -114,11 +114,11 @@ var Client = function () {
       if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200) {
 
-          roleObject.id = getIdFromJsonBody(httpRequest.responseText);
+          roleObject.uid = getIdFromJsonBody(httpRequest.responseText);
 
           // Add to list of all contacts
           roles.push(roleObject);
-          responseHandler(true, roleObject.id);
+          responseHandler(true, roleObject.uid);
         } else { // Non 200-reponse
           var errorMsg = getErrorMessage(httpRequest.responseText);
           responseHandler(false, errorMsg);
@@ -146,12 +146,12 @@ var Client = function () {
 
          // Remove role from list
          for (var i = 0; i < roles.length; i++) {
-           if(roles[i].id === roleObject.id) {
+           if(roles[i].uid === roleObject.uid) {
              roles.splice(i,i);
            }
          }
 
-         responseHandler(true, roleObject.id);
+         responseHandler(true, roleObject.uid);
        } else {
          var errorMsg = getErrorMessage(httpRequest.responseText);
          responseHandler(false, errorMsg);
@@ -179,14 +179,14 @@ var Client = function () {
 
   var getIdFromJsonBody = function(jsonData) {
 
-    // parse the response to get the id
-    var id;
+    // parse the response to get the uid
+    var uid;
     JSON.parse(jsonData, function (key, value) {
-       if (key === "id") {
-        id = value;
+       if (key === "uid") {
+        uid = value;
       }
     });
-    return id;
+    return uid;
  };
 
 };

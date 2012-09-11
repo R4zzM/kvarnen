@@ -103,7 +103,7 @@ public class Application extends Controller {
 					
 					// create the response
 					ObjectNode response = Json.newObject();
-					response.put("id", newEmployee.getUid());
+					response.put("uid", newEmployee.getUid());
 					result = ok(response);
 				} catch (OutOfUidsException e) {
 					Logger.error("addEmployee(): Exception caught. Msg: " + e.getMessage());
@@ -125,7 +125,7 @@ public class Application extends Controller {
 	public static Result removeEmployee() {
 		
 		// format
-		// {"id" : <id>}
+		// {"uid" : <uid>}
 
 		Logger.debug("removeEmployee: START");
 
@@ -135,16 +135,16 @@ public class Application extends Controller {
 
 			boolean success = true;
 
-			int id = json.path("id").asInt(-1);
-			Logger.debug("id = " + id);
-			if (id == -1) {
+			int uid = json.path("uid").asInt(-1);
+			Logger.debug("uid = " + uid);
+			if (uid == -1) {
 				success = false;
-				Logger.debug("removeEmployee: Parameter error: id. Value: " + id);
-				result = badRequest(createJsonErrorMessage("Parameter error: id. Value: " + id));
+				Logger.debug("removeEmployee: Parameter error: uid. Value: " + uid);
+				result = badRequest(createJsonErrorMessage("Parameter error: id. Value: " + uid));
 			}
 
 			if (success) {
-				engineController.getEmployeeDirectory().removeEmployee(id); 
+				engineController.getEmployeeDirectory().removeEmployee(uid); 
 				result = ok();
 			}
 
@@ -283,7 +283,7 @@ public class Application extends Controller {
 					Role skill = engineController.getSkillDirectory().createNewRole(name);
 
 					ObjectNode response = Json.newObject();
-					response.put("id", skill.getUid());
+					response.put("uid", skill.getUid());
 					result = ok(response);
 
 				} catch (OutOfUidsException e) {
@@ -343,7 +343,7 @@ public class Application extends Controller {
 	public static Result removeSkill() {
 
 		// format
-		// {"id" : <id>}
+		// {"uid" : <uid>}
 
 		Logger.debug("removeSkill: START");
 
@@ -353,16 +353,16 @@ public class Application extends Controller {
 
 			boolean success = true;
 
-			int id = json.path("id").asInt(-1);
-			Logger.debug("id = " + id);
-			if (id == -1) {
+			int uid = json.path("uid").asInt(-1);
+			Logger.debug("uid = " + uid);
+			if (uid == -1) {
 				success = false;
-				Logger.debug("removeSkill: Parameter error: id. Value: " + id);
-				result = badRequest(createJsonErrorMessage("Parameter error: id. Value: " + id));
+				Logger.debug("removeSkill: Parameter error: id. Value: " + uid);
+				result = badRequest(createJsonErrorMessage("Parameter error: id. Value: " + uid));
 			}
 
 			if (success) {
-				engineController.getSkillDirectory().removeRole(id); 
+				engineController.getSkillDirectory().removeRole(uid); 
 				result = ok();
 			}
 

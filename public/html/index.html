@@ -248,7 +248,7 @@
       // Parse the DOM to fetch the employee id 
       var requestData = 
       {
-        "id" : $("input#employeeId").val()
+        "uid" : $("input#employeeId").val()
       };
 
       client.removeEmployee(requestData, function (success, data) {
@@ -277,10 +277,10 @@
       client.addRole(roleObject, function (success, data) {
 
         if (success) {
-          var id = data;
-          $("<li id=\"" + id + "\"><a href=\"#\" onClick=\"showRoleUpdateForm(" + id + ")\">" + roleObject.name + "</a></li>").insertAfter("li#roles");
-          $("li#" + id).hide();
-          $("li#" + id).fadeIn("slow");
+          var uid = data;
+          $("<li id=\"" + uid + "\"><a href=\"#\" onClick=\"showRoleUpdateForm(" + uid + ")\">" + roleObject.name + "</a></li>").insertAfter("li#roles");
+          $("li#" + uid).hide();
+          $("li#" + uid).fadeIn("slow");
         } else {
           var error = data;
           showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + error);
@@ -289,18 +289,18 @@
       });
     }
 
-    function removeRole(id) {
+    function removeRole(uid) {
 
       var requestData = 
       {
-        "id" : $("input#roleId").val()
+        "uid" : $("input#roleId").val()
       };
 
       client.removeRole(requestData, function (success, data) {
 
         if (success) {
-         $("li#" + requestData.id).fadeOut("slow", function () {
-           $("li#" + requestData.id).remove();
+         $("li#" + requestData.uid).fadeOut("slow", function () {
+           $("li#" + requestData.uid).remove();
          });
          hideAllForms();
        } else {
@@ -319,12 +319,12 @@
       $("div#updateRoleButton").hide();
     }
 
-    function showRoleUpdateForm(id) {
+    function showRoleUpdateForm(uid) {
       hideAllForms();
 
       // Set the form values
-      $("input#roleId").val(id);
-      $("input#roleFormNameInput").val(client.getRole(id).name);
+      $("input#roleId").val(uid);
+      $("input#roleFormNameInput").val(client.getRole(uid).name);
 
       // Show / Hide part of forms 
       $("form#addRoleForm").show();
@@ -340,12 +340,12 @@
       $("div#updateEmployeeButton").hide();
     }
 
-    function showEmployeeUpdateForm(id) {
+    function showEmployeeUpdateForm(uid) {
       hideAllForms();
 
       // Set the form values
-      $("input#employeeId").val(id);
-      $("input#employeeNameInput").val(client.getEmployee(id).name);
+      $("input#employeeId").val(uid);
+      $("input#employeeNameInput").val(client.getEmployee(uid).name);
 
       // Show / Hide part of forms 
       $("form#addEmployeeForm").show();
