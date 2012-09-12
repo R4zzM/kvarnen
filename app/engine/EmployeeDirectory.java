@@ -52,24 +52,24 @@ public class EmployeeDirectory implements Serializable {
 		return employee;
 	}
 	
-	public Employee addRoleToEmployee(Role role, Employee employee) throws Exception {
-		
-		//Check that employee is still in directory
-		if (!allEmployees.contains(employee)) {
-			throw new Exception("Exception in addSkillToEmployee: no such employee exist in directory");
-		}
-		
-		EmployeeImpl employeeImpl = null;
-		for (int i = 0; i < allEmployees.size(); i++) {
-			if (allEmployees.get(i).equals(employee)) {
-				employeeImpl = allEmployees.get(i);
-			}
-		}
-		
-		employeeImpl.addRole(role);
-		
-		return employeeImpl;
-	}
+//	public Employee addRoleToEmployee(Role role, Employee employee) throws Exception {
+//		
+//		//Check that employee is still in directory
+//		if (!allEmployees.contains(employee)) {
+//			throw new Exception("Exception in addSkillToEmployee: no such employee exist in directory");
+//		}
+//		
+//		EmployeeImpl employeeImpl = null;
+//		for (int i = 0; i < allEmployees.size(); i++) {
+//			if (allEmployees.get(i).equals(employee)) {
+//				employeeImpl = allEmployees.get(i);
+//			}
+//		}
+//		
+//		employeeImpl.addRole(role);
+//		
+//		return employeeImpl;
+//	}
 	
 	public int nEmployees() {
 		return allEmployees.size();
