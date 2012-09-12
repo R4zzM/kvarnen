@@ -130,7 +130,7 @@ var Client = function () {
       }
     };
 
-    httpRequest.open('POST', 'http://localhost:9000/addskill', true);
+    httpRequest.open('POST', 'http://localhost:9000/addrole', true);
     httpRequest.setRequestHeader('Content-Type', 'application/json');
     httpRequest.send(JSON.stringify(roleObject));
   };
@@ -163,7 +163,7 @@ var Client = function () {
      }
    }
 
-   httpRequest.open('POST', 'http://localhost:9000/removeskill', true);
+   httpRequest.open('POST', 'http://localhost:9000/removerole', true);
    httpRequest.setRequestHeader('Content-Type', 'application/json');
    httpRequest.send(JSON.stringify(roleObject));
  };

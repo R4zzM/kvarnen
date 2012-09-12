@@ -7,11 +7,11 @@
 GET   /                             controllers.Assets.at(path="/public/html", file="index.html")
 GET   /init                         controllers.Application.init()
 GET   /employees                    controllers.Application.getEmployees()
-GET   /skills                       controllers.Application.getSkills()
+GET   /roles                       controllers.Application.getSkills()
 POST  /addemployee                  controllers.Application.addEmployee()
 POST  /removeemployee               controllers.Application.removeEmployee()
-POST  /addskill                  	controllers.Application.addSkill()
-POST  /removeskill                  controllers.Application.removeSkill()
+POST  /addrole                  	controllers.Application.addRole()
+POST  /removerole                  controllers.Application.removeSkill()
 GET     /*file               	    controllers.Assets.at(path="/public/html", file)
 
 

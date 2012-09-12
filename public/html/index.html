@@ -349,14 +349,10 @@
       $.each(employees, function (idx, employee) {
 
         var roleObject = client.getRole(uid);
-        console.log(roleObject.employeeUids);
-        console.log("\"" + employee.uid + "\"");
-        console.log($.inArray(new Number(employee.uid).toString(), roleObject.employeeUids));
-        if ($.inArray(new Number(employee.uid).toString(), roleObject.employeeUids) >= 0) {
-          console.log("yes!");
+        var employeeUidAsString = new Number(employee.uid).toString(); 
+        if ($.inArray(employeeUidAsString, roleObject.employeeUids) >= 0) {
           $("div#employeesWithRole").append("<label class=\"checkbox\">" + employee.name + "<input class=\"employeeWithRole\" type=\"checkbox\" checked=\"on\" id=\"" + employee.uid + "\"></label>"); 
         } else {
-          console.log("no!");
           $("div#employeesWithRole").append("<label class=\"checkbox\">" + employee.name + "<input class=\"employeeWithRole\" type=\"checkbox\" id=\"" + employee.uid + "\"></label>");  
         }
         

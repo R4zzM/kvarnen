@@ -18,9 +18,9 @@ public class RoleDirectory implements Serializable {
 		allRoles = new ArrayList<RoleImpl>();
 	}
 
-	public Role createNewRole(String name) throws OutOfUidsException {
+	public Role createNewRole(String name, List<Employee> employees) throws OutOfUidsException {
 		int uid = ec.getUidManager().generateRoleUid();
-		RoleImpl role = new RoleImpl(name, uid);
+		RoleImpl role = new RoleImpl(name, uid, employees);
 		allRoles.add(role);
 		return (Role)role;
 	}
@@ -106,9 +106,13 @@ public class RoleDirectory implements Serializable {
 		private List<Employee> employees = null;
 
 		public RoleImpl(String name, int uid) {
+			this(name, uid, new ArrayList<Employee>());
+		}
+		
+		public RoleImpl(String name, int uid, List<Employee> employees) {
 			this.uid = uid;
 			this.name = name;
-			this.employees = new ArrayList<Employee>();
+			this.employees = employees;
 		}
 
 		@Override

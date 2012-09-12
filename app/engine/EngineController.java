@@ -90,9 +90,9 @@ public class EngineController implements Serializable {
 			ida = employeeDirectory.createNewEmployee("Ida Collinius", 1, 10, 0, 70);
 			hans = employeeDirectory.createNewEmployee("Hans Johansson", 0, 12, 0, 40);
 			
-			kitchen = skillDirectory.createNewRole("Kitchen");
-			cafe = skillDirectory.createNewRole("Cafe");
-			washing = skillDirectory.createNewRole("Washing");
+			kitchen = skillDirectory.createNewRole("Kitchen", new ArrayList<Employee>());
+			cafe = skillDirectory.createNewRole("Cafe", new ArrayList<Employee>());
+			washing = skillDirectory.createNewRole("Washing", new ArrayList<Employee>());
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}

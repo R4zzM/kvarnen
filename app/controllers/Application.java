@@ -1,10 +1,13 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.node.TextNode;
 
 import engine.Employee;
 import engine.EngineController;
@@ -100,7 +103,7 @@ public class Application extends Controller {
 				Employee newEmployee = null;
 				try {
 					newEmployee = engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
-					
+
 					// create the response
 					ObjectNode response = Json.newObject();
 					response.put("uid", newEmployee.getUid());
@@ -120,10 +123,10 @@ public class Application extends Controller {
 
 		return result;
 	}
-	
+
 	// TODO: Serious!! This is the same code as in removeSkill. The architecture should probably be rethought...
 	public static Result removeEmployee() {
-		
+
 		// format
 		// {"uid" : <uid>}
 
@@ -156,7 +159,7 @@ public class Application extends Controller {
 		Logger.debug("removeEmployee: END. Result = " + result.toString());
 
 		return result;
-		
+
 	}
 
 	//	public static Result updateEmployee() {
@@ -257,13 +260,13 @@ public class Application extends Controller {
 		return result;
 	}
 
-	public static Result addSkill() {
+	public static Result addRole() {
 
 		// format
 		// {"addskill" : <skillInfo>}
 		// skillInfo: {"name" : <value>, "employees" : [<employee1>, <employee2>, ... <employeeN>]}
 
-		Logger.debug("addSkill: START");
+		Logger.debug("addRole: START");
 
 		Result result = null;
 		JsonNode json = request().body().asJson();
@@ -271,28 +274,44 @@ public class Application extends Controller {
 
 			boolean success = true;
 
-			String name = json.path("name").asText();
-			Logger.debug("name = " + name);
-			if (name == null || name.equals("")) {
+			List<Employee> employeesWithRole = null;
+			String roleName = json.path("name").asText();
+			Logger.debug("addRole: name = " + roleName);
+			if (roleName == null || roleName.equals("")) {
 				success = false;
-				result = badRequest(createJsonErrorMessage("Parameter error: name. Value: " + name));
+				result = badRequest(createJsonErrorMessage("Parameter error: name. Value: " + roleName));
+			} else {
+				Iterator<JsonNode> iterator = json.path("employeeUids").getElements();
+				employeesWithRole = new ArrayList<Employee>();
+				if (iterator != null) {
+					int employeeUid = 0;
+					Employee employee = null;
+					while (iterator.hasNext()) {
+						JsonNode node = iterator.next();
+						employeeUid = Integer.parseInt(node.getTextValue()); // I don't understand this json implementation... :/ 
+						employee = engineController.getEmployeeDirectory().getEmployee(employeeUid);
+						employeesWithRole.add(employee);
+						Logger.debug("addRole: Associated role " + roleName + " with employee " + employee.getName());
+					}
+				} else {
+					success = false;
+					Logger.debug("Malformed request. employeeUid iterator was null");
+					result = badRequest(createJsonErrorMessage("Malformed request. employeeUid iterator was null"));
+				}
 			}
 
 			if (success) {
 				try {
-					Role skill = engineController.getSkillDirectory().createNewRole(name);
-
+					Role role = engineController.getSkillDirectory().createNewRole(roleName, employeesWithRole);
 					ObjectNode response = Json.newObject();
-					response.put("uid", skill.getUid());
+					response.put("uid", role.getUid());
 					result = ok(response);
 
 				} catch (OutOfUidsException e) {
-					Logger.error("addSkill: Exception caught. Msg:" + e.getMessage());
+					Logger.error("addRole: Exception caught. Msg:" + e.getMessage());
 					result = internalServerError(createJsonErrorMessage(e.getMessage()));
 				}
-							}
-
-			// TODO: handle employees field.
+			}
 
 		} else {
 			result = badRequest(createJsonErrorMessage("Request is malformed"));
@@ -452,10 +471,10 @@ public class Application extends Controller {
 
 		return skills;
 	}
-	
+
 	// Simple method to packet an error message as JSON.
 	private static String createJsonErrorMessage(String errorMsg) {
-		
+
 		String errorMessage = "{\"errorMsg\" : \"" + errorMsg + "\"}";
 		return errorMessage;
 	}
