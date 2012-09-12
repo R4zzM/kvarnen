@@ -270,11 +270,8 @@
       var employeeUids = [];
       $("input.employeeWithRole").each(function (idx, checkboxObject) {
         if (checkboxObject.checked) {
-          console.log("checked");
-          employeeUids.push(checkboxObject.uid);
-        } else {
-          console.log("not checked");
-        }
+          employeeUids.push(checkboxObject.id);
+        } 
       });
 
       // create request structure
@@ -283,7 +280,6 @@
         "name" : $("input#roleFormNameInput").val(),
         "employeeUids" : employeeUids
       };
-      // TODO: Continue here!!
 
       // add the role
       client.addRole(roleObject, function (success, data) {
@@ -293,7 +289,6 @@
           $("<li id=\"" + uid + "\"><a href=\"#\" onClick=\"showRoleUpdateForm(" + uid + ")\">" + roleObject.name + "</a></li>").insertAfter("li#roles");
           $("li#" + uid).hide();
           $("li#" + uid).fadeIn("slow");
-          console.log(roleObject.employeeUids);
         } else {
           var error = data;
           showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + error);
@@ -348,14 +343,16 @@
       $("input#roleId").val(uid);
       $("input#roleFormNameInput").val(client.getRole(uid).name);
       $("div#employeesWithRole").empty();
-console.log("before!");
+
       // add the employee with role checkbuttons and set checked state
       var employees = client.getEmployees();
       $.each(employees, function (idx, employee) {
 
         var roleObject = client.getRole(uid);
         console.log(roleObject.employeeUids);
-        if ($.inArray(employee.uid, roleObject.employeeUids) >= 0) {
+        console.log("\"" + employee.uid + "\"");
+        console.log($.inArray(new Number(employee.uid).toString(), roleObject.employeeUids));
+        if ($.inArray(new Number(employee.uid).toString(), roleObject.employeeUids) >= 0) {
           console.log("yes!");
           $("div#employeesWithRole").append("<label class=\"checkbox\">" + employee.name + "<input class=\"employeeWithRole\" type=\"checkbox\" checked=\"on\" id=\"" + employee.uid + "\"></label>"); 
         } else {
