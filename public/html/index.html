@@ -414,6 +414,11 @@
       hideAllForms();
         
       $("input#employeeNameInput").val("");
+      $("select#minHoursPerDay").val(0);
+      $("select#maxHoursPerDay").val(0);
+      $("select#minHoursPerWeek").val(0);
+      $("select#maxHoursPerWeek").val(0);
+
       $("form#addEmployeeForm").show();
       $("div#addEmployeeButton").show();
       $("div#updateEmployeeButton").hide();
@@ -425,6 +430,10 @@
       // Set the form values
       $("input#employeeUid").val(uid);
       $("input#employeeNameInput").val(client.getEmployee(uid).name);
+      $("select#minHoursPerDay").val(client.getEmployee(uid).minHoursDay);
+      $("select#maxHoursPerDay").val(client.getEmployee(uid).maxHoursDay);
+      $("select#minHoursPerWeek").val(client.getEmployee(uid).minHoursWeek);
+      $("select#maxHoursPerWeek").val(client.getEmployee(uid).maxHoursWeek);
 
       // Show / Hide part of forms 
       $("form#addEmployeeForm").show();
