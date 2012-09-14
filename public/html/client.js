@@ -191,7 +191,7 @@ var Client = function () {
   // Remove role from list
  for (var i = 0; i < employees.length; i++) {
     if(employees[i].uid == uid) {
-      employees.splice(i,i + 1);
+      employees.splice(i,1);
     }
   }         
   }  
