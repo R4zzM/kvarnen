@@ -10,7 +10,10 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
 import engine.Employee;
+import engine.EmployeeDirectory;
 import engine.EngineController;
+import engine.RoleDirectory;
+import engine.UidNotFoundException;
 import engine.Role;
 import engine.uid.OutOfUidsException;
 import play.*;
@@ -19,8 +22,6 @@ import play.mvc.*;
 import session.SessionManager;
 
 public class Application extends Controller {
-
-	//	private static Logger logger = (Logger) LoggerFactory.getLogger(Application.class);
 
 	private static EngineController engineController = null;
 
@@ -60,58 +61,29 @@ public class Application extends Controller {
 
 		if (json != null) {
 
-			boolean success = true;
-
-			String name = json.path("name").asText();
-			if (name == null || name.equals("")) {
-				success = false;
-				Logger.error("Parameter error: name. Value: " + name);
-				result = badRequest(createJsonErrorMessage("Parameter error: name. Value: " + name));
+			// -1 => add contact
+			boolean success = false;
+			Employee employee = null;
+			try {
+				employee = manipulateEmployeeFromJsonData(-1, json);
+			} catch (IllegalArgumentException iae) {
+				Logger.error("addEmployee(): IllegalArgumentException. Msg: " + iae.getMessage());
+				result = badRequest(createJsonErrorMessage(iae.getMessage()));
+			} catch (OutOfUidsException ooue) {
+				Logger.error("addEmployee(): OutOfUidsException. Msg: " + ooue.getMessage());
+				result = badRequest(createJsonErrorMessage(ooue.getMessage()));
+			} catch (UidNotFoundException unfe) {
+				Logger.error("addEmployee(): UidNotFoundException. Msg: " + unfe.getMessage());
+				result = badRequest(createJsonErrorMessage(unfe.getMessage()));
+			} finally {
+				success = (employee != null) ? true : false;
 			}
-
-			int minHoursDay = json.path("minHoursDay").asInt(-1);
-			if (minHoursDay == -1) {
-				success = false;
-				Logger.error("Parameter error: minHoursDay");
-				result = badRequest(createJsonErrorMessage("Parameter error: minHoursDay"));
-			}
-
-			int maxHoursDay = json.path("maxHoursDay").asInt(-1);
-			if (maxHoursDay == -1) {
-				success = false;
-				Logger.error("Parameter error: maxHoursDay");
-				result = badRequest(createJsonErrorMessage("Parameter error: maxHoursDay"));
-			}
-
-			int minHoursWeek = json.path("minHoursWeek").asInt(-1);
-			if (minHoursWeek == -1) {
-				success = false;
-				Logger.error("Parameter error: minHoursWeek");
-				result = badRequest(createJsonErrorMessage("Parameter error: minHoursWeek"));
-			}
-
-			int maxHoursWeek = json.path("maxHoursWeek").asInt(-1);
-			if (maxHoursWeek == -1) {
-				success = false;
-				Logger.error("Parameter error: maxHoursWeek");
-				result = badRequest(createJsonErrorMessage("Parameter error: maxHoursWeek"));
-			}
-
-			// TODO: handle skills field.
 
 			if (success) {
-				Employee newEmployee = null;
-				try {
-					newEmployee = engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
-
-					// create the response
-					ObjectNode response = Json.newObject();
-					response.put("uid", newEmployee.getUid());
-					result = ok(response);
-				} catch (OutOfUidsException e) {
-					Logger.error("addEmployee(): Exception caught. Msg: " + e.getMessage());
-					result = internalServerError(createJsonErrorMessage(e.getMessage()));
-				}
+				// create the response
+				ObjectNode response = Json.newObject();
+				response.put("uid", employee.getUid());
+				result = ok(response);
 			}
 
 		} else {
@@ -124,13 +96,12 @@ public class Application extends Controller {
 		return result;
 	}
 
-	// TODO: Serious!! This is the same code as in removeSkill. The architecture should probably be rethought...
 	public static Result removeEmployee() {
 
 		// format
 		// {"uid" : <uid>}
 
-		Logger.debug("removeEmployee: START");
+		Logger.debug("removeEmployee(): START");
 
 		Result result = null;
 		JsonNode json = request().body().asJson();
@@ -139,106 +110,92 @@ public class Application extends Controller {
 			boolean success = true;
 
 			int uid = json.path("uid").asInt(-1);
-			Logger.debug("uid = " + uid);
+			Logger.debug("removeEmployee(): uid of employee to be removed = " + uid);
 			if (uid == -1) {
 				success = false;
-				Logger.debug("removeEmployee: Parameter error: uid. Value: " + uid);
+				Logger.debug("removeEmployee(): Parameter error: uid. Value: " + uid);
 				result = badRequest(createJsonErrorMessage("Parameter error: id. Value: " + uid));
 			}
 
 			if (success) {
-				engineController.getEmployeeDirectory().removeEmployee(uid); 
+				// Deassociate the employee from all roles.
+				int[] roleUids = engineController.getRoleDirectory().deassociateEmployeeFromAllRoles(uid);
+				for (int roleUid : roleUids) {
+					Logger.debug("removeEmployee(): Employee " + engineController.getEmployeeDirectory().getEmployee(uid).getName() + " was deassociated with role " + engineController.getRoleDirectory().getRole(roleUid).getName());
+				}
+				
+				// Remove the employee
+				engineController.getEmployeeDirectory().removeEmployee(uid);
 				result = ok();
 			}
 
 		} else {
-			Logger.debug("removeEmployee: Invalid Request. Cannot parse json.");
+			Logger.debug("removeEmployee(): Invalid Request. Cannot parse json.");
 			result = badRequest(createJsonErrorMessage("Request is invalid"));
 		}
 
-		Logger.debug("removeEmployee: END. Result = " + result.toString());
+		Logger.debug("removeEmployee(): END. Result = " + result.toString());
 
 		return result;
-
 	}
 
-	//	public static Result updateEmployee() {
-	//		
-	//		// format
-	//		// {"addemployee" : <employeeInfo>}
-	//		// employeeInfo: {"name" : <value>, "min_hours_day" : <value>, "max_hours_day" : <value>, 
-	//		// "min_hours_week" : <value>, "max_hours_week" : <value>, "skills" : [<skill1>, <skill2>, ... <skillN>]}
-	//		
-	//		Logger.debug("addEmployee(): START");
-	//		
-	//		Result result = null;
-	//		JsonNode json = request().body().asJson();
-	//		if (json != null) {
-	//			JsonNode employeeInfo = json.path("addemployee");
-	//		    if(employeeInfo != null) {
-	//		      
-	//		    	boolean success = true;
-	//		    	
-	//				String name = employeeInfo.path("name").asText();
-	//				if (name == null) {
-	//					success = false;
-	//					Logger.error("Parameter error: name. Value: " + name);
-	//					result = badRequest("Parameter error: name. Value: " + name);
-	//				}
-	//				
-	//				int minHoursDay = employeeInfo.path("minHoursDay").asInt(-1);
-	//				if (minHoursDay == -1) {
-	//					success = false;
-	//					Logger.error("Parameter error: minHoursDay");
-	//					result = badRequest("Parameter error: minHoursDay");
-	//				}
-	//				
-	//				int maxHoursDay = employeeInfo.path("maxHoursDay").asInt(-1);
-	//				if (maxHoursDay == -1) {
-	//					success = false;
-	//					Logger.error("Parameter error: maxHoursDay");
-	//					result = badRequest("Parameter error: maxHoursDay");
-	//				}
-	//				
-	//				int minHoursWeek = employeeInfo.path("minHoursWeek").asInt(-1);
-	//				if (minHoursWeek == -1) {
-	//					success = false;
-	//					Logger.error("Parameter error: minHoursWeek");
-	//					result = badRequest("Parameter error: minHoursWeek");
-	//				}
-	//				
-	//				int maxHoursWeek = employeeInfo.path("maxHoursWeek").asInt(-1);
-	//				if (maxHoursWeek == -1) {
-	//					success = false;
-	//					Logger.error("Parameter error: maxHoursWeek");
-	//					result = badRequest("Parameter error: maxHoursWeek");
-	//				}
-	//		    	
-	//				// TODO: handle skills field.
-	//				
-	//				if (success) {
-	//					Employee newEmployee = engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
-	//					
-	//					// create the response
-	//					ObjectNode response = Json.newObject();
-	//					response.put("id", newEmployee.getId());
-	//					
-	//					result = ok(response);
-	//				}
-	//		    	
-	//		    } else {
-	//		    	Logger.error("Missing parameter: addemployee");
-	//		    	return badRequest("Missing parameter: addemployee");
-	//		    }
-	//		} else {
-	//			Logger.error("Request is invalid");
-	//			result = badRequest("Request is invalid");
-	//		}
-	//		
-	//		Logger.debug("addEmployee(): END. Result = " + result.toString());
-	//		
-	//		return result;
-	//	}
+	public static Result updateEmployee() {
+
+		// format
+		// {"uid" : <uid>, "name" : <name>, ...}
+
+		Logger.debug("updateEmployee: START");
+
+		Result result = null;
+		JsonNode json = request().body().asJson();
+		if (json != null) {
+
+			int uid = json.path("uid").asInt(-1);
+			
+			if (uid != -1) {
+				boolean success = false;
+				Employee employee = null;
+				try {
+					employee = manipulateEmployeeFromJsonData(uid, json);
+				} catch (IllegalArgumentException iae) {
+					Logger.error("addEmployee(): IllegalArgumentException. Msg: " + iae.getMessage());
+					result = badRequest(createJsonErrorMessage(iae.getMessage()));
+				} catch (OutOfUidsException ooue) {
+					Logger.error("addEmployee(): OutOfUidsException. Msg: " + ooue.getMessage());
+					result = badRequest(createJsonErrorMessage(ooue.getMessage()));
+				} catch (UidNotFoundException unfe) {
+					Logger.error("addEmployee(): UidNotFoundException. Msg: " + unfe.getMessage());
+					result = badRequest(createJsonErrorMessage(unfe.getMessage()));
+				} finally {
+					success = (employee != null) ? true : false;
+				}
+
+				if (success) {
+					// create the response
+					ObjectNode response = Json.newObject();
+					response.put("uid", employee.getUid());
+					response.put("name", employee.getName());
+					response.put("minHoursDay", employee.getMinHoursPerDay());
+					response.put("maxHoursDay", employee.getMaxHoursPerDay());
+					response.put("minHoursWeek", employee.getMinHoursPerWeek());
+					response.put("maxHoursWeek", employee.getMaxHoursPerWeek());
+					result = ok(response);
+				}
+
+			} else {
+				Logger.debug("updateEmployee(): Malformed Request. Missing uid.");
+				result = badRequest(createJsonErrorMessage("Malformed Request. Missing uid."));
+			}
+
+		} else {
+			Logger.debug("updateEmployee(): Malformed Request: " + request().body().asText());
+			result = badRequest(createJsonErrorMessage("Malformed Request!"));
+		}
+
+		Logger.debug("updateEmployee: END. Result: " + result.toString());
+
+		return result;
+	}
 
 	public static Result getEmployees() {
 		Logger.debug("getEmployees(): START");
@@ -250,20 +207,20 @@ public class Application extends Controller {
 		return ok(jsonResponse);  
 	}
 
-	public static Result getSkills() {
-		Logger.debug("getSkills(): START");
+	public static Result getRoles() {
+		Logger.debug("getRoles(): START");
 		Result result = null;
 		EngineController ec = engineController; //TODO: should be obtained via session manager
 		ObjectNode jsonResponse = getSkillsJsonReponse(ec);
 		result = ok(jsonResponse);
-		Logger.debug("getSkills(): END. Result = " + result.toString());
+		Logger.debug("getRoles(): END. Result = " + result.toString());
 		return result;
 	}
 
 	public static Result addRole() {
 
 		// format
-		// {"addskill" : <skillInfo>}
+		// {"addskill" : <roleInfo>}
 		// skillInfo: {"name" : <value>, "employees" : [<employee1>, <employee2>, ... <employeeN>]}
 
 		Logger.debug("addRole: START");
@@ -302,7 +259,7 @@ public class Application extends Controller {
 
 			if (success) {
 				try {
-					Role role = engineController.getSkillDirectory().createNewRole(roleName, employeesWithRole);
+					Role role = engineController.getRoleDirectory().createNewRole(roleName, employeesWithRole);
 					ObjectNode response = Json.newObject();
 					response.put("uid", role.getUid());
 					result = ok(response);
@@ -381,7 +338,7 @@ public class Application extends Controller {
 			}
 
 			if (success) {
-				engineController.getSkillDirectory().removeRole(uid); 
+				engineController.getRoleDirectory().removeRole(uid); 
 				result = ok();
 			}
 
@@ -447,7 +404,7 @@ public class Application extends Controller {
 		ObjectNode skills = Json.newObject();
 		ArrayNode skillInfoArray = Json.newObject().arrayNode();
 
-		List<Role> skillList = engineController.getSkillDirectory().getAllRoles();
+		List<Role> skillList = engineController.getRoleDirectory().getAllRoles();
 		for (int i = 0; i < skillList.size(); i++) {
 
 			List<Employee> employeesWithSkill = skillList.get(i).getEmployees();
@@ -477,5 +434,36 @@ public class Application extends Controller {
 
 		String errorMessage = "{\"errorMsg\" : \"" + errorMsg + "\"}";
 		return errorMessage;
+	}
+
+	// (uid == -1) => contact will be created
+	private static Employee manipulateEmployeeFromJsonData(int uid, JsonNode jsonData) throws IllegalArgumentException, UidNotFoundException, OutOfUidsException{
+
+		String name = jsonData.path("name").asText();
+		int minHoursDay = jsonData.path("minHoursDay").asInt(-1);
+		int maxHoursDay = jsonData.path("maxHoursDay").asInt(-1);
+		int minHoursWeek = jsonData.path("minHoursWeek").asInt(-1);
+		int maxHoursWeek = jsonData.path("maxHoursWeek").asInt(-1);
+
+		if (name == null || name.equals("")) {
+			throw new IllegalArgumentException("Parameter error: name == " + name);
+		} else if (minHoursDay == -1) {
+			throw new IllegalArgumentException("Parameter error: minHoursDay == " + minHoursDay);
+		} else if (maxHoursDay == -1) {
+			throw new IllegalArgumentException("Parameter error: maxHoursDay == " + maxHoursDay);
+		} else if (minHoursWeek == -1) {
+			throw new IllegalArgumentException("Parameter error: minHoursWeek == " + minHoursWeek);
+		} else if (maxHoursWeek == -1) {
+			throw new IllegalArgumentException("Parameter error: maxHoursWeek == " + maxHoursWeek);
+		}
+
+		Employee employee = null;
+		if (uid == -1) {
+			employee = engineController.getEmployeeDirectory().createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
+		} else {
+			employee = engineController.getEmployeeDirectory().updateEmployee(uid, name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
+		}
+
+		return employee;
 	}
 }

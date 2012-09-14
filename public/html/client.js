@@ -69,7 +69,30 @@ var Client = function () {
   };
 
   this.updateEmployee = function(employeeObject, responseHandler) {
+    var httpRequest = XMLHttpRequest();
 
+    // take care of the http reponse
+    httpRequest.onreadystatechange = function() { 
+
+      if (httpRequest.readyState === 4) {
+        if (httpRequest.status === 200) {
+
+          var employeeObjectResponse = JSON.parse(httpRequest.responseText); // should be the same as the object that was sent.
+          removeEmployee(employeeObject.uid);
+
+          // Add to list of all contacts 
+          employees.push(employeeObjectResponse);
+          responseHandler(true, employeeObjectResponse);
+        } else {
+          var errorMsg = getErrorMessage(httpRequest.responseText);
+          responseHandler(false, errorMsg);
+        }
+      }
+    };
+
+    httpRequest.open('POST', 'http://localhost:9000/updateemployee', true); // TODO: localhost. 
+    httpRequest.setRequestHeader('Content-Type', 'application/json');
+    httpRequest.send(JSON.stringify(employeeObject));
   };
 
   this.removeEmployee = function(requestData, responseHandler) {
@@ -81,11 +104,7 @@ var Client = function () {
          if (httpRequest.status === 200) {
 
          // Remove role from list
-         for (var i = 0; i < employees.length; i++) {
-           if(employees[i].uid === requestData.uid) {
-             employees.splice(i,i);
-           }
-         }
+         removeEmployee(requestData.uid);
          
          responseHandler(true, requestData.uid);
        } else {
@@ -167,6 +186,15 @@ var Client = function () {
    httpRequest.setRequestHeader('Content-Type', 'application/json');
    httpRequest.send(JSON.stringify(roleObject));
  };
+
+ var removeEmployee = function (uid) {
+  // Remove role from list
+ for (var i = 0; i < employees.length; i++) {
+    if(employees[i].uid == uid) {
+      employees.splice(i,i + 1);
+    }
+  }         
+  }  
 
   // private methods (TODO: intended, this is probably not best practice)
  var getErrorMessage = function(jsonData) {

@@ -72,9 +72,31 @@ public class RoleDirectory implements Serializable {
 			throw new Exception("Role does not exist!");
 		}
 
-		role.addEmployee(employee);
+		role.associateEmployee(employee);
 
 		return role;
+	}
+	
+	public int[] deassociateEmployeeFromAllRoles(int employeeUid) {
+		List<Integer> affectedRoles = new ArrayList<Integer>();
+		for (Role role : allRoles) {
+			if (deassociateEmployeeFromRole(employeeUid, role.getUid())) {
+				affectedRoles.add(new Integer(role.getUid()));
+			}
+		}
+		
+		int[] affectedRolesArray = new int[affectedRoles.size()];
+		for (int i = 0; i < affectedRoles.size(); i++) {
+			affectedRolesArray[i] = affectedRoles.get(i).intValue();
+		}
+		return affectedRolesArray;
+	}
+	
+	public boolean deassociateEmployeeFromRole(int employeeUid, int roleUid) {
+		RoleImpl roleImpl = (RoleImpl)getRole(roleUid);
+		Employee employee = ec.getEmployeeDirectory().getEmployee(employeeUid);
+		boolean deassociated = roleImpl.deassociateEmployee(employee);
+		return deassociated;
 	}
 	
 	public Role getRole(int roleId) {
@@ -103,33 +125,38 @@ public class RoleDirectory implements Serializable {
 		
 		private String name = null;
 		private int uid;
-		private List<Employee> employees = null;
+		private List<Employee> associatedEmployees = null;
 
 		public RoleImpl(String name, int uid) {
 			this(name, uid, new ArrayList<Employee>());
 		}
 		
-		public RoleImpl(String name, int uid, List<Employee> employees) {
+		public RoleImpl(String name, int uid, List<Employee> associatedEmployees) {
 			this.uid = uid;
 			this.name = name;
-			this.employees = employees;
+			this.associatedEmployees = associatedEmployees;
 		}
 
 		@Override
-		public void addEmployee(Employee employee) {
-			if (!employees.contains(employee)) {
-				employees.add(employee);
+		public void associateEmployee(Employee employee) {
+			if (!associatedEmployees.contains(employee)) {
+				associatedEmployees.add(employee);
 			}
 		}
 
 		@Override
-		public void removeEmployee(Employee employee) {
-			employees.remove(employee);
+		public boolean deassociateEmployee(Employee employee) {
+			boolean retval = false;
+			if (associatedEmployees.contains(employee)) {
+				associatedEmployees.remove(employee);
+				retval = true;
+			}
+			return retval;
 		}
 
 		@Override
 		public List<Employee> getEmployees() {
-			return employees;
+			return associatedEmployees;
 		}
 
 		@Override
@@ -151,9 +178,9 @@ public class RoleDirectory implements Serializable {
 		public String toString() {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Skill: " + name + " --- Employees: ");
-			for (int i = 0; i < employees.size(); i++) {
-				sb.append(employees.get(i).getName() + "(" + employees.get(i).getUid() + ")");
-				if (i < employees.size() - 1) {
+			for (int i = 0; i < associatedEmployees.size(); i++) {
+				sb.append(associatedEmployees.get(i).getName() + "(" + associatedEmployees.get(i).getUid() + ")");
+				if (i < associatedEmployees.size() - 1) {
 					sb.append(", ");
 				}
 			}

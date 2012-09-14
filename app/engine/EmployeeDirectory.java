@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.avaje.ebeaninternal.server.lib.util.NotFoundException;
+
 import engine.uid.OutOfUidsException;
 
 /**
@@ -36,16 +38,29 @@ public class EmployeeDirectory implements Serializable {
 		return employee;
 	}
 	
+	public Employee updateEmployee(int uid, String name, int minHoursPerDay, int maxHoursPerDay, int minHoursPerWeek, int maxHoursPerWeek) throws UidNotFoundException {
+		EmployeeImpl employee = (EmployeeImpl) getEmployee(uid);
+		if (employee == null) {
+			throw new NotFoundException("Employee does not exist!");
+		}
+		employee.setName(name);
+		employee.setMinHoursPerDay(minHoursPerDay);
+		employee.setMaxHoursPerDay(maxHoursPerDay);
+		employee.setMinHoursPerWeek(minHoursPerWeek);
+		employee.setMaxHoursPerWeek(maxHoursPerWeek);
+		return employee;
+	}
+	
 	/**
 	 * Removes an employee by id if it exists. If not it silently returns.
-	 * @param id
+	 * @param uid
 	 * @throws Exception
 	 */
-	public Employee removeEmployee(int id) {
+	public Employee removeEmployee(int uid) {
 		Employee employee = null;
 		for (int i = 0; i < allEmployees.size(); i++) {
 			employee = allEmployees.get(i);
-			if (employee.getUid() == id) {
+			if (employee.getUid() == uid) {
 				allEmployees.remove(employee);
 			}
 		}
@@ -106,7 +121,7 @@ public class EmployeeDirectory implements Serializable {
 
 		private static final long serialVersionUID = -4328012514899645639L;
 		
-		private int id;
+		private int uid;
 		private String name = null;
 		private int minHoursPerDay;
 		private int maxHoursPerDay;
@@ -114,9 +129,13 @@ public class EmployeeDirectory implements Serializable {
 		private int maxHoursPerWeek;
 		private List<Role> roles = null;
 		
+		public EmployeeImpl() {
+			roles = new ArrayList<Role>();
+		}
+		
 		public EmployeeImpl(String name, int id, int minHoursPerDay, int maxHoursPerDay, int minHoursPerWeek, int maxHoursPerWeek) {
 			this.name = name;
-			this.id = id;
+			this.uid = id;
 			this.minHoursPerDay = minHoursPerDay;
 			this.maxHoursPerDay = maxHoursPerDay;
 			this.minHoursPerWeek = minHoursPerWeek;
@@ -126,7 +145,7 @@ public class EmployeeDirectory implements Serializable {
 
 		@Override
 		public int getUid() {
-			return id;
+			return uid;
 		}
 
 		@Override
@@ -144,20 +163,24 @@ public class EmployeeDirectory implements Serializable {
 			return roles;
 		}
 		
-		@Override
-		public boolean hasRole(Role role) {
-			return roles.contains(role);
-		}
-		
-		public void addRole(Role role) {
-			if (!roles.contains(role)) {
-				roles.add(role);
-			}
-		}
+//		@Override
+//		public boolean hasRole(Role role) {
+//			return roles.contains(role);
+//		}
+//		
+//		public void addRole(Role role) {
+//			if (!roles.contains(role)) {
+//				roles.add(role);
+//			}
+//		}
 		
 		@Override
 		public int getMinHoursPerWeek() {
 			return minHoursPerWeek;
+		}
+		
+		public void setMinHoursPerWeek(int hours) {
+			this.minHoursPerWeek = hours;
 		}
 
 		@Override
@@ -165,10 +188,57 @@ public class EmployeeDirectory implements Serializable {
 			return maxHoursPerWeek;
 		}
 		
+		public void setMaxHoursPerWeek(int hours) {
+			this.maxHoursPerWeek = hours;
+		}
+
+		@Override
+		public int getMinHoursPerDay() {
+			return minHoursPerDay;
+		}
+		
+		public void setMinHoursPerDay(int hours) {
+			this.minHoursPerDay = hours;
+		}
+
+		@Override
+		public int getMaxHoursPerDay() {
+			return maxHoursPerDay;
+		}
+		
+		public void setMaxHoursPerDay(int hours) {
+			this.maxHoursPerDay = hours;
+		}
+
+		@Override
+		public void addVacation(Date from, Date to) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if (o == null) {
+				return false;
+			}
+			
+			if (!(o instanceof EmployeeImpl)) {
+				return false;
+			}
+			
+			EmployeeImpl employee = (EmployeeImpl)o;
+			
+			if (this.uid != employee.getUid()) {
+				return false;
+			}
+			
+			return true;
+		}
+		
 		@Override
 		public String toString() {
 			StringBuffer sb = new StringBuffer();
-			sb.append("Name: " + name + "(" + id + ") --- Skills: ");
+			sb.append("Name: " + name + "(" + uid + ") --- Skills: ");
 			for (int i = 0; i < roles.size(); i++) {
 				sb.append(roles.get(i).getName());
 				sb.append("(" + roles.get(i).getUid() + ")");
@@ -177,22 +247,6 @@ public class EmployeeDirectory implements Serializable {
 				}
 			}
 			return sb.toString();
-		}
-
-		@Override
-		public int getMinHoursPerDay() {
-			return minHoursPerDay;
-		}
-
-		@Override
-		public int getMaxHoursPerDay() {
-			return maxHoursPerDay;
-		}
-
-		@Override
-		public void addVacation(Date from, Date to) {
-			// TODO Auto-generated method stub
-			
 		}
 		
 	}

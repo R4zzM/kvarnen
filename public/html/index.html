@@ -13,9 +13,6 @@
 
   </style>
 
-  <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
     <link rel="shortcut icon" href="ico/favicon.ico">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
@@ -53,7 +50,7 @@
           <!-- Form to add/update/remove employees -->
           <form id ="addEmployeeForm" class="form-horizontal">
 
-            <input type="hidden" id="employeeId">
+            <input type="hidden" id="employeeUid">
 
             <div class="control-group">
               <label class="control-label" for="employeeNameInput">Namn</label>
@@ -148,14 +145,14 @@
 
             <div id="addEmployeeButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-success" onClick="addEmployee()">Skapa</button>
+                <button class="btn btn-success" onClick="addEmployee()">Skapa</button>
               </div>
             </div>
 
             <div id="updateEmployeeButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-primary" onClick="updateEmployee()">Uppdatera</button>
-                <button type="submit" class="btn btn-danger" onClick="removeEmployee()">Radera</button>
+                <button class="btn btn-primary" onClick="updateEmployee()">Uppdatera</button>
+                <button class="btn btn-danger" onClick="removeEmployee()">Radera</button>
               </div>
             </div>
           </form>
@@ -249,7 +246,7 @@
       // Parse the DOM to fetch the employee id 
       var requestData = 
       {
-        "uid" : $("input#employeeId").val()
+        "uid" : $("input#employeeUid").val()
       };
 
       client.removeEmployee(requestData, function (success, data) {
@@ -265,6 +262,45 @@
           showErrorAlert("Borttagning av person misslyckades! Felmeddelande: " + error);
         }
       });
+    }
+
+    function updateEmployee() {
+
+      var updatedEmployeeInformation = 
+      {
+        "uid" : $("input#employeeUid").val(), 
+        "name" : $("input#employeeNameInput").val(), 
+        "minHoursWeek" : $("select#minHoursPerWeek").val(), 
+        "maxHoursWeek" : $("select#maxHoursPerWeek").val(), 
+        "minHoursDay" : $("select#minHoursPerDay").val(), 
+        "maxHoursDay" : $("select#maxHoursPerDay").val() 
+      };
+
+      client.updateEmployee(updatedEmployeeInformation, function (success, data) {
+
+        if (success) {
+          var updatedEmployee = data;
+          
+          // var listElement = createListElement(addedEmployee.name, addedEmployee.uid, "showEmployeeUpdateForm(" + addedEmployee.uid + ")");
+          
+          // make it fade into the sidebar
+          // $(listElement).insertAfter("li#employees");
+          var oldListElement = $("li#" + updatedEmployee.uid);
+          var newListElement = createListElement(updatedEmployee.name, updatedEmployee.uid, "showEmployeeUpdateForm(" + updatedEmployee.uid + ")");
+          $(newListElement).hide();
+
+          $(oldListElement).fadeOut("slow", function () {
+            $(oldListElement).replaceWith(newListElement);
+            $(newListElement).fadeIn("slow");
+          });
+          
+          showSuccessAlert("Uppdatering av informationen lyckades!");
+        } else {
+          var error = data;
+          showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + error);
+        }
+      });
+
     }
 
     function addRole() {
@@ -387,7 +423,7 @@
       hideAllForms();
 
       // Set the form values
-      $("input#employeeId").val(uid);
+      $("input#employeeUid").val(uid);
       $("input#employeeNameInput").val(client.getEmployee(uid).name);
 
       // Show / Hide part of forms 
@@ -470,6 +506,19 @@
 
       $("a#addRole").click(function() {
         showRoleAddForm();
+      });
+
+      // disable enter key for both forms
+      $("form#addRoleForm").bind("keypress", function (e) {
+        if (e.keyCode == 13 ) {
+          return false;
+        }
+      });
+
+      $("form#addEmployeeForm").bind("keypress", function (e) {
+        if (e.keyCode == 13 ) {
+          return false;
+        }
       });
 
     });

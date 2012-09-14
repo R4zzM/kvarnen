@@ -195,7 +195,7 @@ public class Day implements Serializable {
 		for (int i = 0; i < populatedSchedule.length; i++) {
 			for (int j = 0; j < populatedSchedule[i].length; j++) {
 				if (templateSchedule[i][j] != 0) {
-					int[] employeesWithSkill = ec.getSkillDirectory().getAssociatedEmployees(templateSchedule[i][j]);
+					int[] employeesWithSkill = ec.getRoleDirectory().getAssociatedEmployees(templateSchedule[i][j]);
 					Arrays.sort(employeesWithSkill); // required by JaCoP addDom() method.
 					for (int k = 0;  k < employeesWithSkill.length; k++) {
 						populatedSchedule[i][j].addDom(employeesWithSkill[k], employeesWithSkill[k]); // The domain is the potential employees. 

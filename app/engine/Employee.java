@@ -13,9 +13,9 @@ public interface Employee extends Serializable {
 
 	public abstract List<Role> getRoles();
 
-	public abstract void addRole(Role role);
-
-	public abstract boolean hasRole(Role role);
+//	public abstract void addRole(Role role);
+//
+//	public abstract boolean hasRole(Role role);
 	
 	public abstract int getMinHoursPerDay(); // If scheduled at all...
 	

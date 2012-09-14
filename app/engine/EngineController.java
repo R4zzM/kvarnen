@@ -56,7 +56,7 @@ public class EngineController implements Serializable {
 		return employeeDirectory;
 	}
 	
-	public RoleDirectory getSkillDirectory() {
+	public RoleDirectory getRoleDirectory() {
 		return skillDirectory;
 	}
 	
@@ -98,29 +98,29 @@ public class EngineController implements Serializable {
 		}
 		
 		// skills to employees
-		julia.addRole(cafe);
-		julia.addRole(washing);
-		
-		ida.addRole(cafe);
-		ida.addRole(washing);
-		
-		catharina.addRole(kitchen);
-		catharina.addRole(cafe);
-		catharina.addRole(washing);
-		
-		hans.addRole(washing);
+//		julia.addRole(cafe);
+//		julia.addRole(washing);
+//		
+//		ida.addRole(cafe);
+//		ida.addRole(washing);
+//		
+//		catharina.addRole(kitchen);
+//		catharina.addRole(cafe);
+//		catharina.addRole(washing);
+//		
+//		hans.addRole(washing);
 		
 		// employees to skills
-		kitchen.addEmployee(catharina);
+		kitchen.associateEmployee(catharina);
 		
-		cafe.addEmployee(julia);
-		cafe.addEmployee(ida);
-		cafe.addEmployee(catharina);
+		cafe.associateEmployee(julia);
+		cafe.associateEmployee(ida);
+		cafe.associateEmployee(catharina);
 		
-		washing.addEmployee(julia);
-		washing.addEmployee(ida);
-		washing.addEmployee(catharina);
-		washing.addEmployee(hans);
+		washing.associateEmployee(julia);
+		washing.associateEmployee(ida);
+		washing.associateEmployee(catharina);
+		washing.associateEmployee(hans);
 		
 		System.out.println(catharina);
 		System.out.println(julia);
