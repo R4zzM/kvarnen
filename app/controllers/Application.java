@@ -1,5 +1,6 @@
 package controllers;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,9 +11,11 @@ import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
+import engine.Day;
 import engine.Employee;
 import engine.EmployeeDirectory;
 import engine.EngineController;
+import engine.Position;
 import engine.RoleDirectory;
 import engine.UidNotFoundException;
 import engine.Role;
@@ -206,26 +209,6 @@ public class Application extends Controller {
 		return result;
 	}
 
-//	public static Result getEmployees() {
-//		Logger.debug("getEmployees(): START");
-//		Result result = null;
-//		EngineController ec = engineController; //TODO: should be obtained via session manager
-//		ArrayNode jsonResponse = getEmployeesJsonResponse(ec);
-//		result = ok(jsonResponse); // TODO!!!
-//		Logger.debug("getEmployees(): END. Result = " + result.toString());
-//		return ok(jsonResponse);  
-//	}
-//
-//	public static Result getRoles() {
-//		Logger.debug("getRoles(): START");
-//		Result result = null;
-//		EngineController ec = engineController; //TODO: should be obtained via session manager
-//		ObjectNode jsonResponse = getSkillsJsonReponse(ec);
-//		result = ok(jsonResponse);
-//		Logger.debug("getRoles(): END. Result = " + result.toString());
-//		return result;
-//	}
-
 	public static Result addRole() { 
 
 		// format
@@ -370,6 +353,23 @@ public class Application extends Controller {
 
 		return result;
 	}
+	
+	public static Result addDayTemplate() {
+		Logger.debug("addDayTemplate(): START");
+
+		Result result = null;
+		JsonNode json = request().body().asJson();
+		if (json != null) {
+			result = ok(); // TODO: TMP!!!!
+		} else {
+			Logger.debug("addDayTemplate(): Invalid Request. Cannot parse json.");
+			result = badRequest(createJsonErrorMessage("Request is invalid"));
+		}
+
+		Logger.debug("addDayTemplate(): END. Result = " + result.toString());
+
+		return result;
+	}
 
 	private static ArrayNode getEmployeesJsonResponse(EngineController engineController) {
 
@@ -498,4 +498,36 @@ public class Application extends Controller {
 
 		return role;
 	}
+	
+	// TODO: fix this!!
+//	private static Day manipulateDayTemplateFromJsonData (int uid, JsonNode jsonData) throws IllegalArgumentException, UidNotFoundException, OutOfUidsException {
+//
+//		String name = jsonData.path("name").asText();
+//
+//		if (name == null || name.equals("")) {
+//			throw new IllegalArgumentException("Parameter error: name == " + name);
+//		} 
+//		Iterator<JsonNode> iterator = jsonData.path("positions").getElements();
+//		List<Position> positions = new ArrayList<Position>();
+//		if (iterator != null) {
+//			while (iterator.hasNext()) {
+//				JsonNode positionJson = iterator.next();
+//				int roleUid = positionJson.path("requiredRoleUid").asInt(-1);
+//				String startTime = positionJson.path("startTime").asText();
+//				String endTime = positionJson.path("endTime").asText();
+//				Day day = new Day(engineController, null, new Date());
+//			}
+//		} else {
+//			throw new IllegalArgumentException("Parameter error: associatedEmployeesInterator == " + name);
+//		}
+//
+//		Role templateDay = null;
+//		if (uid == -1) {
+//			templateDay = engineController.getTemplateManager().createDayTemplate(name, positions);
+//		} else {
+//			templateDay = engineController.getTemplateManager().updateDayTemplate(uid, name, positions);
+//		}
+//
+//		return templateDay;
+//	}
 }

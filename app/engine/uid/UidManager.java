@@ -8,7 +8,8 @@ public class UidManager implements Serializable {
 	
 	private static final int BIT_EMPLOYEE = (1 << 30);
 	private static final int BIT_ROLE = (1 << 29);
-	private static final int BIT_POSITION = (1 << 29);
+	private static final int BIT_POSITION = (1 << 28);
+	private static final int BIT_TEMPLATE_DAY = (1 << 27);
 
 	private static final int MAX_UID = (1 << 25);
 
@@ -46,6 +47,17 @@ public class UidManager implements Serializable {
 		if (counter < MAX_UID) {
 			uid = ++counter;
 			uid |= BIT_POSITION;
+		} else {
+			throw new OutOfUidsException("Out of UIDs");
+		}
+		return uid;
+	}
+	
+	public int generateTemplateDayUid() throws OutOfUidsException {
+		int uid = 0;
+		if (counter < MAX_UID) {
+			uid = ++counter;
+			uid |= BIT_TEMPLATE_DAY;
 		} else {
 			throw new OutOfUidsException("Out of UIDs");
 		}

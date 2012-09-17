@@ -44,9 +44,6 @@ public class Day implements Serializable {
 	// All the positions that need to be filled.
 	private List<Position> positions = null;
 
-	// Id that will be given to the next position that is created
-//	private int nextPositionId;
-
 	// The store.
 	private Store store = null;
 
@@ -57,17 +54,12 @@ public class Day implements Serializable {
 		this.ec = ec;
 		this.day = day;
 		this.positions = new ArrayList<Position>();
-//		nextPositionId = 1;
 	}
 
-	/* (non-Javadoc)
-	 * @see Day#newPosition(Skill, java.util.Date, java.util.Date)
-	 */
-	public Position newPosition(Role skill, Date startTime, Date endTime) throws OutOfUidsException {
+	public Position newPosition(Role role, Date startTime, Date endTime) throws OutOfUidsException {
 		int uid = ec.getUidManager().generatePositionUid();
-		Position position = new Position(skill, uid, startTime, endTime);
+		Position position = new Position(role, uid, startTime, endTime);
 		positions.add(position);
-//		nextPositionId++;
 		return position;
 	}
 

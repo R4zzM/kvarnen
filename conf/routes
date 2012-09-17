@@ -12,6 +12,7 @@ POST  /updateemployee               controllers.Application.updateEmployee()
 POST  /addrole                  	controllers.Application.addRole()
 POST  /removerole   				controllers.Application.removeRole()
 POST  /updaterole             		controllers.Application.updateRole()
+POST  /adddaytemplate				controllers.Application.addDayTemplate()
 GET     /*file               	    controllers.Assets.at(path="/public/html", file)
 
 
