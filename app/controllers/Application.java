@@ -40,7 +40,15 @@ public class Application extends Controller {
 				result = internalServerError(createJsonErrorMessage("Exception when creating session. Msg: " + e.getMessage()));
 			}
 		} else {
-			result = ok();
+			
+			ArrayNode employees = getEmployeesJsonResponse(engineController);
+			ArrayNode roles = getRolesJsonResponse(engineController);
+			
+			ObjectNode response = Json.newObject();
+			response.put("employees", employees);
+			response.put("roles", roles);
+			
+			result = ok(response);
 		}
 
 		Logger.debug("init(): END. Result = " + result.toString());
@@ -198,25 +206,25 @@ public class Application extends Controller {
 		return result;
 	}
 
-	public static Result getEmployees() {
-		Logger.debug("getEmployees(): START");
-		Result result = null;
-		EngineController ec = engineController; //TODO: should be obtained via session manager
-		ObjectNode jsonResponse = getEmployeesJsonResponse(ec);
-		result = ok(jsonResponse);
-		Logger.debug("getEmployees(): END. Result = " + result.toString());
-		return ok(jsonResponse);  
-	}
-
-	public static Result getRoles() {
-		Logger.debug("getRoles(): START");
-		Result result = null;
-		EngineController ec = engineController; //TODO: should be obtained via session manager
-		ObjectNode jsonResponse = getSkillsJsonReponse(ec);
-		result = ok(jsonResponse);
-		Logger.debug("getRoles(): END. Result = " + result.toString());
-		return result;
-	}
+//	public static Result getEmployees() {
+//		Logger.debug("getEmployees(): START");
+//		Result result = null;
+//		EngineController ec = engineController; //TODO: should be obtained via session manager
+//		ArrayNode jsonResponse = getEmployeesJsonResponse(ec);
+//		result = ok(jsonResponse); // TODO!!!
+//		Logger.debug("getEmployees(): END. Result = " + result.toString());
+//		return ok(jsonResponse);  
+//	}
+//
+//	public static Result getRoles() {
+//		Logger.debug("getRoles(): START");
+//		Result result = null;
+//		EngineController ec = engineController; //TODO: should be obtained via session manager
+//		ObjectNode jsonResponse = getSkillsJsonReponse(ec);
+//		result = ok(jsonResponse);
+//		Logger.debug("getRoles(): END. Result = " + result.toString());
+//		return result;
+//	}
 
 	public static Result addRole() { 
 
@@ -363,81 +371,63 @@ public class Application extends Controller {
 		return result;
 	}
 
-	private static ObjectNode getEmployeesJsonResponse(EngineController engineController) {
+	private static ArrayNode getEmployeesJsonResponse(EngineController engineController) {
 
-		// The format of the json reponse:
-		// {"employees" : [ {employeeInfo1}, {employeeInfo2}, ... {employeeInfoN}] 
-		// employeeInfoN: {"name" : <value>, "min_hours_day" : <value>, "max_hours_day" : <value>, 
-		// "min_hours_week" : <value>, "max_hours_week" : <value>, "skills" : [<skill1>, <skill2>, ... <skillN>]}
-		ObjectNode employees = Json.newObject();
-		ArrayNode employeeInfoArray = Json.newObject().arrayNode();
+		ArrayNode employeeArray = Json.newObject().arrayNode();
 
 		List<Employee> employeeList = engineController.getEmployeeDirectory().getAllEmployees();
 		for (int i = 0; i < employeeList.size(); i++) {
 
 			// Get the data.
+			int uid = employeeList.get(i).getUid();
 			String name = employeeList.get(i).getName();
 			int minHoursDay = employeeList.get(i).getMinHoursPerDay();
 			int maxHoursDay = employeeList.get(i).getMaxHoursPerDay();
 			int minHoursWeek = employeeList.get(i).getMinHoursPerWeek();
 			int maxHoursWeek = employeeList.get(i).getMaxHoursPerWeek();
-			List<Role> skills =  employeeList.get(i).getRoles();
 
 			// Create employeeInfo json structure
-			ObjectNode employeeInfo = Json.newObject();
-			ArrayNode employeeSkillsArray = Json.newObject().arrayNode();
+			ObjectNode employee = Json.newObject();
 
-			// fill in the skills array
-			for (int j = 0; j < skills.size(); j++) {
-				employeeSkillsArray.add(skills.get(j).getName());
-			}
+			employee.put("uid", uid);
+			employee.put("name", name);
+			employee.put("minHoursDay", minHoursDay);
+			employee.put("maxHoursDay", maxHoursDay);
+			employee.put("minHoursWeek", minHoursWeek);
+			employee.put("maxHoursWeek", maxHoursWeek);
 
-			employeeInfo.put("name", name);
-			employeeInfo.put("minHoursDay", minHoursDay);
-			employeeInfo.put("maxHoursDay", maxHoursDay);
-			employeeInfo.put("minHoursWeek", minHoursWeek);
-			employeeInfo.put("maxHoursWeek", maxHoursWeek);
-			employeeInfo.put("skills", employeeSkillsArray);
-
-			employeeInfoArray.add(employeeInfo);
+			employeeArray.add(employee);
 		}
 
-		employees.put("employees", employeeInfoArray);
-
-		return employees;
+		return employeeArray;
 	}
 
-	private static ObjectNode getSkillsJsonReponse(EngineController ec) {
+	private static ArrayNode getRolesJsonResponse(EngineController ec) {
 
-		// The format of the json response:
-		// skills: {"skills" : [<skillInfo1>, <skillInfo2>, ... <skillInfoN>]}
-		// skillInfo: {"skill" : <value>, "employees" : [<employee1>, ... <employeeN>]}
-		ObjectNode skills = Json.newObject();
-		ArrayNode skillInfoArray = Json.newObject().arrayNode();
+		ArrayNode roleArray = Json.newObject().arrayNode();
 
-		List<Role> skillList = engineController.getRoleDirectory().getAllRoles();
-		for (int i = 0; i < skillList.size(); i++) {
+		List<Role> roleList = engineController.getRoleDirectory().getAllRoles();
+		for (int i = 0; i < roleList.size(); i++) {
 
-			List<Employee> employeesWithSkill = skillList.get(i).getEmployees();
+			List<Employee> associatedEmployees = roleList.get(i).getEmployees();
 
 			// Create skillInfo json structure
-			ObjectNode skillInfo = Json.newObject();
-			ArrayNode skillEmployeesArray = Json.newObject().arrayNode();
+			ObjectNode role = Json.newObject();
+			ArrayNode associatedEmployeesJson = Json.newObject().arrayNode();
 
 			// fill in the skills array
-			for (int j = 0; j < employeesWithSkill.size(); j++) {
-				skillEmployeesArray.add(employeesWithSkill.get(j).getName());
+			for (int j = 0; j < associatedEmployees.size(); j++) {
+				associatedEmployeesJson.add(associatedEmployees.get(j).getUid());
 			}
 
-			skillInfo.put("name", skillList.get(i).getName());
-			skillInfo.put("employees", skillEmployeesArray);
+			role.put("uid", roleList.get(i).getUid());
+			role.put("name", roleList.get(i).getName());
+			role.put("employeeUids", associatedEmployeesJson);
 
-			skillInfoArray.add(skillInfo);
+			roleArray.add(role);
 		}
-
-		skills.put("skills", skillInfoArray);
-
-		return skills;
+		
+		return roleArray;
 	}
 
 	// Simple method to packet an error message as JSON.

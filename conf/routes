@@ -6,8 +6,6 @@
 #GET   /                            controllers.Application.newSession()
 GET   /                             controllers.Assets.at(path="/public/html", file="index.html")
 GET   /init                         controllers.Application.init()
-GET   /employees                    controllers.Application.getEmployees()
-GET   /roles                       controllers.Application.getRoles()
 POST  /addemployee                  controllers.Application.addEmployee()
 POST  /removeemployee               controllers.Application.removeEmployee()
 POST  /updateemployee               controllers.Application.updateEmployee()

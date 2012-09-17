@@ -17,6 +17,20 @@ var Client = function () {
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200) {
+          
+          // TODO: Handle first time login!!
+          var sessionData = JSON.parse(httpRequest.responseText);
+          var employeeList = sessionData.employees;
+          var roleList = sessionData.roles;
+
+          for each (employee in employeeList) {
+            employees.push(employee);
+          } 
+
+          for each (role in roleList) {
+            roles.push(role);
+          }
+
           responseHandler(true);
         } else {
           responseHandler(false);
@@ -28,6 +42,10 @@ var Client = function () {
     httpRequest.send(null); 
   };
 
+  this.getEmployees = function() {
+    return employees;
+  };
+
   this.getEmployee = function(uid) {
     for each (var employee in employees) {
       if(employee.uid === uid) {
@@ -35,10 +53,6 @@ var Client = function () {
       }
     }
     return null;
-  };
-
-  this.getEmployees = function() {
-    return employees;
   };
 
   this.addEmployee = function(employeeObject, responseHandler) {
@@ -118,6 +132,10 @@ var Client = function () {
    httpRequest.setRequestHeader('Content-Type', 'application/json');
    httpRequest.send(JSON.stringify(requestData));
   };
+
+  this.getRoles = function() {
+    return roles;
+  }
 
   this.getRole = function(uid) {
     for each (var role in roles) {
@@ -259,28 +277,3 @@ Client.getInstance = function() {
   var client = new Client();
   return client;
 };
-
-// function getSkillsFromServer() {
-
-//   var httpRequest = XMLHttpRequest();
-//   httpRequest.onreadystatechange = function() {
-//     if (httpRequest.readyState === 4) {
-
-//     }
-//   };
-//   httpRequest.open('GET', 'http://localhost:9000/skills', true);
-//   httpRequest.send(null);  
-
-// }
-
-//   function getEmployeesFromServer() { 
-
-//   var httpRequest = XMLHttpRequest();
-//   httpRequest.onreadystatechange = function() {
-//     if (httpRequest.readyState === 4) {
-//       // printIntoSpanNode(httpRequest.responseText, "employeePrintArea"); //TODO change
-//     }
-//   };
-//   httpRequest.open('GET', 'http://localhost:9000/employees', true);
-//   httpRequest.send(null);  
-//   }

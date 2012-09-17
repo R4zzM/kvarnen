@@ -227,7 +227,7 @@
 
         if (success) {
           var addedEmployee = data;
-          console.log(addedEmployee);
+
           var listElement = createListElement(addedEmployee.name, addedEmployee.uid, "showEmployeeUpdateForm(" + addedEmployee.uid + ")");
           
           // make it fade into the sidebar
@@ -326,7 +326,6 @@
         if (success) {
           var addedRole = data;
 
-          console.log("uid: " + addedRole.uid);
           var listElement = createListElement(addedRole.name, addedRole.uid, "showRoleUpdateForm(" + addedRole.uid + ")");
 
           // add it to the list and make it fade in.
@@ -543,8 +542,21 @@
 
       client.init(function (success) {
 
-        if (!success) {
-          alert('Init request failed!');
+        if (success) {
+          
+          for each (employee in client.getEmployees()) {
+            console.log(employee.uid);
+            var listElement = createListElement(employee.name, employee.uid, "showEmployeeUpdateForm(" + employee.uid + ")");
+            $(listElement).insertAfter("li#employees");
+          }
+
+          for each (role in client.getRoles()) {
+            var listElement = createListElement(role.name, role.uid, "showRoleUpdateForm(" + role.uid + ")");
+            $(listElement).insertAfter("li#roles");
+          }
+
+        } else {
+          showErrorAlert("Kunde inte initiera!");
         }
 
       });
