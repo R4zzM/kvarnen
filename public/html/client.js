@@ -137,12 +137,12 @@ var Client = function () {
       if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200) {
 
-          roleObject.uid = getIdFromJsonBody(httpRequest.responseText);
-
+          //roleObject.uid = getIdFromJsonBody(httpRequest.responseText);
+          var addedRoleObject = JSON.parse(httpRequest.responseText);
           // Add to list of all contacts
-          roles.push(roleObject);
-          responseHandler(true, roleObject.uid);
-        } else { // Non 200-reponse
+          roles.push(addedRoleObject);
+          responseHandler(true, addedRoleObject);        
+          } else { // Non 200-reponse
           var errorMsg = getErrorMessage(httpRequest.responseText);
           responseHandler(false, errorMsg);
         }
@@ -155,7 +155,30 @@ var Client = function () {
   };
 
   this.updateRole = function(roleObject, responseHandler) {
+    var httpRequest = XMLHttpRequest();
 
+    // take care of the http reponse
+    httpRequest.onreadystatechange = function() { 
+
+      if (httpRequest.readyState === 4) {
+        if (httpRequest.status === 200) {
+
+          var roleObjectResponse = JSON.parse(httpRequest.responseText); // should be the same as the object that was sent. Should be verified...
+          removeRole(roleObject.uid);
+
+          // Add to list of all roles 
+          roles.push(roleObjectResponse);
+          responseHandler(true, roleObjectResponse);
+        } else {
+          var errorMsg = getErrorMessage(httpRequest.responseText);
+          responseHandler(false, errorMsg);
+        }
+      }
+    };
+
+    httpRequest.open('POST', 'http://localhost:9000/updaterole', true); // TODO: localhost. 
+    httpRequest.setRequestHeader('Content-Type', 'application/json');
+    httpRequest.send(JSON.stringify(roleObject));
   };
 
   this.removeRole = function(roleObject, responseHandler) {
@@ -189,12 +212,21 @@ var Client = function () {
 
  var removeEmployee = function (uid) {
   // Remove role from list
- for (var i = 0; i < employees.length; i++) {
+  for (var i = 0; i < employees.length; i++) {
     if(employees[i].uid == uid) {
       employees.splice(i,1);
     }
-  }         
-  }  
+   }         
+ }  
+
+ var removeRole = function (uid) {
+  // Remove role from list
+  for (var i = 0; i < roles.length; i++) {
+    if(roles[i].uid == uid) {
+      roles.splice(i,1);
+    }
+   }  
+ }
 
   // private methods (TODO: intended, this is probably not best practice)
  var getErrorMessage = function(jsonData) {

@@ -36,13 +36,13 @@ public class EngineController implements Serializable {
 	private String sessionId = null;
 	
 	private EmployeeDirectory employeeDirectory = null;
-	private RoleDirectory skillDirectory = null;
+	private RoleDirectory roleDirectory = null;
 	private UidManager uidManager = null;
 	
 	public EngineController() {
 		sessionId = generateSessionId();
 		employeeDirectory = new EmployeeDirectory(this);
-		skillDirectory = new RoleDirectory(this);
+		roleDirectory = new RoleDirectory(this);
 		uidManager = new UidManager();
 	}
 	
@@ -57,7 +57,7 @@ public class EngineController implements Serializable {
 	}
 	
 	public RoleDirectory getRoleDirectory() {
-		return skillDirectory;
+		return roleDirectory;
 	}
 	
 	public UidManager getUidManager() {
@@ -90,9 +90,9 @@ public class EngineController implements Serializable {
 			ida = employeeDirectory.createNewEmployee("Ida Collinius", 1, 10, 0, 70);
 			hans = employeeDirectory.createNewEmployee("Hans Johansson", 0, 12, 0, 40);
 			
-			kitchen = skillDirectory.createNewRole("Kitchen", new ArrayList<Employee>());
-			cafe = skillDirectory.createNewRole("Cafe", new ArrayList<Employee>());
-			washing = skillDirectory.createNewRole("Washing", new ArrayList<Employee>());
+			kitchen = roleDirectory.createNewRole("Kitchen", new ArrayList<Employee>());
+			cafe = roleDirectory.createNewRole("Cafe", new ArrayList<Employee>());
+			washing = roleDirectory.createNewRole("Washing", new ArrayList<Employee>());
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}

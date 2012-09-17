@@ -12,7 +12,8 @@ POST  /addemployee                  controllers.Application.addEmployee()
 POST  /removeemployee               controllers.Application.removeEmployee()
 POST  /updateemployee               controllers.Application.updateEmployee()
 POST  /addrole                  	controllers.Application.addRole()
-POST  /removerole                  controllers.Application.removeSkill()
+POST  /removerole   				controllers.Application.removeRole()
+POST  /updaterole             		controllers.Application.updateRole()
 GET     /*file               	    controllers.Assets.at(path="/public/html", file)
 
 

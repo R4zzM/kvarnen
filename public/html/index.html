@@ -160,7 +160,7 @@
           <!-- Form to add/update/remove roles -->
           <form id="addRoleForm" class="form-horizontal">
 
-            <input type="hidden" id="roleId">
+            <input type="hidden" id="roleUid">
 
             <div class="control-group">
               <label class="control-label" for="roleFormNameInput">Namn</label>
@@ -227,7 +227,7 @@
 
         if (success) {
           var addedEmployee = data;
-          
+          console.log(addedEmployee);
           var listElement = createListElement(addedEmployee.name, addedEmployee.uid, "showEmployeeUpdateForm(" + addedEmployee.uid + ")");
           
           // make it fade into the sidebar
@@ -324,9 +324,10 @@
       client.addRole(roleObject, function (success, data) {
 
         if (success) {
-          var uid = data;
+          var addedRole = data;
 
-          var listElement = createListElement(roleObject.name, uid, "showRoleUpdateForm(" + uid + ")");
+          console.log("uid: " + addedRole.uid);
+          var listElement = createListElement(addedRole.name, addedRole.uid, "showRoleUpdateForm(" + addedRole.uid + ")");
 
           // add it to the list and make it fade in.
           $(listElement).insertAfter("li#roles");
@@ -344,7 +345,7 @@
 
       var requestData = 
       {
-        "uid" : $("input#roleId").val()
+        "uid" : $("input#roleUid").val()
       };
 
       client.removeRole(requestData, function (success, data) {
@@ -356,10 +357,50 @@
          hideAllForms();
        } else {
          var error = data;
-         showErrorAlert("Borttagning kunde inte tas bort! Felmeddelande: " + error);
+         showErrorAlert("Rollen kunde inte tas bort! Felmeddelande: " + error);
        }
 
      });
+    }
+
+    function updateRole() {
+      
+      var employeeUids = [];
+      $("input.employeeWithRole").each(function (idx, checkboxObject) {
+        if (checkboxObject.checked) {
+          employeeUids.push(checkboxObject.id);
+        } 
+      });
+
+      var updatedRoleInformation = 
+      {
+        "uid" : $("input#roleUid").val(), 
+        "name" : $("input#roleFormNameInput").val(), 
+        "employeeUids" : employeeUids
+      };
+
+      client.updateRole(updatedRoleInformation, function (success, data) {
+
+        if (success) {
+          var updatedRole = data;
+
+          console.log(updatedRole.employeeUids);
+          
+          var oldListElement = $("li#" + updatedRole.uid);
+          var newListElement = createListElement(updatedRole.name, updatedRole.uid, "showRoleUpdateForm(" + updatedRole.uid + ")");
+          $(newListElement).hide();
+
+          $(oldListElement).fadeOut("slow", function () {
+            $(oldListElement).replaceWith(newListElement);
+            $(newListElement).fadeIn("slow");
+          });
+          
+          showSuccessAlert("Uppdatering av informationen lyckades!");
+        } else {
+          var error = data;
+          showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + error);
+        }
+      });
     }
 
     function showRoleAddForm() {
@@ -384,17 +425,19 @@
       hideAllForms();
 
       // Set the form values
-      $("input#roleId").val(uid);
+      $("input#roleUid").val(uid);
       $("input#roleFormNameInput").val(client.getRole(uid).name);
       $("div#employeesWithRole").empty();
 
       // add the employee with role checkbuttons and set checked state
+      var roleObject = client.getRole(uid);
       var employees = client.getEmployees();
       $.each(employees, function (idx, employee) {
 
-        var roleObject = client.getRole(uid);
-        var employeeUidAsString = new Number(employee.uid).toString(); 
-        if ($.inArray(employeeUidAsString, roleObject.employeeUids) >= 0) {
+        // var employeeUidAsString = new Number(employee.uid).toString(); 
+        console.log(employee.uid);
+        console.log(roleObject.employeeUids);
+        if ($.inArray(employee.uid, roleObject.employeeUids) >= 0) {
           var checkbox = createCheckboxElement(employee.name, employee.uid, 'on');
           $("div#employeesWithRole").append(checkbox);
         } else {

@@ -37,9 +37,14 @@ public class RoleDirectory implements Serializable {
 		return role;
 	}
 	
-	// TODO: implement (sometime in the future...)
-	public Role updateRole(Role role) {
-		return null;
+	public Role updateRole(int uid, String name, List<Employee> associatedEmployees) throws UidNotFoundException {
+		RoleImpl role = (RoleImpl)getRole(uid);
+		if (role == null) {
+			throw new UidNotFoundException("Role not found for uid = " + uid + "!");
+		}
+		role.setName(name);
+		role.updateAssociatedEmployees(associatedEmployees);
+		return role;
 	}
 
 	/**
@@ -152,6 +157,11 @@ public class RoleDirectory implements Serializable {
 				retval = true;
 			}
 			return retval;
+		}
+		
+		public void updateAssociatedEmployees(List<Employee> associatedEmployees) {
+			this.associatedEmployees.clear();
+			this.associatedEmployees.addAll(associatedEmployees);
 		}
 
 		@Override

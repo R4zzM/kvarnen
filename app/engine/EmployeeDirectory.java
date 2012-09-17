@@ -41,7 +41,7 @@ public class EmployeeDirectory implements Serializable {
 	public Employee updateEmployee(int uid, String name, int minHoursPerDay, int maxHoursPerDay, int minHoursPerWeek, int maxHoursPerWeek) throws UidNotFoundException {
 		EmployeeImpl employee = (EmployeeImpl) getEmployee(uid);
 		if (employee == null) {
-			throw new NotFoundException("Employee does not exist!");
+			throw new UidNotFoundException("Employee does not exist!");
 		}
 		employee.setName(name);
 		employee.setMinHoursPerDay(minHoursPerDay);

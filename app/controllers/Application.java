@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
@@ -123,7 +124,7 @@ public class Application extends Controller {
 				for (int roleUid : roleUids) {
 					Logger.debug("removeEmployee(): Employee " + engineController.getEmployeeDirectory().getEmployee(uid).getName() + " was deassociated with role " + engineController.getRoleDirectory().getRole(roleUid).getName());
 				}
-				
+
 				// Remove the employee
 				engineController.getEmployeeDirectory().removeEmployee(uid);
 				result = ok();
@@ -151,7 +152,7 @@ public class Application extends Controller {
 		if (json != null) {
 
 			int uid = json.path("uid").asInt(-1);
-			
+
 			if (uid != -1) {
 				boolean success = false;
 				Employee employee = null;
@@ -217,111 +218,121 @@ public class Application extends Controller {
 		return result;
 	}
 
-	public static Result addRole() {
+	public static Result addRole() { 
 
 		// format
 		// {"addskill" : <roleInfo>}
 		// skillInfo: {"name" : <value>, "employees" : [<employee1>, <employee2>, ... <employeeN>]}
 
-		Logger.debug("addRole: START");
+		Logger.debug("addRole(): START");
 
 		Result result = null;
 		JsonNode json = request().body().asJson();
 		if (json != null) {
 
-			boolean success = true;
-
-			List<Employee> employeesWithRole = null;
-			String roleName = json.path("name").asText();
-			Logger.debug("addRole: name = " + roleName);
-			if (roleName == null || roleName.equals("")) {
-				success = false;
-				result = badRequest(createJsonErrorMessage("Parameter error: name. Value: " + roleName));
-			} else {
-				Iterator<JsonNode> iterator = json.path("employeeUids").getElements();
-				employeesWithRole = new ArrayList<Employee>();
-				if (iterator != null) {
-					int employeeUid = 0;
-					Employee employee = null;
-					while (iterator.hasNext()) {
-						JsonNode node = iterator.next();
-						employeeUid = Integer.parseInt(node.getTextValue()); // I don't understand this json implementation... :/ 
-						employee = engineController.getEmployeeDirectory().getEmployee(employeeUid);
-						employeesWithRole.add(employee);
-						Logger.debug("addRole: Associated role " + roleName + " with employee " + employee.getName());
-					}
-				} else {
-					success = false;
-					Logger.debug("Malformed request. employeeUid iterator was null");
-					result = badRequest(createJsonErrorMessage("Malformed request. employeeUid iterator was null"));
-				}
-			}
-
-			if (success) {
+				boolean success = false;
+				Role role = null;
 				try {
-					Role role = engineController.getRoleDirectory().createNewRole(roleName, employeesWithRole);
+					role = manipulateRoleFromJsonData(-1, json); // -1 => create.
+				} catch (IllegalArgumentException iae) {
+					Logger.error("addRole(): IllegalArgumentException. Msg: " + iae.getMessage());
+					result = badRequest(createJsonErrorMessage(iae.getMessage()));
+				} catch (OutOfUidsException ooue) {
+					Logger.error("addRole(): OutOfUidsException. Msg: " + ooue.getMessage());
+					result = internalServerError(createJsonErrorMessage(ooue.getMessage()));
+				} catch (UidNotFoundException unfe) {
+					Logger.error("addRole(): UidNotFoundException. Msg: " + unfe.getMessage());
+					result = badRequest(createJsonErrorMessage(unfe.getMessage()));
+				} finally {
+					success = (role != null) ? true : false;
+				}
+
+				if (success) {
 					ObjectNode response = Json.newObject();
 					response.put("uid", role.getUid());
+					response.put("name", role.getName());
+					ArrayNode employeesJsonArray = JsonNodeFactory.instance.arrayNode();
+					List<Employee> employees = role.getEmployees();
+					for (Employee employee : employees) {
+						employeesJsonArray.add(employee.getUid());
+					}
+
+					response.put("employeeUids",employeesJsonArray);
 					result = ok(response);
-
-				} catch (OutOfUidsException e) {
-					Logger.error("addRole: Exception caught. Msg:" + e.getMessage());
-					result = internalServerError(createJsonErrorMessage(e.getMessage()));
 				}
-			}
-
-		} else {
-			result = badRequest(createJsonErrorMessage("Request is malformed"));
-		}
-
-		Logger.debug("addSkill: END. Result = " + result.toString());
-
-		return result;
-	}
-
-	public static Result updateSkill() {
-
-		// format
-		// {"name" : <name>, "employees" : [<employee1>, <employee2>, ... <employeeN>]}
-
-		Logger.debug("updateSkill: START");
-
-		Result result = null;
-		JsonNode json = request().body().asJson();
-		if (json != null) {
-
-			boolean success = true;
-
-			String name = json.path("name").asText();
-			Logger.debug("name = " + name);
-			if (name == null) {
-				success = false;
-				result = badRequest(createJsonErrorMessage("Parameter error: name. Value: " + name));
-			}
-
-			if (success) {
-				// TODO!!! Add update skill method!!
-				//				Skill skill = engineController.getSkillDirectory().updateSkill(name); 
-				result = ok();
-			}
-
-			// TODO: handle employees field.
 
 		} else {
 			result = badRequest(createJsonErrorMessage("Malformed request!"));
 		}
 
-		Logger.debug("updateSkill: END. Result = " + result.toString());
+		Logger.debug("addRole(): END. Result = " + result.toString());
 
 		return result;
 	}
 
-	public static Result removeSkill() {
+	public static Result updateRole() {
+
+		Logger.debug("updateRole(): START");
+
+		Result result = null;
+		JsonNode json = request().body().asJson();
+		if (json != null) {
+
+			int uid = json.path("uid").asInt(-1);
+
+			if (uid != -1) {
+				boolean success = false;
+				Role role = null;
+				try {
+					role = manipulateRoleFromJsonData(uid, json);
+				} catch (IllegalArgumentException iae) {
+					Logger.error("updateRole(): IllegalArgumentException. Msg: " + iae.getMessage());
+					result = badRequest(createJsonErrorMessage(iae.getMessage()));
+				} catch (OutOfUidsException ooue) {
+					Logger.error("updateRole(): OutOfUidsException. Msg: " + ooue.getMessage());
+					result = badRequest(createJsonErrorMessage(ooue.getMessage()));
+				} catch (UidNotFoundException unfe) {
+					Logger.error("updateRole(): UidNotFoundException. Msg: " + unfe.getMessage());
+					result = badRequest(createJsonErrorMessage(unfe.getMessage()));
+				} finally {
+					success = (role != null) ? true : false;
+				}
+
+				if (success) {
+					// create the response
+					ObjectNode response = Json.newObject();
+					response.put("uid", role.getUid());
+					response.put("name", role.getName());
+
+					ArrayNode employeesJsonArray = JsonNodeFactory.instance.arrayNode();
+					List<Employee> employees = role.getEmployees();
+					for (Employee employee : employees) {
+						employeesJsonArray.add(employee.getUid());
+					}
+
+					response.put("employeeUids",employeesJsonArray);
+					result = ok(response);
+				}
+
+			} else {
+				result = badRequest(createJsonErrorMessage("Invalid request. Uid is missing!"));
+			}
+
+		} else {
+			result = badRequest(createJsonErrorMessage("Malformed request!"));
+		}
+
+		Logger.debug("updateRole(): END. Result = " + result.toString());
+
+		return result;
+	}
+
+	public static Result removeRole() {
 
 		// format
 		// {"uid" : <uid>}
 
-		Logger.debug("removeSkill: START");
+		Logger.debug("removeRole(): START");
 
 		Result result = null;
 		JsonNode json = request().body().asJson();
@@ -333,7 +344,7 @@ public class Application extends Controller {
 			Logger.debug("uid = " + uid);
 			if (uid == -1) {
 				success = false;
-				Logger.debug("removeSkill: Parameter error: id. Value: " + uid);
+				Logger.debug("removeRole(): Parameter error: id. Value: " + uid);
 				result = badRequest(createJsonErrorMessage("Parameter error: id. Value: " + uid));
 			}
 
@@ -343,11 +354,11 @@ public class Application extends Controller {
 			}
 
 		} else {
-			Logger.debug("removeSkill: Invalid Request. Cannot parse json.");
+			Logger.debug("removeRole(): Invalid Request. Cannot parse json.");
 			result = badRequest(createJsonErrorMessage("Request is invalid"));
 		}
 
-		Logger.debug("removeSkill: END. Result = " + result.toString());
+		Logger.debug("removeRole(): END. Result = " + result.toString());
 
 		return result;
 	}
@@ -465,5 +476,36 @@ public class Application extends Controller {
 		}
 
 		return employee;
+	}
+
+	private static Role manipulateRoleFromJsonData (int uid, JsonNode jsonData) throws IllegalArgumentException, UidNotFoundException, OutOfUidsException {
+
+		String name = jsonData.path("name").asText();
+
+		if (name == null || name.equals("")) {
+			throw new IllegalArgumentException("Parameter error: name == " + name);
+		} 
+		Iterator<JsonNode> iterator = jsonData.path("employeeUids").getElements();
+		List<Employee> associatedEmployees = new ArrayList<Employee>();
+		if (iterator != null) {
+			int employeeUid = 0;
+			Employee employee = null;
+			while (iterator.hasNext()) {
+				employeeUid = Integer.parseInt(iterator.next().getTextValue()); // I don't understand this json implementation... :/ 
+				employee = engineController.getEmployeeDirectory().getEmployee(employeeUid);
+				associatedEmployees.add(employee);
+			}
+		} else {
+			throw new IllegalArgumentException("Parameter error: associatedEmployeesInterator == " + name);
+		}
+
+		Role role = null;
+		if (uid == -1) {
+			role = engineController.getRoleDirectory().createNewRole(name, associatedEmployees);
+		} else {
+			role = engineController.getRoleDirectory().updateRole(uid, name, associatedEmployees);
+		}
+
+		return role;
 	}
 }
