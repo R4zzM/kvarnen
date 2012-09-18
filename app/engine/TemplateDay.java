@@ -13,6 +13,4 @@ public interface TemplateDay extends Serializable {
 	public abstract int getUid();
 	
 	public abstract List<Position> getPositions();
-	
-	public abstract Position createPosition(int requiredRoleUid, Date startTime, Date endTime) throws OutOfUidsException;
 }

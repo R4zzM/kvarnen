@@ -1,7 +1,8 @@
 package controllers;
 
-import java.sql.Date;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,8 +18,10 @@ import engine.EmployeeDirectory;
 import engine.EngineController;
 import engine.Position;
 import engine.RoleDirectory;
+import engine.TemplateDay;
 import engine.UidNotFoundException;
 import engine.Role;
+import engine.Util;
 import engine.uid.OutOfUidsException;
 import play.*;
 import play.libs.Json;
@@ -360,7 +363,30 @@ public class Application extends Controller {
 		Result result = null;
 		JsonNode json = request().body().asJson();
 		if (json != null) {
-			result = ok(); // TODO: TMP!!!!
+			
+			TemplateDay template = null;
+			boolean success = false;
+			try {
+				template = manipulateDayTemplateFromJsonData(-1, json);
+			} catch (IllegalArgumentException e) {
+				Logger.error("addDayTemplate(): IllegalArgumentException. Msg: " + e.getMessage());
+				result = badRequest(createJsonErrorMessage(e.getMessage()));
+			} catch (UidNotFoundException e) {
+				Logger.error("addDayTemplate(): UidNotFoundException. Msg: " + e.getMessage());
+				result = badRequest(createJsonErrorMessage(e.getMessage()));
+			} catch (OutOfUidsException e) {
+				Logger.error("addDayTemplate(): OutOfUidsException. Msg: " + e.getMessage());
+				result = badRequest(createJsonErrorMessage(e.getMessage()));
+			} finally {
+				success = (template != null) ? true : false; 
+			}
+
+			if (success) {
+				ObjectNode templateDayJson = Json.newObject();
+				templateDayJson.put("uid", template.getUid());
+				result = ok(templateDayJson);
+			}
+			
 		} else {
 			Logger.debug("addDayTemplate(): Invalid Request. Cannot parse json.");
 			result = badRequest(createJsonErrorMessage("Request is invalid"));
@@ -500,34 +526,43 @@ public class Application extends Controller {
 	}
 	
 	// TODO: fix this!!
-//	private static Day manipulateDayTemplateFromJsonData (int uid, JsonNode jsonData) throws IllegalArgumentException, UidNotFoundException, OutOfUidsException {
-//
-//		String name = jsonData.path("name").asText();
-//
-//		if (name == null || name.equals("")) {
-//			throw new IllegalArgumentException("Parameter error: name == " + name);
-//		} 
-//		Iterator<JsonNode> iterator = jsonData.path("positions").getElements();
-//		List<Position> positions = new ArrayList<Position>();
-//		if (iterator != null) {
-//			while (iterator.hasNext()) {
-//				JsonNode positionJson = iterator.next();
-//				int roleUid = positionJson.path("requiredRoleUid").asInt(-1);
-//				String startTime = positionJson.path("startTime").asText();
-//				String endTime = positionJson.path("endTime").asText();
-//				Day day = new Day(engineController, null, new Date());
-//			}
-//		} else {
-//			throw new IllegalArgumentException("Parameter error: associatedEmployeesInterator == " + name);
-//		}
-//
-//		Role templateDay = null;
-//		if (uid == -1) {
-//			templateDay = engineController.getTemplateManager().createDayTemplate(name, positions);
-//		} else {
-//			templateDay = engineController.getTemplateManager().updateDayTemplate(uid, name, positions);
-//		}
-//
-//		return templateDay;
-//	}
+	private static TemplateDay manipulateDayTemplateFromJsonData (int uid, JsonNode jsonData) throws IllegalArgumentException, UidNotFoundException, OutOfUidsException {
+
+		String name = jsonData.path("name").asText();
+		if (name == null || name.equals("")) {
+			throw new IllegalArgumentException("Parameter error: name == " + name);
+		} 
+		
+		Iterator<JsonNode> iterator = jsonData.path("positions").getElements();
+		List<Position> positions = new ArrayList<Position>();
+		if (iterator != null) {
+			while (iterator.hasNext()) {
+				JsonNode positionJson = iterator.next();
+				int requiredRoleUid = positionJson.path("requiredRoleUid").asInt(-1);
+				int startTime = positionJson.path("startTime").asInt(-1);
+				int endTime = positionJson.path("endTime").asInt(-1);
+				
+				if (requiredRoleUid != -1 && startTime != -1 && endTime != -1) {
+					Date startTimeObj = Util.intHour2DateObject(startTime);
+					Date endTimeObj = Util.intHour2DateObject(endTime);
+					Position position = engineController.getTemplateManager().createPosition(requiredRoleUid, startTimeObj, endTimeObj);
+					positions.add(position);
+				} else {
+					throw new IllegalArgumentException("Parameter error related to Position structure. requiredRoleUid == " + requiredRoleUid + "; startTime == " + startTime + "; endTime == " + endTime);
+				}
+			}
+		} else {
+			throw new IllegalArgumentException("Parameter error: associatedEmployeesInterator == " + name);
+		}
+		
+		TemplateDay templateDay = null;
+		
+		if (uid == -1) {
+			templateDay = engineController.getTemplateManager().createNewDayTemplate(name, positions);
+		} else {
+			templateDay = engineController.getTemplateManager().updateDayTemplate(uid, name, positions);
+		}
+
+		return templateDay;
+	}
 }

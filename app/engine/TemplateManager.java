@@ -17,14 +17,23 @@ public class TemplateManager {
 		allDayTemplates = new ArrayList<TemplateDayImpl>();
 	}
 	
-	public void createNewDayTemplate(String name, List<Position> positions) throws OutOfUidsException {
+	public TemplateDay createNewDayTemplate(String name, List<Position> positions) throws OutOfUidsException {
 		int uid = engineController.getUidManager().generateTemplateDayUid();
 		TemplateDayImpl templateDayImpl = new TemplateDayImpl(uid, name, positions);
 		allDayTemplates.add(templateDayImpl);
+		return (TemplateDay)templateDayImpl;
 	}
 	
-	public void updateDayTemplate(int uid, String name, List<Position> positions) {
+	public Position createPosition(int requiredRoleUid, Date startTime, Date endTime) throws OutOfUidsException {
+		Role requiredRole = engineController.getRoleDirectory().getRole(requiredRoleUid);
+		int uid = engineController.getUidManager().generatePositionUid();
+		Position position = new Position(requiredRole, uid, startTime, endTime);
+		return position;
+	}
+	
+	public TemplateDay updateDayTemplate(int uid, String name, List<Position> positions) {
 		// TODO: implement
+		return null;
 	}
 	
 	public TemplateDay getTemplateDay(int uid) {
@@ -84,15 +93,6 @@ public class TemplateManager {
 			for (Position pos : newPositions) {
 				positions.add(pos);
 			}
-		}
-
-		@Override
-		public Position createPosition(int requiredRoleUid, Date startTime, Date endTime) throws OutOfUidsException {
-			Role requiredRole = engineController.getRoleDirectory().getRole(requiredRoleUid);
-			int uid = engineController.getUidManager().generatePositionUid();
-			Position position = new Position(requiredRole, uid, startTime, endTime);
-			positions.add(position);
-			return position;
 		}
 	}
 	
