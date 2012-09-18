@@ -43,6 +43,7 @@ public class Application extends Controller {
 				engineController = SessionManager.getInstance().newSession(); //TODO: should be redone
 				result = ok();
 			} catch (Exception e) {
+				Logger.error("Exception when creating session. Msg: " + e.getMessage());
 				result = internalServerError(createJsonErrorMessage("Exception when creating session. Msg: " + e.getMessage()));
 			}
 		} else {

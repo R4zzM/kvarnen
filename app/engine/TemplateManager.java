@@ -1,12 +1,15 @@
 package engine;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import engine.uid.OutOfUidsException;
 
-public class TemplateManager {
+public class TemplateManager implements Serializable {
+
+	private static final long serialVersionUID = 9045605830987464993L;
 
 	public List<TemplateDayImpl> allDayTemplates = null;
 	
