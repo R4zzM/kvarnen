@@ -33,15 +33,13 @@
           <div class="well">
             <ul class="nav nav-list">
              <li id="employees" class="nav-header"><big>Personal [<a href="#" id="addEmployee">+</a>]</big></li>
-             <!--<li class="divider"></li>-->
-             <!--<li><a href="#" id="addEmployee"><small>[Skapa ny anställd]</small></a></li>-->
              <li id="roles" class="nav-header"><big>Roller [<a href="#" id="addRole">+</a>]</big></li>
-             <!--<li class="divider"</li>-->
-               <!--<li><a href="#" id="addRole"><small>[Skapa ny position]</small></a></li>-->
-               <li id="templates" class="nav-header"><big>Mallar [<a href="#" id="addTemplate">+</a>]</big></li>
-               <!--<li class="divider"></li>-->
-               <!--<li><a href="#" id="addTemplate"><small>[Skapa ny mall]</small></a></li>-->
-             </ul>
+             <li id="templates" class="nav-header"><big>Mallar</big></li>
+              <ul>
+                <li id="daily" class="nav-header">Dagar [<a href="#" id="addDayTemplate">+</a>]</li>
+                <li id="weekly" class="nav-header">Veckor [<a href="#" id="addWeekTemplate">+</a>]</li>
+              </ul>
+            </ul>
            </div>
          </div>
 
@@ -171,7 +169,7 @@
 
             <div class="control-group">
               <div class="controls" id="employeesWithRole">
-                <!-- Employees that has skill here. Added dynamically-->
+                <!-- Employees associated with role are shown here. Added dynamically-->
               </div>
             </div>
 
@@ -185,6 +183,117 @@
               <div class="controls">
                 <button type="submit" class="btn btn-primary" onClick="updateRole()">Uppdatera</button>
                 <button type="submit" class="btn btn-danger" onClick="removeRole()">Radera</button>
+              </div>
+            </div>
+          </form>
+
+
+          <!-- Form to add/update/remove templates -->
+          <form id="templateForm" class="form-horizontal">
+
+            <input type="hidden" id="templateUid">
+
+            <div class="control-group">
+              <label class="control-label" for="templateNameInput">Namn</label>
+              <div class="controls">
+                <input type="text" id="templateNameInput">
+              </div>
+            </div>
+
+            <div class="control-group">
+            <div id="positionsTable">
+              <table id="positionTable" class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Roll</th>
+                    <th>Start (timma)</th>
+                    <th>Slut (timma)</th>
+                  <tr>
+                </thead>
+                <tbody id="positionTableBody">
+                  
+                  <tr id="permanentPositionAddRow">
+                    <td>
+                      <select id="positionRoleSelect">
+                        <option>--Välj Roll--</option>
+                        <option>Cafe</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select id="positionStartTimeSelect">
+                        <option>01</option>
+                        <option>02</option>
+                        <option>03</option>
+                        <option>04</option>
+                        <option>05</option>
+                        <option>06</option>
+                        <option>07</option>
+                        <option>08</option>
+                        <option>09</option>
+                        <option>10</option>
+                        <option>11</option>
+                        <option>12</option>
+                        <option>13</option>
+                        <option>14</option>
+                        <option>15</option>
+                        <option>16</option>
+                        <option>17</option>
+                        <option>18</option>
+                        <option>19</option>
+                        <option>20</option>
+                        <option>21</option>
+                        <option>22</option>
+                        <option>23</option>
+                        <option>24</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select id="positionEndTimeSelect">
+                        <option>01</option>
+                        <option>02</option>
+                        <option>03</option>
+                        <option>04</option>
+                        <option>05</option>
+                        <option>06</option>
+                        <option>07</option>
+                        <option>08</option>
+                        <option>09</option>
+                        <option>10</option>
+                        <option>11</option>
+                        <option>12</option>
+                        <option>13</option>
+                        <option>14</option>
+                        <option>15</option>
+                        <option>16</option>
+                        <option>17</option>
+                        <option>18</option>
+                        <option>19</option>
+                        <option>20</option>
+                        <option>21</option>
+                        <option>22</option>
+                        <option>23</option>
+                        <option>24</option>
+                      </select>
+                    </td>
+                    <td>
+                      <a class="btn btn-small" href="#"><i class="icon-plus-sign"></i></a>
+                    </td>
+                  <tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+            <div id="addTemplateButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-success" onClick="addTemplate()">Skapa</button>
+              </div>
+            </div>
+
+            <div id="updateTemplateButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary" onClick="updateTemplate()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="removeTemplate()">Radera</button>
               </div>
             </div>
           </form>
@@ -483,6 +592,17 @@
       $("div#updateEmployeeButton").show();
     }
 
+    function showTemplateAddForm() {
+      hideAllForms();
+        
+      $("input#templateNameInput").val("");
+
+      $("form#templateForm").show();
+      $("div#addTemplateButton").show();
+      $("div#updateTemplateButton").hide();
+    }
+
+
     function showErrorAlert(message) {
       hideAllAlerts();
       $("#alertError").html(message);
@@ -531,6 +651,7 @@
     function hideAllForms() {
       $("#addEmployeeForm").hide();
       $("#addRoleForm").hide();
+      $("#templateForm").hide();
     }
 
     function hideAllAlerts() {
@@ -570,6 +691,10 @@
 
       $("a#addRole").click(function() {
         showRoleAddForm();
+      });
+
+      $("a#addDayTemplate").click(function() {
+        showTemplateAddForm();
       });
 
       // disable enter key for all forms
