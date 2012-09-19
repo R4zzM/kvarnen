@@ -36,9 +36,9 @@
              <li id="roles" class="nav-header"><big>2. Roller [<a href="#" id="addRole">+</a>]</big></li>
              <li id="templates" class="nav-header"><big>3. Mallar</big></li>
               <ul>
-                <li id="daily" class="nav-header">a. Dag [<a href="#" id="addDayTemplate">+</a>]</li>
-                <li id="weekly" class="nav-header">b. Vecka [<a href="#" id="addWeekTemplate">+</a>]</li>
-                <li id="weekly" class="nav-header">c. Säsong [<a href="#" id="addSeasonTemplate">+</a>]</li>
+                <li id="daily" class="nav-header">a. Dagar [<a href="#" id="addDayTemplate">+</a>]</li>
+                <li id="weekly" class="nav-header">b. Veckor [<a href="#" id="addWeekTemplate">+</a>]</li>
+                <li id="weekly" class="nav-header">c. Säsonger [<a href="#" id="addSeasonTemplate">+</a>]</li>
               </ul>
               <li id="templates" class="nav-header"><big>4. Scheman [<a href="#" id="addSchedule">+</a>]</big></li>
             </ul>
@@ -189,7 +189,6 @@
             </div>
           </form>
 
-
           <!-- Form to add/update/remove templates -->
           <form id="templateForm" class="form-horizontal">
 
@@ -278,7 +277,7 @@
                       </select>
                     </td>
                     <td>
-                      <a class="btn btn-small" href="#"><i class="icon-plus-sign"></i></a>
+                      <a class="btn btn-small" href="#" onClick="insertPosTableRow()"><i class="icon-plus-sign"></i></a>
                     </td>
                   <tr>
                 </tbody>
@@ -345,8 +344,8 @@
           $(listElement).insertAfter("li#employees");
           $(listElement).hide();
           $(listElement).fadeIn("slow");
-        } else {
-          var error = data;
+        } else 
+{          var error = data;
           showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + error);
         }
       });
@@ -648,6 +647,36 @@
        $(checkboxLabel).append(name);
        $(checkboxLabel).append(checkbox);
        return checkboxLabel;
+    }
+
+    function insertPosTableRow() {
+      var row = createPosTableRow();
+      $(row).insertBefore("tr#permanentPositionAddRow");
+    }
+
+    function removePosTableRow() {
+      var row = createPosTableRow();
+      $(row).insertBefore("tr#permanentPositionAddRow");
+    }
+
+    function createPosTableRow() {
+      
+      var row = $("<tr></tr>");
+      var roleCol = $("<td></td");
+      $(roleCol).html($("select#positionRoleSelect").val());
+      var startHourCol = $("<td></td");
+      $(startHourCol).html($("select#positionStartTimeSelect").val());
+      var endHourCol = $("<td></td");
+      $(endHourCol).html($("select#positionEndTimeSelect").val());
+      var removeButtorCol = $("<td><a class=\"btn btn-small\" href=\"#\"><i class=\"icon-minus-sign\"></i></a></td>");
+      $(removeButtorCol).attr('onClick', "removePosTableRow()");
+
+      $(row).append(roleCol);
+      $(row).append(startHourCol);
+      $(row).append(endHourCol);
+      $(row).append(removeButtorCol);
+
+      return row;
     }
 
     function hideAllForms() {
