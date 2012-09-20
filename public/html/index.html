@@ -216,8 +216,6 @@
                   <tr id="permanentPositionAddRow">
                     <td>
                       <select id="positionRoleSelect">
-                        <option>--Välj Roll--</option>
-                        <option>Cafe</option>
                       </select>
                     </td>
                     <td>
@@ -344,8 +342,8 @@
           $(listElement).insertAfter("li#employees");
           $(listElement).hide();
           $(listElement).fadeIn("slow");
-        } else 
-{          var error = data;
+        } else {          
+          var error = data;
           showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + error);
         }
       });
@@ -597,6 +595,14 @@
       hideAllForms();
         
       $("input#templateNameInput").val("");
+      
+      // populate required role selector
+      $("select#positionRoleSelect").empty();
+      for each (role in client.getRoles()) {
+        var optionNode = createOptionNode(role.name, role.uid);
+        $("select#positionRoleSelect").append(optionNode);        
+      }
+
 
       $("form#templateForm").show();
       $("div#addTemplateButton").show();
@@ -654,9 +660,8 @@
       $(row).insertBefore("tr#permanentPositionAddRow");
     }
 
-    function removePosTableRow() {
-      var row = createPosTableRow();
-      $(row).insertBefore("tr#permanentPositionAddRow");
+    function removePosTableRow(row) {
+      $(row).remove();
     }
 
     function createPosTableRow() {
@@ -668,15 +673,24 @@
       $(startHourCol).html($("select#positionStartTimeSelect").val());
       var endHourCol = $("<td></td");
       $(endHourCol).html($("select#positionEndTimeSelect").val());
-      var removeButtorCol = $("<td><a class=\"btn btn-small\" href=\"#\"><i class=\"icon-minus-sign\"></i></a></td>");
-      $(removeButtorCol).attr('onClick', "removePosTableRow()");
+      var removeButtonCol = $("<td><a class=\"btn btn-small\" href=\"#\"><i class=\"icon-minus-sign\"></i></a></td>");
+      $(removeButtonCol).attr('onclick', "removePosTableRow(this.parentNode)");
 
       $(row).append(roleCol);
       $(row).append(startHourCol);
       $(row).append(endHourCol);
-      $(row).append(removeButtorCol);
+      $(row).append(removeButtonCol);
 
       return row;
+    }
+
+    function createOptionNode(optionText, id) {
+      var optionNode = $("<option></option>");
+      $(optionNode).html(optionText);
+      if (id) {
+        $(optionNode).attr('id', id);
+      }
+      return optionNode;
     }
 
     function hideAllForms() {
@@ -692,17 +706,23 @@
 
     $(document).ready(function () {
 
+      hideAllForms();
+      hideAllAlerts();
+
       client.init(function (success) {
 
         if (success) {
           
           for each (employee in client.getEmployees()) {
-            console.log(employee.uid);
+
+            // create the navbar entry
             var listElement = createListElement(employee.name, employee.uid, "showEmployeeUpdateForm(" + employee.uid + ")");
             $(listElement).insertAfter("li#employees");
           }
 
           for each (role in client.getRoles()) {
+
+            // create the navbar entry
             var listElement = createListElement(role.name, role.uid, "showRoleUpdateForm(" + role.uid + ")");
             $(listElement).insertAfter("li#roles");
           }
@@ -712,9 +732,6 @@
         }
 
       });
-
-      hideAllForms();
-      hideAllAlerts();
 
       $("a#addEmployee").click(function() {
         showEmployeeAddForm();
