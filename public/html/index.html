@@ -283,9 +283,9 @@
             </div>
           </div>
 
-            <div id="addTemplateButton" class="control-group">
+            <div id="addDayTemplateButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-success" onClick="addTemplate()">Skapa</button>
+                <button type="submit" class="btn btn-success" onClick="addDayTemplate()">Skapa</button>
               </div>
             </div>
 
@@ -490,8 +490,6 @@
 
         if (success) {
           var updatedRole = data;
-
-          console.log(updatedRole.employeeUids);
           
           var oldListElement = $("li#" + updatedRole.uid);
           var newListElement = createListElement(updatedRole.name, updatedRole.uid, "showRoleUpdateForm(" + updatedRole.uid + ")");
@@ -508,6 +506,37 @@
           showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + error);
         }
       });
+    }
+
+    function addDayTemplate() {
+
+      var templateName = $("input#templateNameInput").val();
+
+      var positions = [];
+      $("tr.positionTableDynamicRow").each(function (index, element) {
+
+        var requiredRole = $(element).find(".positionTableRoleCol").text();
+        var startTime = $(element).find(".positionTableStartHourCol").text();
+        var endTime = $(element).find(".positionTableEndHourCol").text();
+
+        var position = {
+          "requiredRole" : requiredRole,
+          "startTime" : startTime,
+          "endTime" : endTime
+        };
+
+        positions.push(position);
+
+      });
+
+      var dayTemplate = {
+        "name" : templateName,
+        "positions" : positions
+      };
+
+      console.log(dayTemplate);
+      // TODO: send to server.
+
     }
 
     function showRoleAddForm() {
@@ -667,12 +696,20 @@
     function createPosTableRow() {
       
       var row = $("<tr></tr>");
+      $(row).attr('class', 'positionTableDynamicRow');
+
       var roleCol = $("<td></td");
+      $(roleCol).attr('class', 'positionTableRoleCol');
       $(roleCol).html($("select#positionRoleSelect").val());
+
       var startHourCol = $("<td></td");
+      $(startHourCol).attr('class', 'positionTableStartHourCol');
       $(startHourCol).html($("select#positionStartTimeSelect").val());
+
       var endHourCol = $("<td></td");
+      $(endHourCol).attr('class', 'positionTableEndHourCol');
       $(endHourCol).html($("select#positionEndTimeSelect").val());
+
       var removeButtonCol = $("<td><a class=\"btn btn-small\" href=\"#\"><i class=\"icon-minus-sign\"></i></a></td>");
       $(removeButtonCol).attr('onclick', "removePosTableRow(this.parentNode)");
 
@@ -763,3 +800,4 @@
     </script>
   </body>
   </html>
+
