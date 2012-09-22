@@ -13,308 +13,306 @@
 
   </style>
 
-    <link rel="shortcut icon" href="ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
-  </head>
-  <body>
+  <link rel="shortcut icon" href="ico/favicon.ico">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+</head>
+<body>
 
-    <div class="container">
+  <div class="container">
 
-      <!-- Header -->
-      <div class="page-header">
-        <h1>Schemaläggaren</h1>
-      </div>
-
-      <div class="row">
-        <div class="span4">
-          <div class="well">
-            <ul class="nav nav-list">
-             <li id="employees" class="nav-header"><big>1. Personal [<a href="#" id="addEmployee">+</a>]</big></li>
-             <li id="roles" class="nav-header"><big>2. Roller [<a href="#" id="addRole">+</a>]</big></li>
-             <li id="templates" class="nav-header"><big>3. Mallar</big></li>
-              <ul>
-                <li id="daily" class="nav-header">a. Dagar [<a href="#" id="addDayTemplate">+</a>]</li>
-                <li id="weekly" class="nav-header">b. Veckor [<a href="#" id="addWeekTemplate">+</a>]</li>
-                <li id="weekly" class="nav-header">c. Säsonger [<a href="#" id="addSeasonTemplate">+</a>]</li>
-              </ul>
-              <li id="templates" class="nav-header"><big>4. Scheman [<a href="#" id="addSchedule">+</a>]</big></li>
-            </ul>
-           </div>
-         </div>
-
-         <div class="span7">
-
-          <!-- Form to add/update/remove employees -->
-          <form id ="addEmployeeForm" class="form-horizontal">
-
-            <input type="hidden" id="employeeUid">
-
-            <div class="control-group">
-              <label class="control-label" for="employeeNameInput">Namn</label>
-              <div class="controls">
-                <input type="text" id="employeeNameInput">
-              </div>
-            </div>
-
-            <div class="control-group">
-              <label class="control-label" for="minHoursPerDay">Min tid per dag</label>
-              <div class="controls">
-                <select id="minHoursPerDay">
-                  <option>0</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="control-group">
-              <label class="control-label" for="maxHoursPerDay">Max tid per dag</label>
-              <div class="controls">
-                <select id="maxHoursPerDay">
-                  <option>0</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                  <option>9</option>
-                  <option>10</option>
-                  <option>11</option>
-                  <option>12</option>
-                  <option>13</option>
-                  <option>14</option>
-                  <option>15</option>
-                  <option>16</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="control-group">
-              <label class="control-label" for="minHoursPerWeek">Min tid per vecka</label>
-              <div class="controls">
-                <select id="minHoursPerWeek">
-                  <option>0</option>
-                  <option>5</option>
-                  <option>10</option>
-                  <option>15</option>
-                  <option>20</option>
-                  <option>25</option>
-                  <option>30</option>
-                  <option>35</option>
-                  <option>40</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="control-group">
-              <label class="control-label" for="maxHoursPerWeek">Max tid per vecka</label>
-              <div class="controls">
-                <select id="maxHoursPerWeek">
-                  <option>0</option>
-                  <option>5</option>
-                  <option>10</option>
-                  <option>15</option>
-                  <option>20</option>
-                  <option>25</option>
-                  <option>30</option>
-                  <option>35</option>
-                  <option>40</option>
-                  <option>45</option>
-                  <option>50</option>
-                  <option>55</option>
-                  <option>60</option>
-                  <option>65</option>
-                  <option>70</option>
-                  <option>75</option>
-                  <option>80</option>
-                </select>
-              </div>
-            </div>
-
-            <div id="addEmployeeButton" class="control-group">
-              <div class="controls">
-                <button class="btn btn-success" onClick="addEmployee()">Skapa</button>
-              </div>
-            </div>
-
-            <div id="updateEmployeeButton" class="control-group">
-              <div class="controls">
-                <button class="btn btn-primary" onClick="updateEmployee()">Uppdatera</button>
-                <button class="btn btn-danger" onClick="removeEmployee()">Radera</button>
-              </div>
-            </div>
-          </form>
-
-          <!-- Form to add/update/remove roles -->
-          <form id="addRoleForm" class="form-horizontal">
-
-            <input type="hidden" id="roleUid">
-
-            <div class="control-group">
-              <label class="control-label" for="roleFormNameInput">Namn</label>
-              <div class="controls">
-                <input type="text" id="roleFormNameInput">
-              </div>
-            </div>
-
-            <div class="control-group">
-              <div class="controls" id="employeesWithRole">
-                <!-- Employees associated with role are shown here. Added dynamically-->
-              </div>
-            </div>
-
-            <div id="addRoleButton" class="control-group">
-              <div class="controls">
-                <button type="submit" class="btn btn-success" onClick="addRole()">Skapa</button>
-              </div>
-            </div>
-
-            <div id="updateRoleButton" class="control-group">
-              <div class="controls">
-                <button type="submit" class="btn btn-primary" onClick="updateRole()">Uppdatera</button>
-                <button type="submit" class="btn btn-danger" onClick="removeRole()">Radera</button>
-              </div>
-            </div>
-          </form>
-
-          <!-- Form to add/update/remove templates -->
-          <form id="templateForm" class="form-horizontal">
-
-            <input type="hidden" id="templateUid">
-
-            <div class="control-group">
-              <label class="control-label" for="templateNameInput">Namn</label>
-              <div class="controls">
-                <input type="text" id="templateNameInput">
-              </div>
-            </div>
-
-            <div class="control-group">
-            <div id="positionsTable">
-              <table id="positionTable" class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Roll</th>
-                    <th>Start (timma)</th>
-                    <th>Slut (timma)</th>
-                  <tr>
-                </thead>
-                <tbody id="positionTableBody">
-                  
-                  <tr id="permanentPositionAddRow">
-                    <td>
-                      <select id="positionRoleSelect">
-                      </select>
-                    </td>
-                    <td>
-                      <select id="positionStartTimeSelect">
-                        <option>01</option>
-                        <option>02</option>
-                        <option>03</option>
-                        <option>04</option>
-                        <option>05</option>
-                        <option>06</option>
-                        <option>07</option>
-                        <option>08</option>
-                        <option>09</option>
-                        <option>10</option>
-                        <option>11</option>
-                        <option>12</option>
-                        <option>13</option>
-                        <option>14</option>
-                        <option>15</option>
-                        <option>16</option>
-                        <option>17</option>
-                        <option>18</option>
-                        <option>19</option>
-                        <option>20</option>
-                        <option>21</option>
-                        <option>22</option>
-                        <option>23</option>
-                        <option>24</option>
-                      </select>
-                    </td>
-                    <td>
-                      <select id="positionEndTimeSelect">
-                        <option>01</option>
-                        <option>02</option>
-                        <option>03</option>
-                        <option>04</option>
-                        <option>05</option>
-                        <option>06</option>
-                        <option>07</option>
-                        <option>08</option>
-                        <option>09</option>
-                        <option>10</option>
-                        <option>11</option>
-                        <option>12</option>
-                        <option>13</option>
-                        <option>14</option>
-                        <option>15</option>
-                        <option>16</option>
-                        <option>17</option>
-                        <option>18</option>
-                        <option>19</option>
-                        <option>20</option>
-                        <option>21</option>
-                        <option>22</option>
-                        <option>23</option>
-                        <option>24</option>
-                      </select>
-                    </td>
-                    <td>
-                      <a class="btn btn-small" href="#" onClick="insertPosTableRow()"><i class="icon-plus-sign"></i></a>
-                    </td>
-                  <tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-            <div id="addDayTemplateButton" class="control-group">
-              <div class="controls">
-                <button type="submit" class="btn btn-success" onClick="addDayTemplate()">Skapa</button>
-              </div>
-            </div>
-
-            <div id="updateTemplateButton" class="control-group">
-              <div class="controls">
-                <button type="submit" class="btn btn-primary" onClick="updateTemplate()">Uppdatera</button>
-                <button type="submit" class="btn btn-danger" onClick="removeTemplate()">Radera</button>
-              </div>
-            </div>
-          </form>
-
-          <div class="alert alert-success" id="alertSuccess">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-          </div>
-          <div class="alert alert-error" id="alertError">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-          </div>
-
-        </div>
-      </div>
+    <!-- Header -->
+    <div class="page-header">
+      <h1>Schemaläggaren</h1>
     </div>
 
-    <!-- Sourced scripts -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="client.js"></script>
+    <div class="row">
+      <div class="span4">
+        <div class="well">
+          <ul class="nav nav-list">
+           <li id="employees" class="nav-header"><big>1. Personal [<a href="#" id="addEmployee">+</a>]</big></li>
+           <li id="roles" class="nav-header"><big>2. Roller [<a href="#" id="addRole">+</a>]</big></li>
+           <li id="daily" class="nav-header"><big>4. Dagar [<a href="#" id="addDayTemplate">+</a>]</big></li>
+           <li id="weekly" class="nav-header"><big>5. Veckor [<a href="#" id="addWeekTemplate">+</a>]</big></li>
+           <li id="weekly" class="nav-header"><big>6. Säsonger [<a href="#" id="addSeasonTemplate">+</a>]</big></li>
+         </ul>
+       </div>
+     </div>
 
-    <!-- Inline script that controls the UI -->
-    <script type="text/javascript">
+     <div class="span7">
+
+      <!-- Form to add/update/remove employees -->
+      <form id ="addEmployeeForm" class="form-horizontal">
+
+        <input type="hidden" id="employeeUid">
+
+        <div class="control-group">
+          <label class="control-label" for="employeeNameInput">Namn</label>
+          <div class="controls">
+            <input type="text" id="employeeNameInput">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="minHoursPerDay">Min tid per dag</label>
+          <div class="controls">
+            <select id="minHoursPerDay">
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="maxHoursPerDay">Max tid per dag</label>
+          <div class="controls">
+            <select id="maxHoursPerDay">
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option>
+              <option>13</option>
+              <option>14</option>
+              <option>15</option>
+              <option>16</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="minHoursPerWeek">Min tid per vecka</label>
+          <div class="controls">
+            <select id="minHoursPerWeek">
+              <option>0</option>
+              <option>5</option>
+              <option>10</option>
+              <option>15</option>
+              <option>20</option>
+              <option>25</option>
+              <option>30</option>
+              <option>35</option>
+              <option>40</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="maxHoursPerWeek">Max tid per vecka</label>
+          <div class="controls">
+            <select id="maxHoursPerWeek">
+              <option>0</option>
+              <option>5</option>
+              <option>10</option>
+              <option>15</option>
+              <option>20</option>
+              <option>25</option>
+              <option>30</option>
+              <option>35</option>
+              <option>40</option>
+              <option>45</option>
+              <option>50</option>
+              <option>55</option>
+              <option>60</option>
+              <option>65</option>
+              <option>70</option>
+              <option>75</option>
+              <option>80</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="addEmployeeButton" class="control-group">
+          <div class="controls">
+            <button class="btn btn-success" onClick="addEmployee()">Skapa</button>
+          </div>
+        </div>
+
+        <div id="updateEmployeeButton" class="control-group">
+          <div class="controls">
+            <button class="btn btn-primary" onClick="updateEmployee()">Uppdatera</button>
+            <button class="btn btn-danger" onClick="removeEmployee()">Radera</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Form to add/update/remove roles -->
+      <form id="addRoleForm" class="form-horizontal">
+
+        <input type="hidden" id="roleUid">
+
+        <div class="control-group">
+          <label class="control-label" for="roleFormNameInput">Namn</label>
+          <div class="controls">
+            <input type="text" id="roleFormNameInput">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="controls" id="employeesWithRole">
+            <!-- Employees associated with role are shown here. Added dynamically-->
+          </div>
+        </div>
+
+        <div id="addRoleButton" class="control-group">
+          <div class="controls">
+            <button type="submit" class="btn btn-success" onClick="addRole()">Skapa</button>
+          </div>
+        </div>
+
+        <div id="updateRoleButton" class="control-group">
+          <div class="controls">
+            <button type="submit" class="btn btn-primary" onClick="updateRole()">Uppdatera</button>
+            <button type="submit" class="btn btn-danger" onClick="removeRole()">Radera</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Form to add/update/remove templates -->
+      <form id="templateForm" class="form-horizontal">
+
+        <input type="hidden" id="dayTemplateUid">
+
+        <div class="control-group">
+          <label class="control-label" for="templateNameInput">Namn</label>
+          <div class="controls">
+            <input type="text" id="templateNameInput">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div id="positionsTable">
+            <table id="positionTable" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Roll</th>
+                  <th>Start (timma)</th>
+                  <th>Slut (timma)</th>
+                  <tr>
+                  </thead>
+                  <tbody id="positionTableBody">
+
+<!--
+                    <tr id="permanentPositionAddRow">
+                      <td>
+                        <select id="positionRoleSelect">
+                        </select>
+                      </td>
+                      <td>
+                        <select id="positionStartTimeSelect">
+                          <option>01</option>
+                          <option>02</option>
+                          <option>03</option>
+                          <option>04</option>
+                          <option>05</option>
+                          <option>06</option>
+                          <option>07</option>
+                          <option>08</option>
+                          <option>09</option>
+                          <option>10</option>
+                          <option>11</option>
+                          <option>12</option>
+                          <option>13</option>
+                          <option>14</option>
+                          <option>15</option>
+                          <option>16</option>
+                          <option>17</option>
+                          <option>18</option>
+                          <option>19</option>
+                          <option>20</option>
+                          <option>21</option>
+                          <option>22</option>
+                          <option>23</option>
+                          <option>24</option>
+                        </select>
+                      </td>
+                      <td>
+                        <select id="positionEndTimeSelect">
+                          <option>01</option>
+                          <option>02</option>
+                          <option>03</option>
+                          <option>04</option>
+                          <option>05</option>
+                          <option>06</option>
+                          <option>07</option>
+                          <option>08</option>
+                          <option>09</option>
+                          <option>10</option>
+                          <option>11</option>
+                          <option>12</option>
+                          <option>13</option>
+                          <option>14</option>
+                          <option>15</option>
+                          <option>16</option>
+                          <option>17</option>
+                          <option>18</option>
+                          <option>19</option>
+                          <option>20</option>
+                          <option>21</option>
+                          <option>22</option>
+                          <option>23</option>
+                          <option>24</option>
+                        </select>
+                      </td>
+                      <td>
+                        <a class="btn btn-small" href="#" onClick="insertPosTableRow()"><i class="icon-plus-sign"></i></a>
+                      </td>
+                      <tr>
+                      -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div id="addDayTemplateButton" class="control-group">
+                  <div class="controls">
+                    <button type="submit" class="btn btn-success" onClick="addDayTemplate()">Skapa</button>
+                  </div>
+                </div>
+
+                <div id="updateTemplateButton" class="control-group">
+                  <div class="controls">
+                    <button type="submit" class="btn btn-primary" onClick="updateTemplate()">Uppdatera</button>
+                    <button type="submit" class="btn btn-danger" onClick="removeTemplate()">Radera</button>
+                  </div>
+                </div>
+              </form>
+
+              <div class="alert alert-success" id="alertSuccess">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+              </div>
+              <div class="alert alert-error" id="alertError">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Sourced scripts -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="client.js"></script>
+
+        <!-- Inline script that controls the UI -->
+        <script type="text/javascript">
 
     // The js client that interfaces the backend. 
     var client = Client.getInstance();
@@ -409,9 +407,9 @@
         }
       });
 
-    }
+}
 
-    function addRole() {
+function addRole() {
 
       // get all the employees that has the role (= checkbox is checked)
       var employeeUids = [];
@@ -471,7 +469,7 @@
     }
 
     function updateRole() {
-      
+
       var employeeUids = [];
       $("input.employeeWithRole").each(function (idx, checkboxObject) {
         if (checkboxObject.checked) {
@@ -503,7 +501,7 @@
           showSuccessAlert("Uppdatering av informationen lyckades!");
         } else {
           var error = data;
-          showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + error);
+          showErrorAlert("Uppdatering av roll misslyckades! Felmeddelande: " + error);
         }
       });
     }
@@ -515,12 +513,14 @@
       var positions = [];
       $("tr.positionTableDynamicRow").each(function (index, element) {
 
-        var requiredRole = $(element).find(".positionTableRoleCol").text();
+        var requiredRoleUid = $(element).find(".positionTableRoleCol").attr('id');
         var startTime = $(element).find(".positionTableStartHourCol").text();
         var endTime = $(element).find(".positionTableEndHourCol").text();
 
+        console.log(requiredRoleUid);
+
         var position = {
-          "requiredRole" : requiredRole,
+          "requiredRoleUid" : requiredRoleUid,
           "startTime" : startTime,
           "endTime" : endTime
         };
@@ -534,13 +534,28 @@
         "positions" : positions
       };
 
-      console.log(dayTemplate);
-      // TODO: send to server.
+      client.addDayTemplate(dayTemplate, function (success, data) {
+
+        if (success) {
+
+          var listElement = createListElement(templateName, data.uid, "showDayTemplateUpdateForm(" + data.uid + ")");
+
+          // add it to the list and make it fade in.
+          $(listElement).insertAfter("li#daily");
+          $(listElement).hide();
+          $(listElement).fadeIn("slow");
+
+        } else {
+          var error = data;
+          showErrorAlert("Tilläggning av mall misslyckades! Felmeddelande: " + error);
+        }
+
+      });
 
     }
 
     function showRoleAddForm() {
-      
+
       hideAllForms();
 
       $("input#roleFormNameInput").val("");
@@ -558,6 +573,9 @@
     }
 
     function showRoleUpdateForm(uid) {
+
+      console.log("roleUid: " + uid);
+
       hideAllForms();
 
       // Set the form values
@@ -568,11 +586,8 @@
       // add the employee with role checkbuttons and set checked state
       var roleObject = client.getRole(uid);
       var employees = client.getEmployees();
+      console.log("associatedEmployees: " + roleObject.employeeUids);
       $.each(employees, function (idx, employee) {
-
-        // var employeeUidAsString = new Number(employee.uid).toString(); 
-        console.log(employee.uid);
-        console.log(roleObject.employeeUids);
         if ($.inArray(employee.uid, roleObject.employeeUids) >= 0) {
           var checkbox = createCheckboxElement(employee.name, employee.uid, 'on');
           $("div#employeesWithRole").append(checkbox);
@@ -591,7 +606,7 @@
 
     function showEmployeeAddForm() {
       hideAllForms();
-        
+
       $("input#employeeNameInput").val("");
       $("select#minHoursPerDay").val(0);
       $("select#maxHoursPerDay").val(0);
@@ -620,22 +635,56 @@
       $("div#updateEmployeeButton").show();
     }
 
-    function showTemplateAddForm() {
+    function showDayTemplateAddForm() {
       hideAllForms();
-        
+
       $("input#templateNameInput").val("");
       
-      // populate required role selector
-      $("select#positionRoleSelect").empty();
-      for each (role in client.getRoles()) {
-        var optionNode = createOptionNode(role.name, role.uid);
-        $("select#positionRoleSelect").append(optionNode);        
-      }
+      $("tbody#positionTableBody").empty();
 
+      var addPositionRow = createPosTableAddRow();
+      $("tbody#positionTableBody").append(addPositionRow);
 
       $("form#templateForm").show();
-      $("div#addTemplateButton").show();
+      $("div#addDayTemplateButton").show();
       $("div#updateTemplateButton").hide();
+    }
+
+    function showDayTemplateUpdateForm(uid) {
+      hideAllForms();
+
+      console.log("dayTemplateUid: " + uid);
+
+      $("input#dayTemplateUid").val(uid);
+      var dayTemplate = client.getDayTemplate(uid);
+      $("input#templateNameInput").val(client.getDayTemplate(uid).name);
+      
+      // reset and populate position table.
+      $("tbody#positionTableBody").empty();      
+
+      var roleName;
+      var roleUid;
+      var startTime;
+      var endTime;
+      for (var idx in dayTemplate.positions) {
+        console.log("requiredRoleUid: " + dayTemplate.positions[idx].requiredRoleUid);
+        console.log("startTime: " + dayTemplate.positions[idx].startTime);
+        console.log("endTime: " + dayTemplate.positions[idx].endTime);
+        roleName = client.getRole(dayTemplate.positions[idx].requiredRoleUid).name;
+        requiredRoleUid = dayTemplate.positions[idx].requiredRoleUid;
+        startTime = dayTemplate.positions[idx].startTime;
+        endTime = dayTemplate.positions[idx].endTime;
+        var row = createPosTableRow(roleName, requiredRoleUid, startTime, endTime);
+        $("tbody#positionTableBody").append(row);      
+      }
+
+      // append the "add position row"
+      var addPositionRow = createPosTableAddRow();
+      $("tbody#positionTableBody").append(addPositionRow);
+      
+      $("form#templateForm").show();
+      $("div#addDayTemplateButton").hide();
+      $("div#updateTemplateButton").show();
     }
 
 
@@ -673,84 +722,139 @@
     }
 
     function createCheckboxElement(name, uid, checked) {
-       var checkboxLabel = $("<label class=\"checkbox\"></label>"); 
-       var checkbox = $("<input class=\"employeeWithRole\" type=\"checkbox\">");
-       checkbox.attr('id', new Number(uid).toString());
-       if (checked == 'on') {
-        $(checkbox).attr('checked', 'on');
-       }
-       $(checkboxLabel).append(name);
-       $(checkboxLabel).append(checkbox);
-       return checkboxLabel;
+     var checkboxLabel = $("<label class=\"checkbox\"></label>"); 
+     var checkbox = $("<input class=\"employeeWithRole\" type=\"checkbox\">");
+     checkbox.attr('id', new Number(uid).toString());
+     if (checked == 'on') {
+      $(checkbox).attr('checked', 'on');
+    }
+    $(checkboxLabel).append(name);
+    $(checkboxLabel).append(checkbox);
+    return checkboxLabel;
+  }
+
+  function insertPosTableRow() {
+    var roleName = $("select#positionRoleSelect").val();
+    var roleUid = $("select#positionRoleSelect option:selected").attr('id');
+    var startHour = $("select#positionStartTimeSelect").val();
+    var endHour = $("select#positionEndTimeSelect").val();
+
+    var row = createPosTableRow(roleName, roleUid, startHour, endHour);
+    $(row).insertBefore("tr#permanentPositionAddRow");
+  }
+
+  function removePosTableRow(row) {
+    $(row).remove();
+  }
+
+  function createPosTableRow(roleName, roleUid, startHour, endHour) {
+
+    var row = $("<tr></tr>");
+    $(row).attr('class', 'positionTableDynamicRow');
+
+    var roleCol = $("<td></td");
+    $(roleCol).attr('class', 'positionTableRoleCol');
+    $(roleCol).attr('id', roleUid);
+
+    $(roleCol).html(roleName);
+
+    var startHourCol = $("<td></td");
+    $(startHourCol).attr('class', 'positionTableStartHourCol');
+    $(startHourCol).html(startHour);
+
+    var endHourCol = $("<td></td");
+    $(endHourCol).attr('class', 'positionTableEndHourCol');
+    $(endHourCol).html(endHour);
+
+    var removeButtonCol = $("<td><a class=\"btn btn-small\" href=\"#\"><i class=\"icon-minus-sign\"></i></a></td>");
+    $(removeButtonCol).attr('onclick', "removePosTableRow(this.parentNode)");
+
+    $(row).append(roleCol);
+    $(row).append(startHourCol);
+    $(row).append(endHourCol);
+    $(row).append(removeButtonCol);
+
+    return row;
+  }
+
+    function createPosTableAddRow() {
+
+    var permanentAddRow = $("<tr></tr>");
+    permanentAddRow.attr('id', 'permanentPositionAddRow');
+
+    var roleSelectorCol = $("<td></td>");
+    var roleSelector = $("<select id=\"positionRoleSelect\"></select>");
+
+    var roles = client.getRoles();
+    for (var idx in roles) {
+      var optionNode = createOptionNode(roles[idx].name, roles[idx].uid);
+      $(roleSelector).append(optionNode);        
     }
 
-    function insertPosTableRow() {
-      var row = createPosTableRow();
-      $(row).insertBefore("tr#permanentPositionAddRow");
-    }
+    roleSelectorCol.append(roleSelector);
 
-    function removePosTableRow(row) {
-      $(row).remove();
-    }
-
-    function createPosTableRow() {
-      
-      var row = $("<tr></tr>");
-      $(row).attr('class', 'positionTableDynamicRow');
-
-      var roleCol = $("<td></td");
-      $(roleCol).attr('class', 'positionTableRoleCol');
-      $(roleCol).html($("select#positionRoleSelect").val());
-
-      var startHourCol = $("<td></td");
-      $(startHourCol).attr('class', 'positionTableStartHourCol');
-      $(startHourCol).html($("select#positionStartTimeSelect").val());
-
-      var endHourCol = $("<td></td");
-      $(endHourCol).attr('class', 'positionTableEndHourCol');
-      $(endHourCol).html($("select#positionEndTimeSelect").val());
-
-      var removeButtonCol = $("<td><a class=\"btn btn-small\" href=\"#\"><i class=\"icon-minus-sign\"></i></a></td>");
-      $(removeButtonCol).attr('onclick', "removePosTableRow(this.parentNode)");
-
-      $(row).append(roleCol);
-      $(row).append(startHourCol);
-      $(row).append(endHourCol);
-      $(row).append(removeButtonCol);
-
-      return row;
-    }
-
-    function createOptionNode(optionText, id) {
-      var optionNode = $("<option></option>");
-      $(optionNode).html(optionText);
-      if (id) {
-        $(optionNode).attr('id', id);
+    var startTimeSelectorCol = $("<td></td>");
+    var startTimeSelector = $("<select id=\"positionStartTimeSelect\"></select>");
+    var endTimeSelectorCol = $("<td></td>");
+    var endTimeSelector = $("<select id=\"positionEndTimeSelect\"></select>");
+    var hour;
+    for (var i = 0; i < 24; i++) {
+      if (i < 9) {
+        hour = "0" + i;
+      } else {
+        hour = i;
       }
-      return optionNode;
+      startTimeSelector.append($("<option>" + i + "</option>"));
+      endTimeSelector.append($("<option>" + i + "</option>"));
     }
 
-    function hideAllForms() {
-      $("#addEmployeeForm").hide();
-      $("#addRoleForm").hide();
-      $("#templateForm").hide();
+    var addButtonCol = $("<td></td>");
+    var button = $("<a class=\"btn btn-small\" href=\"#\" onClick=\"insertPosTableRow()\"><i class=\"icon-plus-sign\"></i></a>\"");
+    addButtonCol.append(button);
+    
+
+    startTimeSelectorCol.append(startTimeSelector);
+    endTimeSelectorCol.append(endTimeSelector);
+
+    permanentAddRow.append(roleSelectorCol);
+    permanentAddRow.append(startTimeSelectorCol);
+    permanentAddRow.append(endTimeSelectorCol);
+    permanentAddRow.append(addButtonCol);
+
+    return permanentAddRow;
+  }
+
+  function createOptionNode(optionText, id) {
+    var optionNode = $("<option></option>");
+    $(optionNode).attr('class', 'requiredRoleOption');
+    $(optionNode).html(optionText);
+    if (id) {
+      $(optionNode).attr('id', id);
     }
+    return optionNode;
+  }
 
-    function hideAllAlerts() {
-      $("#alertSuccess").hide();
-      $("#alertError").hide();
-    }
+  function hideAllForms() {
+    $("#addEmployeeForm").hide();
+    $("#addRoleForm").hide();
+    $("#templateForm").hide();
+  }
 
-    $(document).ready(function () {
+  function hideAllAlerts() {
+    $("#alertSuccess").hide();
+    $("#alertError").hide();
+  }
 
-      hideAllForms();
-      hideAllAlerts();
+  $(document).ready(function () {
 
-      client.init(function (success) {
+    hideAllForms();
+    hideAllAlerts();
 
-        if (success) {
-          
-          for each (employee in client.getEmployees()) {
+    client.init(function (success) {
+
+      if (success) {
+
+        for each (employee in client.getEmployees()) {
 
             // create the navbar entry
             var listElement = createListElement(employee.name, employee.uid, "showEmployeeUpdateForm(" + employee.uid + ")");
@@ -770,17 +874,17 @@
 
       });
 
-      $("a#addEmployee").click(function() {
-        showEmployeeAddForm();
-      });
+    $("a#addEmployee").click(function() {
+      showEmployeeAddForm();
+    });
 
-      $("a#addRole").click(function() {
-        showRoleAddForm();
-      });
+    $("a#addRole").click(function() {
+      showRoleAddForm();
+    });
 
-      $("a#addDayTemplate").click(function() {
-        showTemplateAddForm();
-      });
+    $("a#addDayTemplate").click(function() {
+      showDayTemplateAddForm();
+    });
 
       // disable enter key for all forms
       $("form#addRoleForm").bind("keypress", function (e) {
@@ -797,7 +901,7 @@
 
     });
 
-    </script>
-  </body>
-  </html>
+</script>
+</body>
+</html>
 

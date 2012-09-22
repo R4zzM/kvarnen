@@ -8,7 +8,8 @@ var Client = function () {
 
   // variables
   var employees = [];
-  var roles = []; 
+  var roles = [];
+  var dayTemplates = [];
 
   //public methods
   this.init = function(responseHandler) {
@@ -17,19 +18,25 @@ var Client = function () {
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200) {
-          
+
           // TODO: Handle first time login!!
           var sessionData = JSON.parse(httpRequest.responseText);
+
+          console.log(sessionData);
+
           var employeeList = sessionData.employees;
           var roleList = sessionData.roles;
 
-          for each (employee in employeeList) {
-            employees.push(employee);
-          } 
-
-          for each (role in roleList) {
-            roles.push(role);
+          var idx;
+          for (idx in employeeList) {
+            employees.push(employeeList[idx]);
           }
+
+          for (idx in roleList) {
+            roles.push(roleList[idx]);
+          }
+
+          console.log(roles);
 
           responseHandler(true);
         } else {
@@ -39,7 +46,7 @@ var Client = function () {
     };
 
     httpRequest.open('GET', 'http://localhost:9000/init', true);
-    httpRequest.send(null); 
+    httpRequest.send(null);
   };
 
   this.getEmployees = function() {
@@ -47,9 +54,18 @@ var Client = function () {
   };
 
   this.getEmployee = function(uid) {
-    for each (var employee in employees) {
-      if(employee.uid === uid) {
-        return employee;
+    for (var idx in employees) {
+      if(employees[idx].uid === uid) {
+        return employees[idx];
+      }
+    }
+    return null;
+  };
+
+  this.getDayTemplate = function(uid) {
+    for (var idx in dayTemplates) {
+      if(dayTemplates[idx].uid == uid) {
+        return dayTemplates[idx];
       }
     }
     return null;
@@ -67,7 +83,7 @@ var Client = function () {
 
           employeeObject.uid = getIdFromJsonBody(httpRequest.responseText);
 
-          // Add to list of all contacts 
+          // Add to list of all contacts
           employees.push(employeeObject);
           responseHandler(true, employeeObject);
         } else {
@@ -77,7 +93,7 @@ var Client = function () {
       }
     };
 
-    httpRequest.open('POST', 'http://localhost:9000/addemployee', true); // TODO: localhost. 
+    httpRequest.open('POST', 'http://localhost:9000/addemployee', true); // TODO: localhost.
     httpRequest.setRequestHeader('Content-Type', 'application/json');
     httpRequest.send(JSON.stringify(employeeObject));
   };
@@ -86,7 +102,7 @@ var Client = function () {
     var httpRequest = XMLHttpRequest();
 
     // take care of the http reponse
-    httpRequest.onreadystatechange = function() { 
+    httpRequest.onreadystatechange = function() {
 
       if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200) {
@@ -94,7 +110,7 @@ var Client = function () {
           var employeeObjectResponse = JSON.parse(httpRequest.responseText); // should be the same as the object that was sent.
           removeEmployee(employeeObject.uid);
 
-          // Add to list of all contacts 
+          // Add to list of all contacts
           employees.push(employeeObjectResponse);
           responseHandler(true, employeeObjectResponse);
         } else {
@@ -104,7 +120,7 @@ var Client = function () {
       }
     };
 
-    httpRequest.open('POST', 'http://localhost:9000/updateemployee', true); // TODO: localhost. 
+    httpRequest.open('POST', 'http://localhost:9000/updateemployee', true); // TODO: localhost.
     httpRequest.setRequestHeader('Content-Type', 'application/json');
     httpRequest.send(JSON.stringify(employeeObject));
   };
@@ -131,24 +147,24 @@ var Client = function () {
    httpRequest.open('POST', 'http://localhost:9000/removeemployee', true);
    httpRequest.setRequestHeader('Content-Type', 'application/json');
    httpRequest.send(JSON.stringify(requestData));
-  };
+ };
 
-  this.getRoles = function() {
-    return roles;
-  }
+ this.getRoles = function() {
+  return roles;
+};
 
-  this.getRole = function(uid) {
-    for each (var role in roles) {
-      if(role.uid === uid) {
-        return role;
-      }
+this.getRole = function(uid) {
+  for (var idx in roles) {
+    if(roles[idx].uid == uid) {
+      return roles[idx];
     }
-    return null;
-  };
+  }
+  return null;
+};
 
-  this.addRole = function(roleObject, responseHandler) {
+this.addRole = function(roleObject, responseHandler) {
 
-    var httpRequest = XMLHttpRequest();
+  var httpRequest = XMLHttpRequest();
 
     // Response handler
     httpRequest.onreadystatechange = function() {
@@ -159,24 +175,24 @@ var Client = function () {
           var addedRoleObject = JSON.parse(httpRequest.responseText);
           // Add to list of all contacts
           roles.push(addedRoleObject);
-          responseHandler(true, addedRoleObject);        
+          responseHandler(true, addedRoleObject);
           } else { // Non 200-reponse
-          var errorMsg = getErrorMessage(httpRequest.responseText);
-          responseHandler(false, errorMsg);
+            var errorMsg = getErrorMessage(httpRequest.responseText);
+            responseHandler(false, errorMsg);
+          }
         }
-      }
+      };
+
+      httpRequest.open('POST', 'http://localhost:9000/addrole', true);
+      httpRequest.setRequestHeader('Content-Type', 'application/json');
+      httpRequest.send(JSON.stringify(roleObject));
     };
 
-    httpRequest.open('POST', 'http://localhost:9000/addrole', true);
-    httpRequest.setRequestHeader('Content-Type', 'application/json');
-    httpRequest.send(JSON.stringify(roleObject));
-  };
-
-  this.updateRole = function(roleObject, responseHandler) {
-    var httpRequest = XMLHttpRequest();
+    this.updateRole = function(roleObject, responseHandler) {
+      var httpRequest = XMLHttpRequest();
 
     // take care of the http reponse
-    httpRequest.onreadystatechange = function() { 
+    httpRequest.onreadystatechange = function() {
 
       if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200) {
@@ -184,7 +200,7 @@ var Client = function () {
           var roleObjectResponse = JSON.parse(httpRequest.responseText); // should be the same as the object that was sent. Should be verified...
           removeRole(roleObject.uid);
 
-          // Add to list of all roles 
+          // Add to list of all roles
           roles.push(roleObjectResponse);
           responseHandler(true, roleObjectResponse);
         } else {
@@ -194,7 +210,7 @@ var Client = function () {
       }
     };
 
-    httpRequest.open('POST', 'http://localhost:9000/updaterole', true); // TODO: localhost. 
+    httpRequest.open('POST', 'http://localhost:9000/updaterole', true); // TODO: localhost.
     httpRequest.setRequestHeader('Content-Type', 'application/json');
     httpRequest.send(JSON.stringify(roleObject));
   };
@@ -214,62 +230,87 @@ var Client = function () {
              roles.splice(i,i);
            }
          }
-
          responseHandler(true, roleObject.uid);
        } else {
          var errorMsg = getErrorMessage(httpRequest.responseText);
          responseHandler(false, errorMsg);
        }
      }
-   }
+   };
 
    httpRequest.open('POST', 'http://localhost:9000/removerole', true);
    httpRequest.setRequestHeader('Content-Type', 'application/json');
    httpRequest.send(JSON.stringify(roleObject));
  };
 
- var removeEmployee = function (uid) {
+ this.addDayTemplate = function(dayTemplate, responseHandler) {
+
+   var httpRequest = XMLHttpRequest();
+
+    // Response handler
+    httpRequest.onreadystatechange = function() {
+      if (httpRequest.readyState === 4) {
+        if (httpRequest.status === 200) {
+          var response = JSON.parse(httpRequest.responseText);
+          dayTemplate.uid = response.uid;
+
+          console.log("new dayTemplate available in list: " + dayTemplate);
+          dayTemplates.push(dayTemplate);
+          responseHandler(true, dayTemplate);
+        } else {
+          var errorMsg = getErrorMessage(httpRequest.responseText);
+          responseHandler(false, errorMsg);
+        }
+      }
+    };
+
+    httpRequest.open('POST', 'http://localhost:9000/adddaytemplate', true);
+    httpRequest.setRequestHeader('Content-Type', 'application/json');
+    httpRequest.send(JSON.stringify(dayTemplate));
+  };
+
+  var removeEmployee = function (uid) {
   // Remove role from list
   for (var i = 0; i < employees.length; i++) {
     if(employees[i].uid == uid) {
       employees.splice(i,1);
     }
-   }         
- }  
+  }
+};
 
- var removeRole = function (uid) {
+var removeRole = function (uid) {
   // Remove role from list
   for (var i = 0; i < roles.length; i++) {
     if(roles[i].uid == uid) {
       roles.splice(i,1);
     }
-   }  
- }
+  }
+};
 
   // private methods (TODO: intended, this is probably not best practice)
- var getErrorMessage = function(jsonData) {
+  var getErrorMessage = function(jsonData) {
 
     // parse the response to get the error message
     var errorMsg;
     JSON.parse(jsonData, function (key, value) {
-       if (key === "errorMsg") {
-        errorMsg = value;
-      }
-    });
+     if (key === "errorMsg") {
+      errorMsg = value;
+    }
+  });
     return errorMsg;
- };
+  };
 
   var getIdFromJsonBody = function(jsonData) {
 
     // parse the response to get the uid
     var uid;
     JSON.parse(jsonData, function (key, value) {
-       if (key === "uid") {
-        uid = value;
-      }
-    });
+     if (key === "uid") {
+      uid = value;
+    }
+  });
     return uid;
- };
+  };
 
 };
 
