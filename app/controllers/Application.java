@@ -2,6 +2,7 @@ package controllers;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -397,6 +398,65 @@ public class Application extends Controller {
 
 		return result;
 	}
+	
+	public Result updateDayTemplate() {
+		Logger.debug("updateDayTemplate(): START");
+
+		Result result = null;
+		JsonNode json = request().body().asJson();
+		if (json != null) {
+
+			int uid = json.path("uid").asInt(-1);
+
+			if (uid != -1) {
+				boolean success = false;
+				TemplateDay dayTemplate = null;
+				try {
+					dayTemplate = manipulateDayTemplateFromJsonData(uid, json);
+				} catch (IllegalArgumentException iae) {
+					Logger.error("updateDayTemplate(): IllegalArgumentException. Msg: " + iae.getMessage());
+					result = badRequest(createJsonErrorMessage(iae.getMessage()));
+				} catch (OutOfUidsException ooue) {
+					Logger.error("updateDayTemplate(): OutOfUidsException. Msg: " + ooue.getMessage());
+					result = badRequest(createJsonErrorMessage(ooue.getMessage()));
+				} catch (UidNotFoundException unfe) {
+					Logger.error("updateDayTemplate(): UidNotFoundException. Msg: " + unfe.getMessage());
+					result = badRequest(createJsonErrorMessage(unfe.getMessage()));
+				} finally {
+					success = (dayTemplate != null) ? true : false;
+				}
+
+				if (success) {
+					// create the response
+					ObjectNode response = Json.newObject();
+					response.put("uid", dayTemplate.getUid());
+					response.put("name", dayTemplate.getName());
+
+					ArrayNode positionsJsonArray = JsonNodeFactory.instance.arrayNode();
+					List<Position> positions = dayTemplate.getPositions();
+					for (Position position : positions) {
+						ObjectNode positionNode = Json.newObject();
+						positionNode.put("requiredRoleUid", position.getRole().getUid());
+						positionNode.put("startTime", position.getStartHour());
+						positionNode.put("endTime", position.getEndHour());
+						positionsJsonArray.add(positionNode);
+					}
+					response.put("positions",positionsJsonArray);
+					result = ok(response);
+				}
+
+			} else {
+				result = badRequest(createJsonErrorMessage("Invalid request. Uid is missing!"));
+			}
+
+		} else {
+			result = badRequest(createJsonErrorMessage("Malformed request!"));
+		}
+
+		Logger.debug("updateDayTemplate(): END. Result = " + result.toString());
+
+		return result;
+	}
 
 	private static ArrayNode getEmployeesJsonResponse(EngineController engineController) {
 
@@ -526,7 +586,6 @@ public class Application extends Controller {
 		return role;
 	}
 	
-	// TODO: fix this!!
 	private static TemplateDay manipulateDayTemplateFromJsonData (int uid, JsonNode jsonData) throws IllegalArgumentException, UidNotFoundException, OutOfUidsException {
 
 		String name = jsonData.path("name").asText();

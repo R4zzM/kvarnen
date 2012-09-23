@@ -25,12 +25,24 @@ public class Position implements Serializable {
 		return start;
 	}
 
+	public int getStartHour() {
+		Calendar startTime = Calendar.getInstance();
+		startTime.setTime(start);
+		return startTime.get(Calendar.HOUR_OF_DAY);
+	}
+
 	public void setStart(Date start) {
 		this.start = start;
 	}
 
 	public Date getEnd() {
 		return end;
+	}
+	
+	public int getEndHour() {
+		Calendar endTime = Calendar.getInstance();
+		endTime.setTime(end);
+		return endTime.get(Calendar.HOUR_OF_DAY);
 	}
 
 	public void setEnd(Date end) {
