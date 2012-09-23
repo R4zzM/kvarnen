@@ -37,14 +37,14 @@ public class EngineController implements Serializable {
 	
 	private EmployeeDirectory employeeDirectory = null;
 	private RoleDirectory roleDirectory = null;
-	private TemplateManager templateManager = null;
+	private DayTemplateManager templateManager = null;
 	private UidManager uidManager = null;
 	
 	public EngineController() {
 		sessionId = generateSessionId();
 		employeeDirectory = new EmployeeDirectory(this);
 		roleDirectory = new RoleDirectory(this);
-		templateManager = new TemplateManager(this);
+		templateManager = new DayTemplateManager(this);
 		uidManager = new UidManager();
 	}
 	
@@ -56,7 +56,7 @@ public class EngineController implements Serializable {
 		return roleDirectory;
 	}
 	
-	public TemplateManager getTemplateManager() {
+	public DayTemplateManager getTemplateManager() {
 		return templateManager;
 	}
 	

@@ -208,111 +208,44 @@
                   <tr>
                   </thead>
                   <tbody id="positionTableBody">
-
-<!--
-                    <tr id="permanentPositionAddRow">
-                      <td>
-                        <select id="positionRoleSelect">
-                        </select>
-                      </td>
-                      <td>
-                        <select id="positionStartTimeSelect">
-                          <option>01</option>
-                          <option>02</option>
-                          <option>03</option>
-                          <option>04</option>
-                          <option>05</option>
-                          <option>06</option>
-                          <option>07</option>
-                          <option>08</option>
-                          <option>09</option>
-                          <option>10</option>
-                          <option>11</option>
-                          <option>12</option>
-                          <option>13</option>
-                          <option>14</option>
-                          <option>15</option>
-                          <option>16</option>
-                          <option>17</option>
-                          <option>18</option>
-                          <option>19</option>
-                          <option>20</option>
-                          <option>21</option>
-                          <option>22</option>
-                          <option>23</option>
-                          <option>24</option>
-                        </select>
-                      </td>
-                      <td>
-                        <select id="positionEndTimeSelect">
-                          <option>01</option>
-                          <option>02</option>
-                          <option>03</option>
-                          <option>04</option>
-                          <option>05</option>
-                          <option>06</option>
-                          <option>07</option>
-                          <option>08</option>
-                          <option>09</option>
-                          <option>10</option>
-                          <option>11</option>
-                          <option>12</option>
-                          <option>13</option>
-                          <option>14</option>
-                          <option>15</option>
-                          <option>16</option>
-                          <option>17</option>
-                          <option>18</option>
-                          <option>19</option>
-                          <option>20</option>
-                          <option>21</option>
-                          <option>22</option>
-                          <option>23</option>
-                          <option>24</option>
-                        </select>
-                      </td>
-                      <td>
-                        <a class="btn btn-small" href="#" onClick="insertPosTableRow()"><i class="icon-plus-sign"></i></a>
-                      </td>
-                      <tr>
-                      -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div id="addDayTemplateButton" class="control-group">
-                  <div class="controls">
-                    <button type="submit" class="btn btn-success" onClick="addDayTemplate()">Skapa</button>
-                  </div>
-                </div>
-
-                <div id="updateTemplateButton" class="control-group">
-                  <div class="controls">
-                    <button type="submit" class="btn btn-primary" onClick="updateTemplate()">Uppdatera</button>
-                    <button type="submit" class="btn btn-danger" onClick="removeTemplate()">Radera</button>
-                  </div>
-                </div>
-              </form>
-
-              <div class="alert alert-success" id="alertSuccess">
-                <button type="button" class="close" data-dismiss="alert">×</button>
+                    <!-- rendered dynamically -->
+                  </tbody>
+                </table>
               </div>
-              <div class="alert alert-error" id="alertError">
-                <button type="button" class="close" data-dismiss="alert">×</button>
-              </div>
-
             </div>
+
+            <div id="addDayTemplateButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-success" onClick="addDayTemplate()">Skapa</button>
+              </div>
+            </div>
+
+            <div id="updateTemplateButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary" onClick="updateDayTemplate()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="removeDayTemplate()">Radera</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="alert alert-success" id="alertSuccess">
+            <button type="button" class="close" data-dismiss="alert">×</button>
           </div>
+          <div class="alert alert-error" id="alertError">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+          </div>
+
         </div>
+      </div>
+    </div>
 
-        <!-- Sourced scripts -->
-        <script src="js/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="client.js"></script>
+    <!-- Sourced scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="client.js"></script>
 
-        <!-- Inline script that controls the UI -->
-        <script type="text/javascript">
+    <!-- Inline script that controls the UI -->
+    <script type="text/javascript">
 
     // The js client that interfaces the backend. 
     var client = Client.getInstance();
@@ -777,7 +710,7 @@ function addRole() {
     return row;
   }
 
-    function createPosTableAddRow() {
+  function createPosTableAddRow() {
 
     var permanentAddRow = $("<tr></tr>");
     permanentAddRow.attr('id', 'permanentPositionAddRow');
