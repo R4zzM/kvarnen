@@ -17,18 +17,19 @@ AppController = function () {
       var employeeList = requestData.employees;
       var roleList = requestData.roles;
 
+      var listElement;
       var idx;
       for (idx in employeeList) {
         var employee = employeeList[idx];
         DataStorage.getInstance().addEmployee(employee);
-        var listElement = createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
+        listElement = createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
         $(listElement).insertAfter("li#employees");
       }
 
       for (idx in roleList) {
         var role = roleList[idx];
         DataStorage.getInstance().addRole(roleList[idx]);
-        var listElement = createListElement(role.name, role.uid, "ViewManager.getInstance().showRoleUpdateForm(" + role.uid + ")");
+        listElement = createListElement(role.name, role.uid, "ViewManager.getInstance().showRoleUpdateForm(" + role.uid + ")");
         $(listElement).insertAfter("li#roles");
       }
     });
@@ -42,13 +43,13 @@ AppController = function () {
   this.addEmployee = function() {
 
     // Parse the DOM
-    var employee = 
+    var employee =
     {
-      "name" : $("input#employeeNameInput").val(), 
-      "minHoursWeek" : $("select#minHoursPerWeek").val(), 
-      "maxHoursWeek" : $("select#maxHoursPerWeek").val(), 
-      "minHoursDay" : $("select#minHoursPerDay").val(), 
-      "maxHoursDay" : $("select#maxHoursPerDay").val() 
+      "name" : $("input#employeeNameInput").val(),
+      "minHoursWeek" : $("select#minHoursPerWeek").val(),
+      "maxHoursWeek" : $("select#maxHoursPerWeek").val(),
+      "minHoursDay" : $("select#minHoursPerDay").val(),
+      "maxHoursDay" : $("select#maxHoursPerDay").val()
     };
 
     var request = $.ajax({
@@ -73,8 +74,8 @@ AppController = function () {
 
   this.removeEmployee = function() {
 
-    // Parse the DOM to fetch the employee id 
-    var requestData = 
+    // Parse the DOM to fetch the employee id
+    var requestData =
     {
       "uid" : $("input#employeeUid").val()
     };
@@ -100,14 +101,14 @@ AppController = function () {
 
   this.updateEmployee = function() {
 
-    var updatedEmployeeInformation = 
+    var updatedEmployeeInformation =
     {
-      "uid" : $("input#employeeUid").val(), 
-      "name" : $("input#employeeNameInput").val(), 
-      "minHoursWeek" : $("select#minHoursPerWeek").val(), 
-      "maxHoursWeek" : $("select#maxHoursPerWeek").val(), 
-      "minHoursDay" : $("select#minHoursPerDay").val(), 
-      "maxHoursDay" : $("select#maxHoursPerDay").val() 
+      "uid" : $("input#employeeUid").val(),
+      "name" : $("input#employeeNameInput").val(),
+      "minHoursWeek" : $("select#minHoursPerWeek").val(),
+      "maxHoursWeek" : $("select#maxHoursPerWeek").val(),
+      "minHoursDay" : $("select#minHoursPerDay").val(),
+      "maxHoursDay" : $("select#maxHoursPerDay").val()
     };
 
     var request = $.ajax({
@@ -143,11 +144,11 @@ AppController = function () {
       $("input.employeeWithRole").each(function (idx, checkboxObject) {
         if (checkboxObject.checked) {
           employeeUids.push(checkboxObject.id);
-        } 
+        }
       });
 
       // create request structure
-      var roleObject = 
+      var roleObject =
       {
         "name" : $("input#roleFormNameInput").val(),
         "employeeUids" : employeeUids
@@ -160,8 +161,8 @@ AppController = function () {
 
       request.done(function (responseData) {
         roleObject.uid = responseData.uid;
-        DataStorage.getInstance().addRole(roleObject);
-        var listElement = createListElement(roleObject.name, roleObject.uid, "ViewManager.getInstance().showRoleUpdateForm(" + roleObject.uid + ")");
+        DataStorage.getInstance().addRole(responseData);
+        var listElement = createListElement(responseData.name, responseData.uid, "ViewManager.getInstance().showRoleUpdateForm(" + responseData.uid + ")");
         $(listElement).insertAfter("li#roles");
         $(listElement).hide();
         $(listElement).fadeIn("slow");
@@ -175,7 +176,7 @@ AppController = function () {
 
     this.removeRole = function() {
 
-      var role = 
+      var role =
       {
         "uid" : $("input#roleUid").val()
       };
@@ -202,16 +203,14 @@ AppController = function () {
     this.updateRole = function() {
 
       var employeeUids = [];
-      $("input.employeeWithRole").each(function (idx, checkboxObject) {
-        if (checkboxObject.checked) {
-          employeeUids.push(checkboxObject.id);
-        } 
+      $("input.employeeWithRole:checked").each(function (idx, checkboxObject) {
+        employeeUids.push(checkboxObject.id);
       });
 
-      var updatedRoleInformation = 
+      var updatedRoleInformation =
       {
-        "uid" : $("input#roleUid").val(), 
-        "name" : $("input#roleFormNameInput").val(), 
+        "uid" : $("input#roleUid").val(),
+        "name" : $("input#roleFormNameInput").val(),
         "employeeUids" : employeeUids
       };
 
@@ -291,7 +290,7 @@ AppController = function () {
 
     };
 
-}
+};
 
 AppController.instance = null;
 
