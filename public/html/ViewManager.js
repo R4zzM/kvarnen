@@ -185,7 +185,7 @@ var ViewManager = function() {
 	this.removePosTableRow = function(row) {
 		$(row).remove();
 	};
-}
+};
 
 // Singleton
 ViewManager.instance = null;
@@ -195,4 +195,4 @@ ViewManager.getInstance = function() {
 		ViewManager.instance = new ViewManager();
 	}
 	return ViewManager.instance;
-}
+};
