@@ -32,11 +32,11 @@
       <div class="span4">
         <div class="well">
           <ul class="nav nav-list">
-           <li id="employees" class="nav-header"><big>1. Personal [<a href="#" id="addEmployee">+</a>]</big></li>
-           <li id="roles" class="nav-header"><big>2. Roller [<a href="#" id="addRole">+</a>]</big></li>
-           <li id="daily" class="nav-header"><big>4. Dagar [<a href="#" id="addDayTemplate">+</a>]</big></li>
-           <li id="weekly" class="nav-header"><big>5. Veckor [<a href="#" id="addWeekTemplate">+</a>]</big></li>
-           <li id="weekly" class="nav-header"><big>6. Säsonger [<a href="#" id="addSeasonTemplate">+</a>]</big></li>
+           <li id="employees" class="nav-header"><big>1. Personal [<a href="#" id="addEmployee" onClick="ViewManager.getInstance().showEmployeeAddForm()">+</a>]</big></li>
+           <li id="roles" class="nav-header"><big>2. Roller [<a href="#" id="addRole" onClick="ViewManager.getInstance().showRoleAddForm()">+</a>]</big></li>
+           <li id="daily" class="nav-header"><big>4. Dagar [<a href="#" id="addDayTemplate" onClick="ViewManager.getInstance().showDayTemplateAddForm()">+</a>]</big></li>
+           <li id="weekly" class="nav-header"><big>5. Veckor [<a href="#" id="ViewManager.getInstance().addWeekTemplate()">+</a>]</big></li>
+           <li id="weekly" class="nav-header"><big>6. Säsonger [<a href="#" id="ViewManager.getInstance().addSeasonTemplate()">+</a>]</big></li>
          </ul>
        </div>
      </div>
@@ -141,14 +141,14 @@
 
         <div id="addEmployeeButton" class="control-group">
           <div class="controls">
-            <button class="btn btn-success" onClick="addEmployee()">Skapa</button>
+            <button class="btn btn-success" id="addEmployeeButtonButton" onClick="AppController.getInstance().addEmployee()">Skapa</button>
           </div>
         </div>
 
         <div id="updateEmployeeButton" class="control-group">
           <div class="controls">
-            <button class="btn btn-primary" onClick="updateEmployee()">Uppdatera</button>
-            <button class="btn btn-danger" onClick="removeEmployee()">Radera</button>
+            <button class="btn btn-primary" onClick="AppController.getInstance().updateEmployee()">Uppdatera</button>
+            <button class="btn btn-danger" onClick="AppController.getInstance().removeEmployee()">Radera</button>
           </div>
         </div>
       </form>
@@ -173,14 +173,14 @@
 
         <div id="addRoleButton" class="control-group">
           <div class="controls">
-            <button type="submit" class="btn btn-success" onClick="addRole()">Skapa</button>
+            <button type="submit" class="btn btn-success" onClick="AppController.getInstance().addRole()">Skapa</button>
           </div>
         </div>
 
         <div id="updateRoleButton" class="control-group">
           <div class="controls">
-            <button type="submit" class="btn btn-primary" onClick="updateRole()">Uppdatera</button>
-            <button type="submit" class="btn btn-danger" onClick="removeRole()">Radera</button>
+            <button type="submit" class="btn btn-primary" onClick="AppController.getInstance().updateRole()">Uppdatera</button>
+            <button type="submit" class="btn btn-danger" onClick="AppController.getInstance().removeRole()">Radera</button>
           </div>
         </div>
       </form>
@@ -216,14 +216,14 @@
 
             <div id="addDayTemplateButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-success" onClick="addDayTemplate()">Skapa</button>
+                <button type="submit" class="btn btn-success" onClick="AppController.getInstance().addDayTemplate()">Skapa</button>
               </div>
             </div>
 
             <div id="updateTemplateButton" class="control-group">
               <div class="controls">
-                <button type="submit" class="btn btn-primary" onClick="updateDayTemplate()">Uppdatera</button>
-                <button type="submit" class="btn btn-danger" onClick="removeDayTemplate()">Radera</button>
+                <button type="submit" class="btn btn-primary" onClick="AppController.getInstance().updateDayTemplate()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="AppController.getInstance().removeDayTemplate()">Radera</button>
               </div>
             </div>
           </form>
@@ -242,407 +242,12 @@
     <!-- Sourced scripts -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="client.js"></script>
-    <script src="UiManager.js"></script>
+    <script src="AppController.js"></script>
+    <script src="DataStorage.js"></script>
+    <script src="ViewManager.js"></script>
 
     <!-- Inline script that controls the UI -->
     <script type="text/javascript">
-
-    // The js client that interfaces the backend. 
-    var client = Client.getInstance();
-
-    function addEmployee() {
-
-      // Parse the DOM
-      var employeeObject = 
-      {
-        "name" : $("input#employeeNameInput").val(), 
-        "minHoursWeek" : $("select#minHoursPerWeek").val(), 
-        "maxHoursWeek" : $("select#maxHoursPerWeek").val(), 
-        "minHoursDay" : $("select#minHoursPerDay").val(), 
-        "maxHoursDay" : $("select#maxHoursPerDay").val() 
-      };
-
-      client.addEmployee(employeeObject, function (success, data) {
-
-        if (success) {
-          var addedEmployee = data;
-
-          var listElement = createListElement(addedEmployee.name, addedEmployee.uid, "showEmployeeUpdateForm(" + addedEmployee.uid + ")");
-          
-          // make it fade into the sidebar
-          $(listElement).insertAfter("li#employees");
-          $(listElement).hide();
-          $(listElement).fadeIn("slow");
-        } else {          
-          var error = data;
-          showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + error);
-        }
-      });
-    }
-
-    function removeEmployee() {
-
-      // Parse the DOM to fetch the employee id 
-      var requestData = 
-      {
-        "uid" : $("input#employeeUid").val()
-      };
-
-      client.removeEmployee(requestData, function (success, data) {
-
-        if (success) {
-          var uid = data;
-          $("li#" + uid).fadeOut("slow", function () {
-            $("li#" + uid).remove();
-          });
-          hideAllForms();
-        } else {
-          var error = data;
-          showErrorAlert("Borttagning av person misslyckades! Felmeddelande: " + error);
-        }
-      });
-    }
-
-    function updateEmployee() {
-
-      var updatedEmployeeInformation = 
-      {
-        "uid" : $("input#employeeUid").val(), 
-        "name" : $("input#employeeNameInput").val(), 
-        "minHoursWeek" : $("select#minHoursPerWeek").val(), 
-        "maxHoursWeek" : $("select#maxHoursPerWeek").val(), 
-        "minHoursDay" : $("select#minHoursPerDay").val(), 
-        "maxHoursDay" : $("select#maxHoursPerDay").val() 
-      };
-
-      client.updateEmployee(updatedEmployeeInformation, function (success, data) {
-
-        if (success) {
-          var updatedEmployee = data;
-          
-          // var listElement = createListElement(addedEmployee.name, addedEmployee.uid, "showEmployeeUpdateForm(" + addedEmployee.uid + ")");
-          
-          // make it fade into the sidebar
-          // $(listElement).insertAfter("li#employees");
-          var oldListElement = $("li#" + updatedEmployee.uid);
-          var newListElement = createListElement(updatedEmployee.name, updatedEmployee.uid, "showEmployeeUpdateForm(" + updatedEmployee.uid + ")");
-          $(newListElement).hide();
-
-          $(oldListElement).fadeOut("slow", function () {
-            $(oldListElement).replaceWith(newListElement);
-            $(newListElement).fadeIn("slow");
-          });
-          
-          showSuccessAlert("Uppdatering av informationen lyckades!");
-        } else {
-          var error = data;
-          showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + error);
-        }
-      });
-
-}
-
-function addRole() {
-
-      // get all the employees that has the role (= checkbox is checked)
-      var employeeUids = [];
-      $("input.employeeWithRole").each(function (idx, checkboxObject) {
-        if (checkboxObject.checked) {
-          employeeUids.push(checkboxObject.id);
-        } 
-      });
-
-      // create request structure
-      var roleObject = 
-      {
-        "name" : $("input#roleFormNameInput").val(),
-        "employeeUids" : employeeUids
-      };
-
-      // add the role
-      client.addRole(roleObject, function (success, data) {
-
-        if (success) {
-          var addedRole = data;
-
-          var listElement = createListElement(addedRole.name, addedRole.uid, "showRoleUpdateForm(" + addedRole.uid + ")");
-
-          // add it to the list and make it fade in.
-          $(listElement).insertAfter("li#roles");
-          $(listElement).hide();
-          $(listElement).fadeIn("slow");
-        } else {
-          var error = data;
-          showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + error);
-        }
-
-      });
-    }
-
-    function removeRole(uid) {
-
-      var requestData = 
-      {
-        "uid" : $("input#roleUid").val()
-      };
-
-      client.removeRole(requestData, function (success, data) {
-
-        if (success) {
-         $("li#" + requestData.uid).fadeOut("slow", function () {
-           $("li#" + requestData.uid).remove();
-         });
-         hideAllForms();
-       } else {
-         var error = data;
-         showErrorAlert("Rollen kunde inte tas bort! Felmeddelande: " + error);
-       }
-
-     });
-    }
-
-    function updateRole() {
-
-      var employeeUids = [];
-      $("input.employeeWithRole").each(function (idx, checkboxObject) {
-        if (checkboxObject.checked) {
-          employeeUids.push(checkboxObject.id);
-        } 
-      });
-
-      var updatedRoleInformation = 
-      {
-        "uid" : $("input#roleUid").val(), 
-        "name" : $("input#roleFormNameInput").val(), 
-        "employeeUids" : employeeUids
-      };
-
-      client.updateRole(updatedRoleInformation, function (success, data) {
-
-        if (success) {
-          var updatedRole = data;
-          
-          var oldListElement = $("li#" + updatedRole.uid);
-          var newListElement = createListElement(updatedRole.name, updatedRole.uid, "showRoleUpdateForm(" + updatedRole.uid + ")");
-          $(newListElement).hide();
-
-          $(oldListElement).fadeOut("slow", function () {
-            $(oldListElement).replaceWith(newListElement);
-            $(newListElement).fadeIn("slow");
-          });
-          
-          showSuccessAlert("Uppdatering av informationen lyckades!");
-        } else {
-          var error = data;
-          showErrorAlert("Uppdatering av roll misslyckades! Felmeddelande: " + error);
-        }
-      });
-    }
-
-    function addDayTemplate() {
-
-      var templateName = $("input#templateNameInput").val();
-
-      var positions = [];
-      $("tr.positionTableDynamicRow").each(function (index, element) {
-
-        var requiredRoleUid = $(element).find(".positionTableRoleCol").attr('id');
-        var startTime = $(element).find(".positionTableStartHourCol").text();
-        var endTime = $(element).find(".positionTableEndHourCol").text();
-
-        console.log(requiredRoleUid);
-
-        var position = {
-          "requiredRoleUid" : requiredRoleUid,
-          "startTime" : startTime,
-          "endTime" : endTime
-        };
-
-        positions.push(position);
-
-      });
-
-      var dayTemplate = {
-        "name" : templateName,
-        "positions" : positions
-      };
-
-      client.addDayTemplate(dayTemplate, function (success, data) {
-
-        if (success) {
-
-          var listElement = createListElement(templateName, data.uid, "showDayTemplateUpdateForm(" + data.uid + ")");
-
-          // add it to the list and make it fade in.
-          $(listElement).insertAfter("li#daily");
-          $(listElement).hide();
-          $(listElement).fadeIn("slow");
-
-        } else {
-          var error = data;
-          showErrorAlert("Tilläggning av mall misslyckades! Felmeddelande: " + error);
-        }
-
-      });
-
-    }
-
-    function showRoleAddForm() {
-
-      hideAllForms();
-
-      $("input#roleFormNameInput").val("");
-      $("div#employeesWithRole").empty();
-
-      var employees = client.getEmployees();
-      $.each(employees, function (idx, employee) {
-        var checkbox = createCheckboxElement(employee.name, employee.uid, 'off');
-        $("div#employeesWithRole").append(checkbox);
-      });
-
-      $("form#addRoleForm").show();
-      $("div#addRoleButton").show();
-      $("div#updateRoleButton").hide();
-    }
-
-    function showRoleUpdateForm(uid) {
-
-      console.log("roleUid: " + uid);
-
-      hideAllForms();
-
-      // Set the form values
-      $("input#roleUid").val(uid);
-      $("input#roleFormNameInput").val(client.getRole(uid).name);
-      $("div#employeesWithRole").empty();
-
-      // add the employee with role checkbuttons and set checked state
-      var roleObject = client.getRole(uid);
-      var employees = client.getEmployees();
-      console.log("associatedEmployees: " + roleObject.employeeUids);
-      $.each(employees, function (idx, employee) {
-        if ($.inArray(employee.uid, roleObject.employeeUids) >= 0) {
-          var checkbox = createCheckboxElement(employee.name, employee.uid, 'on');
-          $("div#employeesWithRole").append(checkbox);
-        } else {
-          var checkbox = createCheckboxElement(employee.name, employee.uid, 'off');
-          $("div#employeesWithRole").append(checkbox);
-        }
-        
-      });
-
-      // Show / Hide part of forms 
-      $("form#addRoleForm").show();
-      $("div#addRoleButton").hide();
-      $("div#updateRoleButton").show();
-    }
-
-    function showEmployeeAddForm() {
-      hideAllForms();
-
-      $("input#employeeNameInput").val("");
-      $("select#minHoursPerDay").val(0);
-      $("select#maxHoursPerDay").val(0);
-      $("select#minHoursPerWeek").val(0);
-      $("select#maxHoursPerWeek").val(0);
-
-      $("form#addEmployeeForm").show();
-      $("div#addEmployeeButton").show();
-      $("div#updateEmployeeButton").hide();
-    }
-
-    function showEmployeeUpdateForm(uid) {
-      hideAllForms();
-
-      // Set the form values
-      $("input#employeeUid").val(uid);
-      $("input#employeeNameInput").val(client.getEmployee(uid).name);
-      $("select#minHoursPerDay").val(client.getEmployee(uid).minHoursDay);
-      $("select#maxHoursPerDay").val(client.getEmployee(uid).maxHoursDay);
-      $("select#minHoursPerWeek").val(client.getEmployee(uid).minHoursWeek);
-      $("select#maxHoursPerWeek").val(client.getEmployee(uid).maxHoursWeek);
-
-      // Show / Hide part of forms 
-      $("form#addEmployeeForm").show();
-      $("div#addEmployeeButton").hide();
-      $("div#updateEmployeeButton").show();
-    }
-
-    function showDayTemplateAddForm() {
-      hideAllForms();
-
-      $("input#templateNameInput").val("");
-      
-      $("tbody#positionTableBody").empty();
-
-      var addPositionRow = createPosTableAddRow();
-      $("tbody#positionTableBody").append(addPositionRow);
-
-      $("form#templateForm").show();
-      $("div#addDayTemplateButton").show();
-      $("div#updateTemplateButton").hide();
-    }
-
-    function showDayTemplateUpdateForm(uid) {
-      hideAllForms();
-
-      console.log("dayTemplateUid: " + uid);
-
-      $("input#dayTemplateUid").val(uid);
-      var dayTemplate = client.getDayTemplate(uid);
-      $("input#templateNameInput").val(client.getDayTemplate(uid).name);
-      
-      // reset and populate position table.
-      $("tbody#positionTableBody").empty();      
-
-      var roleName;
-      var roleUid;
-      var startTime;
-      var endTime;
-      for (var idx in dayTemplate.positions) {
-        console.log("requiredRoleUid: " + dayTemplate.positions[idx].requiredRoleUid);
-        console.log("startTime: " + dayTemplate.positions[idx].startTime);
-        console.log("endTime: " + dayTemplate.positions[idx].endTime);
-        roleName = client.getRole(dayTemplate.positions[idx].requiredRoleUid).name;
-        requiredRoleUid = dayTemplate.positions[idx].requiredRoleUid;
-        startTime = dayTemplate.positions[idx].startTime;
-        endTime = dayTemplate.positions[idx].endTime;
-        var row = createPosTableRow(roleName, requiredRoleUid, startTime, endTime);
-        $("tbody#positionTableBody").append(row);      
-      }
-
-      // append the "add position row"
-      var addPositionRow = createPosTableAddRow();
-      $("tbody#positionTableBody").append(addPositionRow);
-      
-      $("form#templateForm").show();
-      $("div#addDayTemplateButton").hide();
-      $("div#updateTemplateButton").show();
-    }
-
-
-    function showErrorAlert(message) {
-      hideAllAlerts();
-      $("#alertError").html(message);
-      $("#alertError").fadeIn();
-
-      // remove message after timeout
-      setTimeout(function () {
-        $("#alertError").fadeOut("slow");
-      }, 5000);
-    }
-
-    function showSuccessAlert(message) {
-      hideAllAlerts();
-      $("#alertSuccess").html(message);
-      $("#alertSuccess").fadeIn("fast");
-
-      // remove the message
-      setTimeout(function () {
-        $("#alertSuccess").fadeOut("slow");
-      }, 2000);
-    }
 
     // creates an element for the left side selection list
     function createListElement(name, uid, onClickFunction) {
@@ -665,20 +270,6 @@ function addRole() {
     $(checkboxLabel).append(name);
     $(checkboxLabel).append(checkbox);
     return checkboxLabel;
-  }
-
-  function insertPosTableRow() {
-    var roleName = $("select#positionRoleSelect").val();
-    var roleUid = $("select#positionRoleSelect option:selected").attr('id');
-    var startHour = $("select#positionStartTimeSelect").val();
-    var endHour = $("select#positionEndTimeSelect").val();
-
-    var row = createPosTableRow(roleName, roleUid, startHour, endHour);
-    $(row).insertBefore("tr#permanentPositionAddRow");
-  }
-
-  function removePosTableRow(row) {
-    $(row).remove();
   }
 
   function createPosTableRow(roleName, roleUid, startHour, endHour) {
@@ -719,7 +310,7 @@ function addRole() {
     var roleSelectorCol = $("<td></td>");
     var roleSelector = $("<select id=\"positionRoleSelect\"></select>");
 
-    var roles = client.getRoles();
+    var roles = DataStorage.getInstance().getRoles();
     for (var idx in roles) {
       var optionNode = createOptionNode(roles[idx].name, roles[idx].uid);
       $(roleSelector).append(optionNode);        
@@ -768,57 +359,12 @@ function addRole() {
     return optionNode;
   }
 
-  function hideAllForms() {
-    $("#addEmployeeForm").hide();
-    $("#addRoleForm").hide();
-    $("#templateForm").hide();
-  }
-
-  function hideAllAlerts() {
-    $("#alertSuccess").hide();
-    $("#alertError").hide();
-  }
-
   $(document).ready(function () {
 
-    hideAllForms();
-    hideAllAlerts();
+    ViewManager.getInstance().hideAllForms();
+    ViewManager.getInstance().hideAllAlerts();
 
-    client.init(function (success) {
-
-      if (success) {
-
-        for each (employee in client.getEmployees()) {
-
-            // create the navbar entry
-            var listElement = createListElement(employee.name, employee.uid, "showEmployeeUpdateForm(" + employee.uid + ")");
-            $(listElement).insertAfter("li#employees");
-          }
-
-          for each (role in client.getRoles()) {
-
-            // create the navbar entry
-            var listElement = createListElement(role.name, role.uid, "showRoleUpdateForm(" + role.uid + ")");
-            $(listElement).insertAfter("li#roles");
-          }
-
-        } else {
-          showErrorAlert("Kunde inte initiera!");
-        }
-
-      });
-
-    $("a#addEmployee").click(function() {
-      showEmployeeAddForm();
-    });
-
-    $("a#addRole").click(function() {
-      showRoleAddForm();
-    });
-
-    $("a#addDayTemplate").click(function() {
-      showDayTemplateAddForm();
-    });
+    AppController.getInstance().init();
 
       // disable enter key for all forms
       $("form#addRoleForm").bind("keypress", function (e) {
@@ -838,4 +384,3 @@ function addRole() {
 </script>
 </body>
 </html>
-
