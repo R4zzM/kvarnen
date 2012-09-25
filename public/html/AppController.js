@@ -1,46 +1,10 @@
 AppController = function () {
 
-    $.ajaxSetup({
-        type: "POST",
-        contentType: "application/json",
-        dataType: "json"
-    });
-
-    this.init = function() {
-        var request = $.ajax({
-            type: "GET",
-            url: "init"
-        });
-
-        request.done(function (requestData) {
-            var employeeList = requestData.employees;
-            var roleList = requestData.roles;
-
-            var listElement;
-            var idx;
-            for (idx in employeeList) {
-                var employee = employeeList[idx];
-                DataStorage.getInstance().addEmployee(employee);
-                listElement = Util.createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
-                $(listElement).insertAfter("li#employees");
-            }
-
-            for (idx in roleList) {
-                var role = roleList[idx];
-                DataStorage.getInstance().addRole(roleList[idx]);
-                listElement = Util.createListElement(role.name, role.uid, "ViewManager.getInstance().showRoleUpdateForm(" + role.uid + ")");
-                $(listElement).insertAfter("li#roles");
-            }
-        });
-
-        request.fail(function (requestData) {
-            ViewManager.getInstance().showErrorAlert("Kunde inte initiera!");
-        });
-    };
-
     this.addEmployee = function() {
+        var uid = UidGenerator.getInstance().generateUid();
         var employee =
         {
+            "uid" : uid,
             "name" : $("input#employeeNameInput").val(),
             "minHoursWeek" : $("select#minHoursPerWeek").val(),
             "maxHoursWeek" : $("select#maxHoursPerWeek").val(),
@@ -48,49 +12,21 @@ AppController = function () {
             "maxHoursDay" : $("select#maxHoursPerDay").val()
         };
 
-        var request = $.ajax({
-            url: "addemployee",
-            data: JSON.stringify(employee)
-        });
-
-        request.done(function (responseData) {
-            employee.uid = responseData.uid;
-            DataStorage.getInstance().addEmployee(employee);
-            var listElement = Util.createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
-            $(listElement).insertAfter("li#employees");
-            $(listElement).hide();
-            $(listElement).fadeIn("slow");
-        });
-
-        request.fail(function (responseData) {
-            ViewManager.getInstance().showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + responseData.errorMsg);
-        });
-
+        DataStorage.getInstance().addEmployee(employee);
+        var listElement = Util.createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
+        $(listElement).insertAfter("li#employees");
+        $(listElement).hide();
+        $(listElement).fadeIn("slow");
     };
 
     this.removeEmployee = function() {
-        var requestData =
-        {
-            "uid" : $("input#employeeUid").val()
-        };
+        var uid = $("input#employeeUid").val();
 
-        var request = $.ajax({
-            url: "removeemployee",
-            data: JSON.stringify(requestData)
+        DataStorage.getInstance().removeEmployee(uid);
+        $("li#" + uid).fadeOut("slow", function () {
+            $("li#" + uid).remove();
         });
-
-        request.done(function () {
-            DataStorage.getInstance().removeEmployee(requestData.uid);
-            $("li#" + requestData.uid).fadeOut("slow", function () {
-                $("li#" + requestData.uid).remove();
-            });
-            ViewManager.getInstance().hideAllForms();
-        });
-
-        request.fail(function (responseData) {
-            ViewManager.getInstance().showErrorAlert("Borttagning av person misslyckades! Felmeddelande: " + responseData.errorMsg);
-        });
-
+        ViewManager.getInstance().hideAllForms();
     };
 
     this.updateEmployee = function() {
@@ -104,30 +40,15 @@ AppController = function () {
             "maxHoursDay" : $("select#maxHoursPerDay").val()
         };
 
-        var request = $.ajax({
-            url: "updateemployee",
-            data: JSON.stringify(updatedEmployeeInformation)
+        DataStorage.getInstance().updateEmployee(updatedEmployeeInformation);
+        var oldListElement = $("li#" + updatedEmployeeInformation.uid);
+        var newListElement = Util.createListElement(updatedEmployeeInformation.name, updatedEmployeeInformation.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + updatedEmployeeInformation.uid + ")");
+        $(newListElement).hide();
+
+        $(oldListElement).fadeOut("slow", function () {
+            $(oldListElement).replaceWith(newListElement);
+            $(newListElement).fadeIn("slow");
         });
-
-        request.done(function (responseData) {
-            updatedEmployeeInformation.uid = responseData.uid;
-            DataStorage.getInstance().updateEmployee(updatedEmployeeInformation);
-            var oldListElement = $("li#" + updatedEmployeeInformation.uid);
-            var newListElement = Util.createListElement(updatedEmployeeInformation.name, updatedEmployeeInformation.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + updatedEmployeeInformation.uid + ")");
-            $(newListElement).hide();
-
-            $(oldListElement).fadeOut("slow", function () {
-                $(oldListElement).replaceWith(newListElement);
-                $(newListElement).fadeIn("slow");
-            });
-
-            ViewManager.getInstance().showSuccessAlert("Uppdatering av informationen lyckades!");
-        });
-
-        request.fail(function (responseData) {
-            ViewManager.getInstance().showErrorAlert("Tilläggning av person misslyckades! Felmeddelande: " + responseData.errorMsg);
-        });
-
     };
 
     this.addRole = function() {
@@ -138,55 +59,29 @@ AppController = function () {
             }
         });
 
+        var uid = UidGenerator.getInstance().generateUid();
         var roleObject =
         {
+            "uid" : uid,
             "name" : $("input#roleFormNameInput").val(),
             "employeeUids" : employeeUids
         };
 
-        var request = $.ajax({
-            url: "addrole",
-            data: JSON.stringify(roleObject)
-        });
-
-        request.done(function (responseData) {
-            roleObject.uid = responseData.uid;
-            DataStorage.getInstance().addRole(responseData);
-            var listElement = Util.createListElement(responseData.name, responseData.uid, "ViewManager.getInstance().showRoleUpdateForm(" + responseData.uid + ")");
-            $(listElement).insertAfter("li#roles");
-            $(listElement).hide();
-            $(listElement).fadeIn("slow");
-        });
-
-        request.fail(function (responseData) {
-            ViewManager.getInstance().showErrorAlert("Tilläggning av roll misslyckades! Felmeddelande: " + responseData.errorMsg);
-        });
-
+        DataStorage.getInstance().addRole(roleObject);
+        var listElement = Util.createListElement(roleObject.name, roleObject.uid, "ViewManager.getInstance().showRoleUpdateForm(" + roleObject.uid + ")");
+        $(listElement).insertAfter("li#roles");
+        $(listElement).hide();
+        $(listElement).fadeIn("slow");
     };
 
     this.removeRole = function() {
-        var role =
-        {
-            "uid" : $("input#roleUid").val()
-        };
+        var uid = $("input#roleUid").val();
 
-        var request = $.ajax({
-            url: "removerole",
-            data: JSON.stringify(role)
+        DataStorage.getInstance().removeRole(uid);
+        $("li#" + uid).fadeOut("slow", function () {
+            $("li#" + uid).remove();
         });
-
-        request.done(function (responseData) {
-            DataStorage.getInstance().removeRole(role.uid);
-            $("li#" + role.uid).fadeOut("slow", function () {
-                $("li#" + role.uid).remove();
-            });
-            ViewManager.getInstance().hideAllForms();
-        });
-
-        request.fail(function (responseData) {
-            ViewManager.getInstance().showErrorAlert("Rollen kunde inte tas bort! Felmeddelande: " + responseData.errorMsg);
-        });
-
+        ViewManager.getInstance().hideAllForms();
     };
 
     this.updateRole = function() {
@@ -202,33 +97,19 @@ AppController = function () {
             "employeeUids" : employeeUids
         };
 
-        var request = $.ajax({
-            url: "updaterole",
-            data: JSON.stringify(updatedRoleInformation)
+        DataStorage.getInstance().removeRole(updatedRoleInformation);
+        var oldListElement = $("li#" + updatedRoleInformation.uid);
+        var newListElement = Util.createListElement(updatedRoleInformation.name, updatedRoleInformation.uid, "ViewManager.getInstance().showRoleUpdateForm(" + updatedRoleInformation.uid + ")");
+
+        $(newListElement).hide();
+        $(oldListElement).fadeOut("slow", function () {
+            $(oldListElement).replaceWith(newListElement);
+            $(newListElement).fadeIn("slow");
         });
-
-        request.done(function (responseData) {
-            updatedRoleInformation.uid = responseData.uid;
-            DataStorage.getInstance().removeRole(updatedRoleInformation);
-            var oldListElement = $("li#" + responseData.uid);
-            var newListElement = Util.createListElement(updatedRoleInformation.name, updatedRoleInformation.uid, "ViewManager.getInstance().showRoleUpdateForm(" + updatedRoleInformation.uid + ")");
-            $(newListElement).hide();
-
-            $(oldListElement).fadeOut("slow", function () {
-                $(oldListElement).replaceWith(newListElement);
-                $(newListElement).fadeIn("slow");
-            });
-
-            ViewManager.getInstance().showSuccessAlert("Uppdatering av informationen lyckades!");
-        });
-
-        request.fail(function (responseData) {
-            ViewManager.getInstance().showErrorAlert("Uppdatering av roll misslyckades! Felmeddelande: " + responseData.errorMsg);
-        });
-
     };
 
     this.addDayTemplate = function () {
+        var uid = UidGenerator.getInstance().generateUid();
         var templateName = $("input#templateNameInput").val();
 
         var positions = [];
@@ -250,30 +131,17 @@ AppController = function () {
         });
 
         var dayTemplate = {
+            "uid" : uid,
             "name" : templateName,
             "positions" : positions
         };
 
-        var request = $.ajax({
-            url: "adddaytemplate",
-            data: JSON.stringify(dayTemplate)
-        });
+        DataStorage.getInstance().addDayTemplate(dayTemplate);
 
-        request.done(function (responseData) {
-            dayTemplate.uid = responseData.uid;
-            DataStorage.getInstance().addDayTemplate(dayTemplate);
-
-            var listElement = Util.createListElement(templateName, responseData.uid, "ViewManager.getInstance().showDayTemplateUpdateForm(" + responseData.uid + ")");
-
-            $(listElement).insertAfter("li#daily");
-            $(listElement).hide();
-            $(listElement).fadeIn("slow");
-        });
-
-        request.fail(function (responseData) {
-            ViewManager.getInstance().showErrorAlert("Tilläggning av mall misslyckades! Felmeddelande: " + responseData.errorMsg);
-        });
-
+        var listElement = Util.createListElement(templateName, dayTemplate.uid, "ViewManager.getInstance().showDayTemplateUpdateForm(" + dayTemplate.uid + ")");
+        $(listElement).insertAfter("li#daily");
+        $(listElement).hide();
+        $(listElement).fadeIn("slow");
     };
 
 };

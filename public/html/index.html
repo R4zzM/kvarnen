@@ -246,6 +246,8 @@
     <script src="DataStorage.js"></script>
     <script src="ViewManager.js"></script>
     <script src="Util.js"></script>
+    <script src="UidGenerator.js"></script>
+
 
     <!-- Inline script that controls the UI -->
     <script type="text/javascript">
@@ -255,7 +257,7 @@
     ViewManager.getInstance().hideAllForms();
     ViewManager.getInstance().hideAllAlerts();
 
-    AppController.getInstance().init();
+    // AppController.getInstance().init();
 
       // disable enter key for all forms
       $("form#addRoleForm").bind("keypress", function (e) {
