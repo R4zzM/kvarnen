@@ -22,14 +22,14 @@ AppController = function () {
       for (idx in employeeList) {
         var employee = employeeList[idx];
         DataStorage.getInstance().addEmployee(employee);
-        listElement = createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
+        listElement = Util.createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
         $(listElement).insertAfter("li#employees");
       }
 
       for (idx in roleList) {
         var role = roleList[idx];
         DataStorage.getInstance().addRole(roleList[idx]);
-        listElement = createListElement(role.name, role.uid, "ViewManager.getInstance().showRoleUpdateForm(" + role.uid + ")");
+        listElement = Util.createListElement(role.name, role.uid, "ViewManager.getInstance().showRoleUpdateForm(" + role.uid + ")");
         $(listElement).insertAfter("li#roles");
       }
     });
@@ -60,7 +60,7 @@ AppController = function () {
     request.done(function (responseData) {
         employee.uid = responseData.uid;
         DataStorage.getInstance().addEmployee(employee);
-        var listElement = createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
+        var listElement = Util.createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
         $(listElement).insertAfter("li#employees");
         $(listElement).hide();
         $(listElement).fadeIn("slow");
@@ -120,7 +120,7 @@ AppController = function () {
       updatedEmployeeInformation.uid = responseData.uid;
       DataStorage.getInstance().updateEmployee(updatedEmployeeInformation);
       var oldListElement = $("li#" + updatedEmployeeInformation.uid);
-      var newListElement = createListElement(updatedEmployeeInformation.name, updatedEmployeeInformation.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + updatedEmployeeInformation.uid + ")");
+      var newListElement = Util.createListElement(updatedEmployeeInformation.name, updatedEmployeeInformation.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + updatedEmployeeInformation.uid + ")");
       $(newListElement).hide();
 
       $(oldListElement).fadeOut("slow", function () {
@@ -162,7 +162,7 @@ AppController = function () {
       request.done(function (responseData) {
         roleObject.uid = responseData.uid;
         DataStorage.getInstance().addRole(responseData);
-        var listElement = createListElement(responseData.name, responseData.uid, "ViewManager.getInstance().showRoleUpdateForm(" + responseData.uid + ")");
+        var listElement = Util.createListElement(responseData.name, responseData.uid, "ViewManager.getInstance().showRoleUpdateForm(" + responseData.uid + ")");
         $(listElement).insertAfter("li#roles");
         $(listElement).hide();
         $(listElement).fadeIn("slow");
@@ -223,7 +223,7 @@ AppController = function () {
         updatedRoleInformation.uid = responseData.uid;
         DataStorage.getInstance().removeRole(updatedRoleInformation);
         var oldListElement = $("li#" + responseData.uid);
-        var newListElement = createListElement(updatedRoleInformation.name, updatedRoleInformation.uid, "ViewManager.getInstance().showRoleUpdateForm(" + updatedRoleInformation.uid + ")");
+        var newListElement = Util.createListElement(updatedRoleInformation.name, updatedRoleInformation.uid, "ViewManager.getInstance().showRoleUpdateForm(" + updatedRoleInformation.uid + ")");
         $(newListElement).hide();
 
         $(oldListElement).fadeOut("slow", function () {
@@ -276,7 +276,7 @@ AppController = function () {
         dayTemplate.uid = responseData.uid;
         DataStorage.getInstance().addDayTemplate(dayTemplate);
 
-        var listElement = createListElement(templateName, responseData.uid, "ViewManager.getInstance().showDayTemplateUpdateForm(" + responseData.uid + ")");
+        var listElement = Util.createListElement(templateName, responseData.uid, "ViewManager.getInstance().showDayTemplateUpdateForm(" + responseData.uid + ")");
 
         // add it to the list and make it fade in.
         $(listElement).insertAfter("li#daily");

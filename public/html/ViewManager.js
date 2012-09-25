@@ -11,7 +11,7 @@ var ViewManager = function() {
 
 		var employees = DataStorage.getInstance().getEmployees();
 		$.each(employees, function (idx, employee) {
-			var checkbox = createCheckboxElement(employee.name, employee.uid, 'off');
+			var checkbox = Util.createCheckboxElement(employee.name, employee.uid, 'off');
 			$("div#employeesWithRole").append(checkbox);
 		});
 
@@ -39,10 +39,10 @@ var ViewManager = function() {
 			var checkbox;
 			console.log("employeeUid: " + employee.uid);
 			if ($.inArray(employee.uid, roleObject.employeeUids) >= 0) {
-				checkbox = createCheckboxElement(employee.name, employee.uid, 'on');
+				checkbox = Util.createCheckboxElement(employee.name, employee.uid, 'on');
 				$("div#employeesWithRole").append(checkbox);
 			} else {
-				checkbox = createCheckboxElement(employee.name, employee.uid, 'off');
+				checkbox = Util.createCheckboxElement(employee.name, employee.uid, 'off');
 				$("div#employeesWithRole").append(checkbox);
 			}
 		});
@@ -93,7 +93,7 @@ var ViewManager = function() {
 
 		$("tbody#positionTableBody").empty();
 
-		var addPositionRow = createPosTableAddRow();
+		var addPositionRow = Util.createPosTableAddRow();
 		$("tbody#positionTableBody").append(addPositionRow);
 
 		$("form#templateForm").show();
@@ -125,12 +125,12 @@ var ViewManager = function() {
 	  	requiredRoleUid = dayTemplate.positions[idx].requiredRoleUid;
 	  	startTime = dayTemplate.positions[idx].startTime;
 	  	endTime = dayTemplate.positions[idx].endTime;
-	  	var row = createPosTableRow(roleName, requiredRoleUid, startTime, endTime);
+	  	var row = Util.createPosTableRow(roleName, requiredRoleUid, startTime, endTime);
 	  	$("tbody#positionTableBody").append(row);      
 	  }
 
 	  // append the "add position row"
-	  var addPositionRow = createPosTableAddRow();
+	  var addPositionRow = Util.createPosTableAddRow();
 	  $("tbody#positionTableBody").append(addPositionRow);
 	  
 	  $("form#templateForm").show();
@@ -178,7 +178,7 @@ var ViewManager = function() {
 		var startHour = $("select#positionStartTimeSelect").val();
 		var endHour = $("select#positionEndTimeSelect").val();
 
-		var row = createPosTableRow(roleName, roleUid, startHour, endHour);
+		var row = Util.createPosTableRow(roleName, roleUid, startHour, endHour);
 		$(row).insertBefore("tr#permanentPositionAddRow");
 	};
 
