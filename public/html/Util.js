@@ -9,21 +9,21 @@ var Util = {
     $(anchorElement).html(name);
     $(listElement).append(anchorElement);
     return listElement;
-  },
+},
 
-  createCheckboxElement: function (name, uid, checked) {
-    var checkboxLabel = $("<label class=\"checkbox\"></label>"); 
+createCheckboxElement: function (name, uid, checked) {
+    var checkboxLabel = $("<label class=\"checkbox\"></label>");
     var checkbox = $("<input class=\"employeeWithRole\" type=\"checkbox\">");
     checkbox.attr('id', new Number(uid).toString());
     if (checked == 'on') {
       $(checkbox).attr('checked', 'on');
-    }
-    $(checkboxLabel).append(name);
-    $(checkboxLabel).append(checkbox);
-    return checkboxLabel;
-  },
+  }
+  $(checkboxLabel).append(name);
+  $(checkboxLabel).append(checkbox);
+  return checkboxLabel;
+},
 
-  createPosTableRow: function (roleName, roleUid, startHour, endHour) {
+createPosTableRow: function (roleName, roleUid, startHour, endHour) {
     var row = $("<tr></tr>");
     $(row).attr('class', 'positionTableDynamicRow');
 
@@ -50,9 +50,9 @@ var Util = {
     $(row).append(removeButtonCol);
 
     return row;
-  },
+},
 
-  createPosTableAddRow: function () {
+createPosTableAddRow: function () {
     var permanentAddRow = $("<tr></tr>");
     permanentAddRow.attr('id', 'permanentPositionAddRow');
 
@@ -62,50 +62,50 @@ var Util = {
     var roles = DataStorage.getInstance().getRoles();
     for (var idx in roles) {
       var optionNode = Util.createOptionNode(roles[idx].name, roles[idx].uid);
-      $(roleSelector).append(optionNode);        
-    }
+      $(roleSelector).append(optionNode);
+  }
 
-    roleSelectorCol.append(roleSelector);
+  roleSelectorCol.append(roleSelector);
 
-    var startTimeSelectorCol = $("<td></td>");
-    var startTimeSelector = $("<select id=\"positionStartTimeSelect\"></select>");
-    var endTimeSelectorCol = $("<td></td>");
-    var endTimeSelector = $("<select id=\"positionEndTimeSelect\"></select>");
-    var hour;
-    for (var i = 0; i < 24; i++) {
+  var startTimeSelectorCol = $("<td></td>");
+  var startTimeSelector = $("<select id=\"positionStartTimeSelect\"></select>");
+  var endTimeSelectorCol = $("<td></td>");
+  var endTimeSelector = $("<select id=\"positionEndTimeSelect\"></select>");
+  var hour;
+  for (var i = 0; i < 24; i++) {
       if (i < 9) {
         hour = "0" + i;
-      } else {
+    } else {
         hour = i;
-      }
-      startTimeSelector.append($("<option>" + i + "</option>"));
-      endTimeSelector.append($("<option>" + i + "</option>"));
     }
+    startTimeSelector.append($("<option>" + i + "</option>"));
+    endTimeSelector.append($("<option>" + i + "</option>"));
+}
 
-    var addButtonCol = $("<td></td>");
-    var button = $("<a class=\"btn btn-small\" href=\"#\" onClick=\"ViewManager.getInstance().insertPosTableRow()\"><i class=\"icon-plus-sign\"></i></a>\"");
-    addButtonCol.append(button);
+var addButtonCol = $("<td></td>");
+var button = $("<a class=\"btn btn-small\" href=\"#\" onClick=\"ViewManager.getInstance().insertPosTableRow()\"><i class=\"icon-plus-sign\"></i></a>\"");
+addButtonCol.append(button);
 
 
-    startTimeSelectorCol.append(startTimeSelector);
-    endTimeSelectorCol.append(endTimeSelector);
+startTimeSelectorCol.append(startTimeSelector);
+endTimeSelectorCol.append(endTimeSelector);
 
-    permanentAddRow.append(roleSelectorCol);
-    permanentAddRow.append(startTimeSelectorCol);
-    permanentAddRow.append(endTimeSelectorCol);
-    permanentAddRow.append(addButtonCol);
+permanentAddRow.append(roleSelectorCol);
+permanentAddRow.append(startTimeSelectorCol);
+permanentAddRow.append(endTimeSelectorCol);
+permanentAddRow.append(addButtonCol);
 
-    return permanentAddRow;
-  },
+return permanentAddRow;
+},
 
-  createOptionNode: function (optionText, id) {
+createOptionNode: function (optionText, id) {
     var optionNode = $("<option></option>");
     $(optionNode).attr('class', 'requiredRoleOption');
     $(optionNode).html(optionText);
     if (id) {
       $(optionNode).attr('id', id);
-    }
-    return optionNode;
   }
+  return optionNode;
+}
 }
 

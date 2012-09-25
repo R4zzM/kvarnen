@@ -625,4 +625,6 @@ public class Application extends Controller {
 
 		return templateDay;
 	}
+	
+	// NEW DAWN!!	
 }
