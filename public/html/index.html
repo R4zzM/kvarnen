@@ -35,8 +35,8 @@
            <li id="employees" class="nav-header"><big>1. Personal [<a href="#" id="addEmployee" onClick="ViewManager.getInstance().showEmployeeAddForm()">+</a>]</big></li>
            <li id="roles" class="nav-header"><big>2. Roller [<a href="#" id="addRole" onClick="ViewManager.getInstance().showRoleAddForm()">+</a>]</big></li>
            <li id="daily" class="nav-header"><big>4. Dagar [<a href="#" id="addDayTemplate" onClick="ViewManager.getInstance().showDayTemplateAddForm()">+</a>]</big></li>
-           <li id="weekly" class="nav-header"><big>5. Veckor [<a href="#" id="ViewManager.getInstance().addWeekTemplate()">+</a>]</big></li>
-           <li id="weekly" class="nav-header"><big>6. Säsonger [<a href="#" id="ViewManager.getInstance().addSeasonTemplate()">+</a>]</big></li>
+           <li id="weekly" class="nav-header"><big>5. Veckor [<a href="#" id="addWeekTemplate" onClick="ViewManager.getInstance().showAddWeekTemplateForm()">+</a>]</big></li>
+           <li id="yearly" class="nav-header"><big>6. Säsonger [<a href="#" id="ViewManager.getInstance().addSeasonTemplate()">+</a>]</big></li>
          </ul>
        </div>
      </div>
@@ -185,7 +185,7 @@
         </div>
       </form>
 
-      <!-- Form to add/update/remove templates -->
+      <!-- Form to add/update/remove day templates -->
       <form id="templateForm" class="form-horizontal">
 
         <input type="hidden" id="dayTemplateUid">
@@ -226,6 +226,89 @@
                 <button type="submit" class="btn btn-danger" onClick="AppController.getInstance().removeDayTemplate()">Radera</button>
               </div>
             </div>
+          </form>
+
+
+          <!-- Form to add/update/remove week templates -->
+          <form id="addWeekTemplateForm" class="form-horizontal">
+            <input type="hidden" id="weekTemplateId">
+
+            <div class="control-group">
+              <label class="control-label" for="weekTemplateName">Namn</label>
+              <div class="controls">
+                <input type="text" id="weekTemplateName">
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="mondayTemplate">Måndag</label>
+              <div class="controls">
+                <select id="mondayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="tuesdayTemplate">Tisdag</label>
+              <div class="controls">
+                <select id="tuesdayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="wednesdayTemplate">Onsdag</label>
+              <div class="controls">
+                <select id="wednesdayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="thursdayTemplate">Torsdag</label>
+              <div class="controls">
+                <select id="thursdayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="fridayTemplate">Fredag</label>
+              <div class="controls">
+                <select id="fridayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="saturdayTemplate">Lördag</label>
+              <div class="controls">
+                <select id="saturdayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="sundayTemplate">Söndag</label>
+              <div class="controls">
+                <select id="sundayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div id="addWeekTemplateButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-success" onClick="AppController.getInstance().addWeekTemplate()">Skapa</button>
+              </div>
+            </div>
+
+            <div id="updateWeekTemplateButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary" onClick="AppController.getInstance().updateWeekTemplate()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="AppController.getInstance().removeWeekTemplate()">Radera</button>
+              </div>
+            </div>
+
           </form>
 
           <div class="alert alert-success" id="alertSuccess">

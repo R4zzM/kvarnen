@@ -144,6 +144,50 @@ AppController = function () {
         $(listElement).fadeIn("slow");
     };
 
+    this.removeDayTemplate = function() {
+        var uid = $("input#dayTemplateUid").val();
+
+        DataStorage.getInstance().removeDayTemplate(uid);
+        $("li#" + uid).fadeOut("slow", function () {
+            $("li#" + uid).remove();
+        });
+        ViewManager.getInstance().hideAllForms();
+    };
+
+    this.updateDayTemplate = function() {
+
+        var positions = [];
+        $("tr.positionTableDynamicRow").each(function (index, element) {
+
+            var requiredRoleUid = $(element).find(".positionTableRoleCol").attr('id');
+            var startTime = $(element).find(".positionTableStartHourCol").text();
+            var endTime = $(element).find(".positionTableEndHourCol").text();
+
+            var position = {
+                "requiredRoleUid" : requiredRoleUid,
+                "startTime" : startTime,
+                "endTime" : endTime
+            };
+            positions.push(position);
+        });
+
+        var updatedDayTemplate =
+        {
+            "uid" : $("input#dayTemplateUid").val(),
+            "name" : $("input#templateNameInput").val(),
+            "positions" : positions
+        };
+
+        DataStorage.getInstance().updateDayTemplate(updatedDayTemplate);
+        var oldListElement = $("li#" + updatedDayTemplate.uid);
+        var newListElement = Util.createListElement(updatedDayTemplate.name, updatedDayTemplate.uid, "ViewManager.getInstance().showDayTemplateUpdateForm(" + updatedDayTemplate.uid + ")");
+
+        $(newListElement).hide();
+        $(oldListElement).fadeOut("slow", function () {
+            $(oldListElement).replaceWith(newListElement);
+            $(newListElement).fadeIn("slow");
+        });
+    };
 };
 
 AppController.instance = null;

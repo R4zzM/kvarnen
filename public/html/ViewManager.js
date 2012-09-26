@@ -131,6 +131,30 @@ var ViewManager = function() {
         $("div#updateTemplateButton").show();
     };
 
+    this.showAddWeekTemplateForm = function(uid) {
+        self.hideAllForms();
+
+        $("input#weekTemplateName").val("");
+
+        var dayTemplates = DataStorage.getInstance().getDayTemplates();
+        $.each(dayTemplates, function (idx, dayTemplate) {
+            // TODO: Seems each day must get a unique node.
+            var optionNode = Util.createOptionNode(dayTemplate.name, dayTemplate.uid);
+            $("select#mondayTemplate").append(optionNode);
+            $("select#tuesdayTemplate").append(optionNode);
+            $("select#wednesdayTemplate").append(optionNode);
+            $("select#thursdayTemplate").append(optionNode);
+            $("select#fridayTemplate").append(optionNode);
+            $("select#saturdayTemplate").append(optionNode);
+            $("select#sundayTemplate").append(optionNode);
+        });
+        
+
+        $("form#addWeekTemplateForm").show();
+        $("div#addWeekTemplateButton").show();
+        $("div#updateWeekTemplateButton").hide();
+    };
+
 
     this.showErrorAlert = function(message) {
         self.hideAllAlerts();
@@ -153,6 +177,7 @@ var ViewManager = function() {
     };
 
     this.hideAllForms = function() {
+        $("#addWeekTemplateForm").hide();
         $("#addEmployeeForm").hide();
         $("#addRoleForm").hide();
         $("#templateForm").hide();

@@ -85,6 +85,18 @@ var DataStorage = function() {
 		dayTemplates.push(dayTemplate);
 	};
 
+	this.removeDayTemplate = function (uid) {
+	  for (var i = 0; i < dayTemplates.length; i++) {
+	  	if(dayTemplates[i].uid == uid) {
+	  		dayTemplates.splice(i,1);
+	  	}
+	  }
+	};
+
+	this.updateDayTemplate = function (newRole) {
+		self.removeDayTemplate(newRole.uid);
+		self.addDayTemplate(newRole);
+	};
 };
 
 DataStorage.instance = null;
