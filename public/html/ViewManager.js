@@ -136,19 +136,23 @@ var ViewManager = function() {
 
         $("input#weekTemplateName").val("");
 
+        $("select#mondayTemplate").empty();
+        $("select#tuesdayTemplate").empty();
+        $("select#wednesdayTemplate").empty();
+        $("select#thursdayTemplate").empty();
+        $("select#fridayTemplate").empty();
+        $("select#saturdayTemplate").empty();
+        $("select#sundayTemplate").empty();
         var dayTemplates = DataStorage.getInstance().getDayTemplates();
         $.each(dayTemplates, function (idx, dayTemplate) {
-            // TODO: Seems each day must get a unique node.
-            var optionNode = Util.createOptionNode(dayTemplate.name, dayTemplate.uid);
-            $("select#mondayTemplate").append(optionNode);
-            $("select#tuesdayTemplate").append(optionNode);
-            $("select#wednesdayTemplate").append(optionNode);
-            $("select#thursdayTemplate").append(optionNode);
-            $("select#fridayTemplate").append(optionNode);
-            $("select#saturdayTemplate").append(optionNode);
-            $("select#sundayTemplate").append(optionNode);
+            $("select#mondayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#tuesdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#wednesdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#thursdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#fridayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#saturdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#sundayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
         });
-        
 
         $("form#addWeekTemplateForm").show();
         $("div#addWeekTemplateButton").show();

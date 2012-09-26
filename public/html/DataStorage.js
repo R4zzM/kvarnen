@@ -5,6 +5,7 @@ var DataStorage = function() {
 	var employees = [];
 	var roles = [];
 	var dayTemplates = [];
+	var weekTemplates = [];
 
 	this.getEmployees = function() {
 		return employees;
@@ -93,10 +94,42 @@ var DataStorage = function() {
 	  }
 	};
 
-	this.updateDayTemplate = function (newRole) {
-		self.removeDayTemplate(newRole.uid);
-		self.addDayTemplate(newRole);
+	this.updateDayTemplate = function (newDayTemplate) {
+		self.removeDayTemplate(newDayTemplate.uid);
+		self.addDayTemplate(newDayTemplate);
 	};
+
+	this.getWeekTemplates = function() {
+		return weekTemplates;
+	};
+
+	this.getWeekTemplate = function(uid) {
+		for (var idx in weekTemplates) {
+			if(weekTemplates[idx].uid == uid) {
+				return weekTemplates[idx];
+			}
+		}
+		return null;
+	};
+
+	this.addWeekTemplate = function(weekTemplate) {
+		weekTemplates.push(weekTemplate);
+	};
+
+	this.removeWeekTemplate = function (uid) {
+	  for (var i = 0; i < weekTemplates.length; i++) {
+	  	if(weekTemplates[i].uid == uid) {
+	  		weekTemplates.splice(i,1);
+	  	}
+	  }
+	};
+
+	this.updateWeekTemplate = function (newWeekTemplate) {
+		self.removeWeekTemplate(newWeekTemplate.uid);
+		self.addWeekTemplate(newWeekTemplate);
+	};
+
+
 };
 
 DataStorage.instance = null;
