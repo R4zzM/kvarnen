@@ -97,7 +97,7 @@ AppController = function () {
             "employeeUids" : employeeUids
         };
 
-        DataStorage.getInstance().removeRole(updatedRoleInformation);
+        DataStorage.getInstance().updateRole(updatedRoleInformation);
         var oldListElement = $("li#" + updatedRoleInformation.uid);
         var newListElement = Util.createListElement(updatedRoleInformation.name, updatedRoleInformation.uid, "ViewManager.getInstance().showRoleUpdateForm(" + updatedRoleInformation.uid + ")");
 
@@ -187,6 +187,30 @@ AppController = function () {
             $(oldListElement).replaceWith(newListElement);
             $(newListElement).fadeIn("slow");
         });
+    };
+
+    this.addWeekTemplate = function () {
+        var uid = UidGenerator.getInstance().generateUid();
+        var templateName = $("input#weekTemplateName").val();
+
+        var weekTemplate = {
+            "uid" : uid,
+            "name" : templateName,
+            "mondayTemplateUid" : $("select#mondayTemplate option:selected").attr("id"),
+            "tuesdayTemplateUid" : $("select#tuesdayTemplate option:selected").attr("id"), 
+            "wednesdayTemplateUid" : $("select#wednesdayTemplate option:selected").attr("id"), 
+            "thursdayTemplateUid" : $("select#thursdayTemplate option:selected").attr("id"), 
+            "fridayTemplateUid" : $("select#fridayTemplate option:selected").attr("id"), 
+            "saturdayTemplateUid" : $("select#saturdayTemplate option:selected").attr("id"), 
+            "sundayTemplateUid" : $("select#sundayTemplate option:selected").attr("id"), 
+        };
+
+        DataStorage.getInstance().addWeekTemplate(weekTemplate);
+
+        var listElement = Util.createListElement(templateName, weekTemplate.uid, "ViewManager.getInstance().showWeekTemplateUpdateForm(" + weekTemplate.uid + ")");
+        $(listElement).insertAfter("li#weekly");
+        $(listElement).hide();
+        $(listElement).fadeIn("slow");
     };
 };
 
