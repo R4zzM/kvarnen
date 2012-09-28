@@ -250,6 +250,44 @@ AppController = function () {
             $(newListElement).fadeIn("slow");
         });
     };
+
+    this.saveCurrentTemplate = function () {
+
+      var templateName = $("input#templateName").val();
+
+      var employees = DataStorage.getInstance().getEmployees();
+      var roles = DataStorage.getInstance().getRole();
+      var days = DataStorage.getInstance().getDayTemplates();
+      var weeks = DataStorage.getInstance().getWeekTemplates();
+
+      var data = {
+        "employees" : employees,
+        "roles" : roles,
+        "days" : days,
+        "weeks" : weeks
+      };
+
+      var template = {
+        "name" : templateName,
+        "data" : data
+      };
+
+      var request = $.ajax ({
+        url: 'savetemplate',
+        type: 'POST',
+        dataType: 'application/json',
+        data: template
+      });
+
+      request.success = function () {
+        ViewManager.getInstance().showSuccessAlert("Mallen har sparats!");
+      };
+
+      request.error = function () {
+        ViewManager.getInstance().showErrorAlert("Sparning misslyckades!");
+      };
+      
+    };
 };
 
 AppController.instance = null;
