@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Schemaläggaren</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Schemaläggaren">
+  <meta name="author" content="Rasmus Mattsson">
+  <link href="css/bootstrap.css" rel="stylesheet">
+
+  <!-- Placeholder to override css from bootstrap -->
+  <style type="text/css">
+
+  </style>
+
+  <link rel="shortcut icon" href="ico/favicon.ico">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+</head>
+
+<body>
+
+  <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+            <li class="">
+              <a href="index.html">Start</a>
+            </li>
+            <li class="">
+              <a href="templates.html">Mallar</a>
+            </li>
+            <li class="">
+              <a href="schedules.html">Scheman</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add some space between top navbar and working area -->
+  <div style="height:40px"></div>
+
+  <!-- Leftside navbar menu -->
+  <div class="container">
+    <div class="row">
+      <div class="span4">
+        <div class="well">
+          <ul class="nav nav-list">
+           <li><input type="text" id="templateName" placeholder="Namn på mall"></li>
+           <li id="employees" class="nav-header"><big>Personal [<a href="#" id="addEmployee" onClick="ViewManager.getInstance().showEmployeeAddForm()">+</a>]</big></li>
+           <li id="roles" class="nav-header"><big>Roller [<a href="#" id="addRole" onClick="ViewManager.getInstance().showRoleAddForm()">+</a>]</big></li>
+           <li id="daily" class="nav-header"><big>Dagar [<a href="#" id="addDayTemplate" onClick="ViewManager.getInstance().showDayTemplateAddForm()">+</a>]</big></li>
+           <li id="weekly" class="nav-header"><big>Veckor [<a href="#" id="addWeekTemplate" onClick="ViewManager.getInstance().showAddWeekTemplateForm()">+</a>]</big></li>
+           <li class="divider"></li>
+           <li><button class="btn btn-success" id="saveTemplate" onClick="AppController.getInstance().saveCurrentTemplate()">Spara mall</button></li>
+         </ul>
+       </div>
+     </div>
+
+     <div class="span8">
+
+      <!-- Form to add/update/remove employees -->
+      <form id ="addEmployeeForm" class="form-horizontal">
+
+        <input type="hidden" id="employeeUid">
+
+        <div class="control-group">
+          <label class="control-label" for="employeeNameInput">Namn</label>
+          <div class="controls">
+            <input type="text" id="employeeNameInput">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="minHoursPerDay">Min tid per dag</label>
+          <div class="controls">
+            <select id="minHoursPerDay">
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="maxHoursPerDay">Max tid per dag</label>
+          <div class="controls">
+            <select id="maxHoursPerDay">
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option>
+              <option>13</option>
+              <option>14</option>
+              <option>15</option>
+              <option>16</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="minHoursPerWeek">Min tid per vecka</label>
+          <div class="controls">
+            <select id="minHoursPerWeek">
+              <option>0</option>
+              <option>5</option>
+              <option>10</option>
+              <option>15</option>
+              <option>20</option>
+              <option>25</option>
+              <option>30</option>
+              <option>35</option>
+              <option>40</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="maxHoursPerWeek">Max tid per vecka</label>
+          <div class="controls">
+            <select id="maxHoursPerWeek">
+              <option>0</option>
+              <option>5</option>
+              <option>10</option>
+              <option>15</option>
+              <option>20</option>
+              <option>25</option>
+              <option>30</option>
+              <option>35</option>
+              <option>40</option>
+              <option>45</option>
+              <option>50</option>
+              <option>55</option>
+              <option>60</option>
+              <option>65</option>
+              <option>70</option>
+              <option>75</option>
+              <option>80</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="addEmployeeButton" class="control-group">
+          <div class="controls">
+            <button class="btn btn-success" id="addEmployeeButtonButton" onClick="AppController.getInstance().addEmployee()">Skapa</button>
+          </div>
+        </div>
+
+        <div id="updateEmployeeButton" class="control-group">
+          <div class="controls">
+            <button class="btn btn-primary" onClick="AppController.getInstance().updateEmployee()">Uppdatera</button>
+            <button class="btn btn-danger" onClick="AppController.getInstance().removeEmployee()">Radera</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Form to add/update/remove roles -->
+      <form id="addRoleForm" class="form-horizontal">
+
+        <input type="hidden" id="roleUid">
+
+        <div class="control-group">
+          <label class="control-label" for="roleFormNameInput">Namn</label>
+          <div class="controls">
+            <input type="text" id="roleFormNameInput">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="controls" id="employeesWithRole">
+            <!-- Employees associated with role are shown here. Added dynamically-->
+          </div>
+        </div>
+
+        <div id="addRoleButton" class="control-group">
+          <div class="controls">
+            <button type="submit" class="btn btn-success" onClick="AppController.getInstance().addRole()">Skapa</button>
+          </div>
+        </div>
+
+        <div id="updateRoleButton" class="control-group">
+          <div class="controls">
+            <button type="submit" class="btn btn-primary" onClick="AppController.getInstance().updateRole()">Uppdatera</button>
+            <button type="submit" class="btn btn-danger" onClick="AppController.getInstance().removeRole()">Radera</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Form to add/update/remove day templates -->
+      <form id="templateForm" class="form-horizontal">
+
+        <input type="hidden" id="dayTemplateUid">
+
+        <div class="control-group">
+          <label class="control-label" for="templateNameInput">Namn</label>
+          <div class="controls">
+            <input type="text" id="templateNameInput">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div id="positionsTable">
+            <table id="positionTable" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Roll</th>
+                  <th>Start (timma)</th>
+                  <th>Slut (timma)</th>
+                  <tr>
+                  </thead>
+                  <tbody id="positionTableBody">
+                    <!-- rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="addDayTemplateButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-success" onClick="AppController.getInstance().addDayTemplate()">Skapa</button>
+              </div>
+            </div>
+
+            <div id="updateTemplateButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary" onClick="AppController.getInstance().updateDayTemplate()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="AppController.getInstance().removeDayTemplate()">Radera</button>
+              </div>
+            </div>
+          </form>
+
+
+          <!-- Form to add/update/remove week templates -->
+          <form id="addWeekTemplateForm" class="form-horizontal">
+
+            <input type="hidden" id="weekTemplateUid">
+
+            <div class="control-group">
+              <label class="control-label" for="weekTemplateName">Namn</label>
+              <div class="controls">
+                <input type="text" id="weekTemplateName">
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="mondayTemplate">Måndag</label>
+              <div class="controls">
+                <select id="mondayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="tuesdayTemplate">Tisdag</label>
+              <div class="controls">
+                <select id="tuesdayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="wednesdayTemplate">Onsdag</label>
+              <div class="controls">
+                <select id="wednesdayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="thursdayTemplate">Torsdag</label>
+              <div class="controls">
+                <select id="thursdayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="fridayTemplate">Fredag</label>
+              <div class="controls">
+                <select id="fridayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="saturdayTemplate">Lördag</label>
+              <div class="controls">
+                <select id="saturdayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="sundayTemplate">Söndag</label>
+              <div class="controls">
+                <select id="sundayTemplate">
+                </select>
+              </div>
+            </div>
+
+            <div id="addWeekTemplateButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-success" onClick="AppController.getInstance().addWeekTemplate()">Skapa</button>
+              </div>
+            </div>
+
+            <div id="updateWeekTemplateButton" class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary" onClick="AppController.getInstance().updateWeekTemplate()">Uppdatera</button>
+                <button type="submit" class="btn btn-danger" onClick="AppController.getInstance().removeWeekTemplate()">Radera</button>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="alert alert-success" id="alertSuccess">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+          </div>
+          <div class="alert alert-error" id="alertError">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Sourced scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="AppController.js"></script>
+    <script src="DataStorage.js"></script>
+    <script src="ViewManager.js"></script>
+    <script src="Util.js"></script>
+    <script src="UidGenerator.js"></script>
+
+
+    <!-- Inline script that controls the UI -->
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+
+      ViewManager.getInstance().hideAllForms();
+      ViewManager.getInstance().hideAllAlerts();
+
+    // AppController.getInstance().init();
+
+      // disable enter key for all forms
+      $("form#addRoleForm").bind("keypress", function (e) {
+        if (e.keyCode == 13 ) {
+          return false;
+        }
+      });
+
+      $("form#addEmployeeForm").bind("keypress", function (e) {
+        if (e.keyCode == 13 ) {
+          return false;
+        }
+      });
+
+    });
+
+    </script>
+  </body>
+  </html>

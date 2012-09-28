@@ -202,7 +202,7 @@ AppController = function () {
             "thursdayTemplateUid" : $("select#thursdayTemplate option:selected").attr("id"), 
             "fridayTemplateUid" : $("select#fridayTemplate option:selected").attr("id"), 
             "saturdayTemplateUid" : $("select#saturdayTemplate option:selected").attr("id"), 
-            "sundayTemplateUid" : $("select#sundayTemplate option:selected").attr("id"), 
+            "sundayTemplateUid" : $("select#sundayTemplate option:selected").attr("id")
         };
 
         DataStorage.getInstance().addWeekTemplate(weekTemplate);
@@ -211,6 +211,44 @@ AppController = function () {
         $(listElement).insertAfter("li#weekly");
         $(listElement).hide();
         $(listElement).fadeIn("slow");
+    };
+
+    this.removeWeekTemplate = function() {
+        var uid = $("input#weekTemplateUid").val();
+
+        console.log(uid);
+
+        DataStorage.getInstance().removeWeekTemplate(uid);
+        $("li#" + uid).fadeOut("slow", function () {
+            $("li#" + uid).remove();
+        });
+        ViewManager.getInstance().hideAllForms();
+    };
+
+    this.updateWeekTemplate = function() {
+
+        var updatedWeekTemplate =
+        {
+            "uid" : $("input#weekTemplateUid").val(),
+            "name" : $("input#weekTemplateName").val(),
+            "mondayTemplateUid" : $("select#mondayTemplate option:selected").attr("id"),
+            "tuesdayTemplateUid" : $("select#tuesdayTemplate option:selected").attr("id"), 
+            "wednesdayTemplateUid" : $("select#wednesdayTemplate option:selected").attr("id"), 
+            "thursdayTemplateUid" : $("select#thursdayTemplate option:selected").attr("id"), 
+            "fridayTemplateUid" : $("select#fridayTemplate option:selected").attr("id"), 
+            "saturdayTemplateUid" : $("select#saturdayTemplate option:selected").attr("id"), 
+            "sundayTemplateUid" : $("select#sundayTemplate option:selected").attr("id")
+        };
+
+        DataStorage.getInstance().updateWeekTemplate(updatedWeekTemplate);
+        var oldListElement = $("li#" + updatedWeekTemplate.uid);
+        var newListElement = Util.createListElement(updatedWeekTemplate.name, updatedWeekTemplate.uid, "ViewManager.getInstance().showWeekTemplateUpdateForm(" + updatedWeekTemplate.uid + ")");
+
+        $(newListElement).hide();
+        $(oldListElement).fadeOut("slow", function () {
+            $(oldListElement).replaceWith(newListElement);
+            $(newListElement).fadeIn("slow");
+        });
     };
 };
 
