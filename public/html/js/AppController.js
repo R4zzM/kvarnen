@@ -286,8 +286,13 @@ AppController = function () {
       request.error = function () {
         ViewManager.getInstance().showErrorAlert("Sparning misslyckades!");
       };
-      
+
     };
+
+    this.loadAllTemplatesFromServer = function (uid) {
+
+    };
+
 };
 
 AppController.instance = null;
