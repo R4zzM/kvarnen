@@ -131,6 +131,81 @@ var ViewManager = function() {
         $("div#updateTemplateButton").show();
     };
 
+    this.showAddWeekTemplateForm = function(uid) {
+        self.hideAllForms();
+
+        $("input#weekTemplateUid").val(uid);
+        $("input#weekTemplateName").val("");
+
+        $("select#mondayTemplate").empty();
+        $("select#tuesdayTemplate").empty();
+        $("select#wednesdayTemplate").empty();
+        $("select#thursdayTemplate").empty();
+        $("select#fridayTemplate").empty();
+        $("select#saturdayTemplate").empty();
+        $("select#sundayTemplate").empty();
+        var dayTemplates = DataStorage.getInstance().getDayTemplates();
+        $.each(dayTemplates, function (idx, dayTemplate) {
+            $("select#mondayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#tuesdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#wednesdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#thursdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#fridayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#saturdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#sundayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+        });
+
+        $("form#addWeekTemplateForm").show();
+        $("div#addWeekTemplateButton").show();
+        $("div#updateWeekTemplateButton").hide();
+    };
+
+    this.showWeekTemplateUpdateForm = function(uid) {
+        self.hideAllForms();
+
+        var weekTemplate = DataStorage.getInstance().getWeekTemplate(uid);
+
+        $("input#weekTemplateUid").val(uid);
+
+        $("input#weekTemplateName").val(weekTemplate.name);
+
+        $("select#mondayTemplate").empty();
+        $("select#tuesdayTemplate").empty();
+        $("select#wednesdayTemplate").empty();
+        $("select#thursdayTemplate").empty();
+        $("select#fridayTemplate").empty();
+        $("select#saturdayTemplate").empty();
+        $("select#sundayTemplate").empty();
+        var dayTemplates = DataStorage.getInstance().getDayTemplates();
+        $.each(dayTemplates, function (idx, dayTemplate) {
+            $("select#mondayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#tuesdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#wednesdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#thursdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#fridayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#saturdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+            $("select#sundayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
+        });
+
+        $("select#mondayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.mondayTemplateUid).name);
+
+        $("select#tuesdayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.tuesdayTemplateUid).name);
+
+        $("select#wednesdayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.wednesdayTemplateUid).name);
+
+        $("select#thursdayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.thursdayTemplateUid).name);
+
+        $("select#fridayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.fridayTemplateUid).name);
+
+        $("select#saturdayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.saturdayTemplateUid).name);
+
+        $("select#sundayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.sundayTemplateUid).name);
+
+        $("form#addWeekTemplateForm").show();
+        $("div#addWeekTemplateButton").hide();
+        $("div#updateWeekTemplateButton").show();
+    };
+
 
     this.showErrorAlert = function(message) {
         self.hideAllAlerts();
@@ -153,6 +228,7 @@ var ViewManager = function() {
     };
 
     this.hideAllForms = function() {
+        $("#addWeekTemplateForm").hide();
         $("#addEmployeeForm").hide();
         $("#addRoleForm").hide();
         $("#templateForm").hide();

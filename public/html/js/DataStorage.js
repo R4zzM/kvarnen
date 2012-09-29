@@ -5,6 +5,7 @@ var ActiveTemplate = function() {
   localStorage.employees = [];
   localStorage.roles = [];
   localStorage.dayTemplates = [];
+  localStorage.weeks = [];
 
   this.getEmployees = function() {
     return JSON.parse(localStorage.employees);
@@ -96,6 +97,58 @@ var ActiveTemplate = function() {
     var days = localStorage.dayTemplates;
     days.push(dayTemplate);
     localStorage.dayTemplates = days;
+  };
+
+  this.removeDayTemplate = function (uid) {
+    var days = localStorage.dayTemplates;
+    for (var i = 0; i < dayTemplates.length; i++) {
+      if(dayTemplates[i].uid == uid) {
+        dayTemplates.splice(i,1);
+        localStorage.dayTemplates = days;
+        break;
+      }
+    }
+  };
+
+  this.updateDayTemplate = function (newDayTemplate) {
+    self.removeDayTemplate(newDayTemplate.uid);
+    self.addDayTemplate(newDayTemplate);
+  };
+
+  this.getWeekTemplates = function() {
+    return JSON.parse(localStorage.weeks);
+  };
+
+  this.getWeekTemplate = function(uid) {
+    var weeks = localStorage.weeks;
+    for (var idx in weeks) {
+      if(weeks[idx].uid == uid) {
+        return weeks[idx];
+      }
+    }
+    return null;
+  };
+
+  this.addWeekTemplate = function(week) {
+    var weeks = JSON.parse(localStorage.weeks);
+    weeks.push(week);
+    localStorage.weeks = weeks;
+  };
+
+  this.removeWeekTemplate = function (uid) {
+    var weeks = localStorage.weeks;
+    for (var i = 0; i < weeks.length; i++) {
+      if(weeks[i].uid == uid) {
+        weeks.splice(i,1);
+        localStorage.weeks = week;
+        break;
+      }
+    }
+  };
+
+  this.updateWeekTemplate = function (newWeek) {
+    self.removeWeekTemplate(newWeek.uid);
+    self.addWeekTemplate(newWeek);
   };
 
 };
