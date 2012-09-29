@@ -1,10 +1,8 @@
 AppController = function () {
 
     this.addEmployee = function() {
-        var uid = UidGenerator.getInstance().generateUid();
         var employee =
         {
-            "uid" : uid,
             "name" : $("input#employeeNameInput").val(),
             "minHoursWeek" : $("select#minHoursPerWeek").val(),
             "maxHoursWeek" : $("select#maxHoursPerWeek").val(),
@@ -12,17 +10,26 @@ AppController = function () {
             "maxHoursDay" : $("select#maxHoursPerDay").val()
         };
 
-        DataStorage.getInstance().addEmployee(employee);
-        var listElement = Util.createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
+        var uid = ActiveTemplate.getInstance().addEmployee(employee);
+        var listElement = Util.createListElement(employee.name, uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + uid + ")");
         $(listElement).insertAfter("li#employees");
         $(listElement).hide();
         $(listElement).fadeIn("slow");
     };
 
+    this.addEmployees = function (employees) {
+        $.each(employees, function(idx, employee) {
+          var listElement = Util.createListElement(employee.name, employee.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + employee.uid + ")");
+          $(listElement).insertAfter("li#employees");
+          $(listElement).hide();
+          $(listElement).fadeIn("slow");
+        });
+    };
+ 
     this.removeEmployee = function() {
         var uid = $("input#employeeUid").val();
 
-        DataStorage.getInstance().removeEmployee(uid);
+        ActiveTemplate.getInstance().removeEmployee(uid);
         $("li#" + uid).fadeOut("slow", function () {
             $("li#" + uid).remove();
         });
@@ -40,7 +47,7 @@ AppController = function () {
             "maxHoursDay" : $("select#maxHoursPerDay").val()
         };
 
-        DataStorage.getInstance().updateEmployee(updatedEmployeeInformation);
+        ActiveTemplate.getInstance().updateEmployee(updatedEmployeeInformation);
         var oldListElement = $("li#" + updatedEmployeeInformation.uid);
         var newListElement = Util.createListElement(updatedEmployeeInformation.name, updatedEmployeeInformation.uid, "ViewManager.getInstance().showEmployeeUpdateForm(" + updatedEmployeeInformation.uid + ")");
         $(newListElement).hide();
@@ -59,25 +66,32 @@ AppController = function () {
             }
         });
 
-        var uid = UidGenerator.getInstance().generateUid();
         var roleObject =
         {
-            "uid" : uid,
             "name" : $("input#roleFormNameInput").val(),
             "employeeUids" : employeeUids
         };
 
-        DataStorage.getInstance().addRole(roleObject);
-        var listElement = Util.createListElement(roleObject.name, roleObject.uid, "ViewManager.getInstance().showRoleUpdateForm(" + roleObject.uid + ")");
+        var uid = ActiveTemplate.getInstance().addRole(roleObject);
+        var listElement = Util.createListElement(roleObject.name, uid, "ViewManager.getInstance().showRoleUpdateForm(" + uid + ")");
         $(listElement).insertAfter("li#roles");
         $(listElement).hide();
         $(listElement).fadeIn("slow");
     };
 
+    this.addRoles = function (roles) {
+        $.each(roles, function(idx, role) {
+          var listElement = Util.createListElement(role.name, role.uid, "ViewManager.getInstance().showRoleUpdateForm(" + role.uid + ")");
+          $(listElement).insertAfter("li#roles");
+          $(listElement).hide();
+          $(listElement).fadeIn("slow");
+        });
+    };
+
     this.removeRole = function() {
         var uid = $("input#roleUid").val();
 
-        DataStorage.getInstance().removeRole(uid);
+        ActiveTemplate.getInstance().removeRole(uid);
         $("li#" + uid).fadeOut("slow", function () {
             $("li#" + uid).remove();
         });
@@ -97,7 +111,7 @@ AppController = function () {
             "employeeUids" : employeeUids
         };
 
-        DataStorage.getInstance().updateRole(updatedRoleInformation);
+        ActiveTemplate.getInstance().updateRole(updatedRoleInformation);
         var oldListElement = $("li#" + updatedRoleInformation.uid);
         var newListElement = Util.createListElement(updatedRoleInformation.name, updatedRoleInformation.uid, "ViewManager.getInstance().showRoleUpdateForm(" + updatedRoleInformation.uid + ")");
 
@@ -109,7 +123,6 @@ AppController = function () {
     };
 
     this.addDayTemplate = function () {
-        var uid = UidGenerator.getInstance().generateUid();
         var templateName = $("input#templateNameInput").val();
 
         var positions = [];
@@ -131,23 +144,31 @@ AppController = function () {
         });
 
         var dayTemplate = {
-            "uid" : uid,
             "name" : templateName,
             "positions" : positions
         };
 
-        DataStorage.getInstance().addDayTemplate(dayTemplate);
+        var uid = ActiveTemplate.getInstance().addDayTemplate(dayTemplate);
 
-        var listElement = Util.createListElement(templateName, dayTemplate.uid, "ViewManager.getInstance().showDayTemplateUpdateForm(" + dayTemplate.uid + ")");
+        var listElement = Util.createListElement(templateName, uid, "ViewManager.getInstance().showDayTemplateUpdateForm(" + uid + ")");
         $(listElement).insertAfter("li#daily");
         $(listElement).hide();
         $(listElement).fadeIn("slow");
     };
 
+    this.addDays = function (days) {
+        $.each(days, function(idx, day) {
+          var listElement = Util.createListElement(day.name, day.uid, "ViewManager.getInstance().showDayTemplateUpdateForm(" + day.uid + ")");
+          $(listElement).insertAfter("li#daily");
+          $(listElement).hide();
+          $(listElement).fadeIn("slow");
+        });
+    };
+
     this.removeDayTemplate = function() {
         var uid = $("input#dayTemplateUid").val();
 
-        DataStorage.getInstance().removeDayTemplate(uid);
+        ActiveTemplate.getInstance().removeDayTemplate(uid);
         $("li#" + uid).fadeOut("slow", function () {
             $("li#" + uid).remove();
         });
@@ -178,7 +199,7 @@ AppController = function () {
             "positions" : positions
         };
 
-        DataStorage.getInstance().updateDayTemplate(updatedDayTemplate);
+        ActiveTemplate.getInstance().updateDayTemplate(updatedDayTemplate);
         var oldListElement = $("li#" + updatedDayTemplate.uid);
         var newListElement = Util.createListElement(updatedDayTemplate.name, updatedDayTemplate.uid, "ViewManager.getInstance().showDayTemplateUpdateForm(" + updatedDayTemplate.uid + ")");
 
@@ -190,27 +211,34 @@ AppController = function () {
     };
 
     this.addWeekTemplate = function () {
-        var uid = UidGenerator.getInstance().generateUid();
         var templateName = $("input#weekTemplateName").val();
 
         var weekTemplate = {
-            "uid" : uid,
             "name" : templateName,
             "mondayTemplateUid" : $("select#mondayTemplate option:selected").attr("id"),
-            "tuesdayTemplateUid" : $("select#tuesdayTemplate option:selected").attr("id"), 
-            "wednesdayTemplateUid" : $("select#wednesdayTemplate option:selected").attr("id"), 
-            "thursdayTemplateUid" : $("select#thursdayTemplate option:selected").attr("id"), 
-            "fridayTemplateUid" : $("select#fridayTemplate option:selected").attr("id"), 
-            "saturdayTemplateUid" : $("select#saturdayTemplate option:selected").attr("id"), 
+            "tuesdayTemplateUid" : $("select#tuesdayTemplate option:selected").attr("id"),
+            "wednesdayTemplateUid" : $("select#wednesdayTemplate option:selected").attr("id"),
+            "thursdayTemplateUid" : $("select#thursdayTemplate option:selected").attr("id"),
+            "fridayTemplateUid" : $("select#fridayTemplate option:selected").attr("id"),
+            "saturdayTemplateUid" : $("select#saturdayTemplate option:selected").attr("id"),
             "sundayTemplateUid" : $("select#sundayTemplate option:selected").attr("id")
         };
 
-        DataStorage.getInstance().addWeekTemplate(weekTemplate);
+        var uid = ActiveTemplate.getInstance().addWeekTemplate(weekTemplate);
 
-        var listElement = Util.createListElement(templateName, weekTemplate.uid, "ViewManager.getInstance().showWeekTemplateUpdateForm(" + weekTemplate.uid + ")");
+        var listElement = Util.createListElement(templateName, uid, "ViewManager.getInstance().showWeekTemplateUpdateForm(" + uid + ")");
         $(listElement).insertAfter("li#weekly");
         $(listElement).hide();
         $(listElement).fadeIn("slow");
+    };
+
+    this.addWeeks = function (weeks) {
+        $.each(weeks, function(idx, week) {
+          var listElement = Util.createListElement(week.name, week.uid, "ViewManager.getInstance().showWeekTemplateUpdateForm(" + week.uid + ")");
+          $(listElement).insertAfter("li#weekTemplates");
+          $(listElement).hide();
+          $(listElement).fadeIn("slow");
+        });
     };
 
     this.removeWeekTemplate = function() {
@@ -218,7 +246,7 @@ AppController = function () {
 
         console.log(uid);
 
-        DataStorage.getInstance().removeWeekTemplate(uid);
+        ActiveTemplate.getInstance().removeWeekTemplate(uid);
         $("li#" + uid).fadeOut("slow", function () {
             $("li#" + uid).remove();
         });
@@ -232,15 +260,15 @@ AppController = function () {
             "uid" : $("input#weekTemplateUid").val(),
             "name" : $("input#weekTemplateName").val(),
             "mondayTemplateUid" : $("select#mondayTemplate option:selected").attr("id"),
-            "tuesdayTemplateUid" : $("select#tuesdayTemplate option:selected").attr("id"), 
-            "wednesdayTemplateUid" : $("select#wednesdayTemplate option:selected").attr("id"), 
-            "thursdayTemplateUid" : $("select#thursdayTemplate option:selected").attr("id"), 
-            "fridayTemplateUid" : $("select#fridayTemplate option:selected").attr("id"), 
-            "saturdayTemplateUid" : $("select#saturdayTemplate option:selected").attr("id"), 
+            "tuesdayTemplateUid" : $("select#tuesdayTemplate option:selected").attr("id"),
+            "wednesdayTemplateUid" : $("select#wednesdayTemplate option:selected").attr("id"),
+            "thursdayTemplateUid" : $("select#thursdayTemplate option:selected").attr("id"),
+            "fridayTemplateUid" : $("select#fridayTemplate option:selected").attr("id"),
+            "saturdayTemplateUid" : $("select#saturdayTemplate option:selected").attr("id"),
             "sundayTemplateUid" : $("select#sundayTemplate option:selected").attr("id")
         };
 
-        DataStorage.getInstance().updateWeekTemplate(updatedWeekTemplate);
+        ActiveTemplate.getInstance().updateWeekTemplate(updatedWeekTemplate);
         var oldListElement = $("li#" + updatedWeekTemplate.uid);
         var newListElement = Util.createListElement(updatedWeekTemplate.name, updatedWeekTemplate.uid, "ViewManager.getInstance().showWeekTemplateUpdateForm(" + updatedWeekTemplate.uid + ")");
 
@@ -255,10 +283,10 @@ AppController = function () {
 
       var templateName = $("input#templateName").val();
 
-      var employees = DataStorage.getInstance().getEmployees();
-      var roles = DataStorage.getInstance().getRole();
-      var days = DataStorage.getInstance().getDayTemplates();
-      var weeks = DataStorage.getInstance().getWeekTemplates();
+      var employees = ActiveTemplate.getInstance().getEmployees();
+      var roles = ActiveTemplate.getInstance().getRole();
+      var days = ActiveTemplate.getInstance().getDayTemplates();
+      var weeks = ActiveTemplate.getInstance().getWeekTemplates();
 
       var data = {
         "employees" : employees,

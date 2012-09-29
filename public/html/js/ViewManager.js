@@ -9,7 +9,7 @@ var ViewManager = function() {
         $("input#roleFormNameInput").val("");
         $("div#employeesWithRole").empty();
 
-        var employees = DataStorage.getInstance().getEmployees();
+        var employees = ActiveTemplate.getInstance().getEmployees();
         $.each(employees, function (idx, employee) {
             var checkbox = Util.createCheckboxElement(employee.name, employee.uid, 'off');
             $("div#employeesWithRole").append(checkbox);
@@ -27,11 +27,11 @@ var ViewManager = function() {
         console.log("roleUid: " + uid);
 
         $("input#roleUid").val(uid);
-        $("input#roleFormNameInput").val(DataStorage.getInstance().getRole(uid).name);
+        $("input#roleFormNameInput").val(ActiveTemplate.getInstance().getRole(uid).name);
         $("div#employeesWithRole").empty();
 
-        var roleObject = DataStorage.getInstance().getRole(uid);
-        var employees = DataStorage.getInstance().getEmployees();
+        var roleObject = ActiveTemplate.getInstance().getRole(uid);
+        var employees = ActiveTemplate.getInstance().getEmployees();
         console.log("associatedEmployees: " + roleObject.employeeUids);
         $.each(employees, function (idx, employee) {
             var checkbox;
@@ -70,11 +70,11 @@ var ViewManager = function() {
         console.log("Uid: " + uid);
 
         $("input#employeeUid").val(uid);
-        $("input#employeeNameInput").val(DataStorage.getInstance().getEmployee(uid).name);
-        $("select#minHoursPerDay").val(DataStorage.getInstance().getEmployee(uid).minHoursDay);
-        $("select#maxHoursPerDay").val(DataStorage.getInstance().getEmployee(uid).maxHoursDay);
-        $("select#minHoursPerWeek").val(DataStorage.getInstance().getEmployee(uid).minHoursWeek);
-        $("select#maxHoursPerWeek").val(DataStorage.getInstance().getEmployee(uid).maxHoursWeek);
+        $("input#employeeNameInput").val(ActiveTemplate.getInstance().getEmployee(uid).name);
+        $("select#minHoursPerDay").val(ActiveTemplate.getInstance().getEmployee(uid).minHoursDay);
+        $("select#maxHoursPerDay").val(ActiveTemplate.getInstance().getEmployee(uid).maxHoursDay);
+        $("select#minHoursPerWeek").val(ActiveTemplate.getInstance().getEmployee(uid).minHoursWeek);
+        $("select#maxHoursPerWeek").val(ActiveTemplate.getInstance().getEmployee(uid).maxHoursWeek);
 
         $("form#addEmployeeForm").show();
         $("div#addEmployeeButton").hide();
@@ -102,8 +102,8 @@ var ViewManager = function() {
         console.log("Uid: " + uid);
 
         $("input#dayTemplateUid").val(uid);
-        var dayTemplate = DataStorage.getInstance().getDayTemplate(uid);
-        $("input#templateNameInput").val(DataStorage.getInstance().getDayTemplate(uid).name);
+        var dayTemplate = ActiveTemplate.getInstance().getDayTemplate(uid);
+        $("input#templateNameInput").val(ActiveTemplate.getInstance().getDayTemplate(uid).name);
 
         $("tbody#positionTableBody").empty();
 
@@ -115,7 +115,7 @@ var ViewManager = function() {
             console.log("requiredRoleUid: " + dayTemplate.positions[idx].requiredRoleUid);
             console.log("startTime: " + dayTemplate.positions[idx].startTime);
             console.log("endTime: " + dayTemplate.positions[idx].endTime);
-            roleName = DataStorage.getInstance().getRole(dayTemplate.positions[idx].requiredRoleUid).name;
+            roleName = ActiveTemplate.getInstance().getRole(dayTemplate.positions[idx].requiredRoleUid).name;
             requiredRoleUid = dayTemplate.positions[idx].requiredRoleUid;
             startTime = dayTemplate.positions[idx].startTime;
             endTime = dayTemplate.positions[idx].endTime;
@@ -144,7 +144,7 @@ var ViewManager = function() {
         $("select#fridayTemplate").empty();
         $("select#saturdayTemplate").empty();
         $("select#sundayTemplate").empty();
-        var dayTemplates = DataStorage.getInstance().getDayTemplates();
+        var dayTemplates = ActiveTemplate.getInstance().getDayTemplates();
         $.each(dayTemplates, function (idx, dayTemplate) {
             $("select#mondayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
             $("select#tuesdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
@@ -163,7 +163,7 @@ var ViewManager = function() {
     this.showWeekTemplateUpdateForm = function(uid) {
         self.hideAllForms();
 
-        var weekTemplate = DataStorage.getInstance().getWeekTemplate(uid);
+        var weekTemplate = ActiveTemplate.getInstance().getWeekTemplate(uid);
 
         $("input#weekTemplateUid").val(uid);
 
@@ -176,7 +176,7 @@ var ViewManager = function() {
         $("select#fridayTemplate").empty();
         $("select#saturdayTemplate").empty();
         $("select#sundayTemplate").empty();
-        var dayTemplates = DataStorage.getInstance().getDayTemplates();
+        var dayTemplates = ActiveTemplate.getInstance().getDayTemplates();
         $.each(dayTemplates, function (idx, dayTemplate) {
             $("select#mondayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
             $("select#tuesdayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
@@ -187,19 +187,19 @@ var ViewManager = function() {
             $("select#sundayTemplate").append(Util.createOptionNode(dayTemplate.name, dayTemplate.uid));
         });
 
-        $("select#mondayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.mondayTemplateUid).name);
+        $("select#mondayTemplate").val(ActiveTemplate.getInstance().getDayTemplate(weekTemplate.mondayTemplateUid).name);
 
-        $("select#tuesdayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.tuesdayTemplateUid).name);
+        $("select#tuesdayTemplate").val(ActiveTemplate.getInstance().getDayTemplate(weekTemplate.tuesdayTemplateUid).name);
 
-        $("select#wednesdayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.wednesdayTemplateUid).name);
+        $("select#wednesdayTemplate").val(ActiveTemplate.getInstance().getDayTemplate(weekTemplate.wednesdayTemplateUid).name);
 
-        $("select#thursdayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.thursdayTemplateUid).name);
+        $("select#thursdayTemplate").val(ActiveTemplate.getInstance().getDayTemplate(weekTemplate.thursdayTemplateUid).name);
 
-        $("select#fridayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.fridayTemplateUid).name);
+        $("select#fridayTemplate").val(ActiveTemplate.getInstance().getDayTemplate(weekTemplate.fridayTemplateUid).name);
 
-        $("select#saturdayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.saturdayTemplateUid).name);
+        $("select#saturdayTemplate").val(ActiveTemplate.getInstance().getDayTemplate(weekTemplate.saturdayTemplateUid).name);
 
-        $("select#sundayTemplate").val(DataStorage.getInstance().getDayTemplate(weekTemplate.sundayTemplateUid).name);
+        $("select#sundayTemplate").val(ActiveTemplate.getInstance().getDayTemplate(weekTemplate.sundayTemplateUid).name);
 
         $("form#addWeekTemplateForm").show();
         $("div#addWeekTemplateButton").hide();

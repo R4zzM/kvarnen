@@ -347,7 +347,6 @@
     <script src="js/Util.js"></script>
     <script src="js/UidGenerator.js"></script>
 
-
     <!-- Inline script that controls the UI -->
     <script type="text/javascript">
 
@@ -356,7 +355,15 @@
       ViewManager.getInstance().hideAllForms();
       ViewManager.getInstance().hideAllAlerts();
 
-    // AppController.getInstance().init();
+      // restore session
+      var employees = ActiveTemplate.getInstance().getEmployees();
+      var roles = ActiveTemplate.getInstance().getRoles();
+      var days = ActiveTemplate.getInstance().getDayTemplates();
+      var weeks = ActiveTemplate.getInstance().getWeekTemplates();
+      AppController.getInstance().addEmployees(employees);
+      AppController.getInstance().addRoles(roles);
+      AppController.getInstance().addDays(days);
+      AppController.getInstance().addWeeks(weeks);
 
       // disable enter key for all forms
       $("form#addRoleForm").bind("keypress", function (e) {

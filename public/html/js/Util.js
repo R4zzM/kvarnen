@@ -59,7 +59,7 @@ createPosTableAddRow: function () {
   var roleSelectorCol = $("<td></td>");
   var roleSelector = $("<select id=\"positionRoleSelect\"></select>");
 
-  var roles = DataStorage.getInstance().getRoles();
+  var roles = ActiveTemplate.getInstance().getRoles();
   for (var idx in roles) {
     var optionNode = Util.createOptionNode(roles[idx].name, roles[idx].uid);
     $(roleSelector).append(optionNode);

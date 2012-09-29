@@ -2,10 +2,33 @@ var ActiveTemplate = function() {
 
   var self = this;
 
-  localStorage.employees = [];
-  localStorage.roles = [];
-  localStorage.dayTemplates = [];
-  localStorage.weeks = [];
+  this.uidCounter = 0;
+
+  if (localStorage.uidCounter) {
+    self.uidCounter = parseInt(localStorage.uidCounter, 10);
+  }
+
+  if (!localStorage.employees) {
+    localStorage.employees = JSON.stringify([]);
+  }
+  
+  if (!localStorage.roles) {
+    localStorage.roles = JSON.stringify([]);
+  }
+  
+  if (!localStorage.dayTemplates) {
+    localStorage.dayTemplates = JSON.stringify([]);
+  }
+  
+  if (!localStorage.weeks) {
+    localStorage.weeks = JSON.stringify([]);
+  }
+
+  this.nextUid = function() {
+    self.uidCounter++;
+    localStorage.uidCounter = self.uidCounter;
+    return self.uidCounter;
+  };
 
   this.getEmployees = function() {
     return JSON.parse(localStorage.employees);
@@ -14,25 +37,33 @@ var ActiveTemplate = function() {
   this.getEmployee = function(uid) {
     var employees = JSON.parse(localStorage.employees);
     for (var idx in employees) {
-      if(employees[idx].uid === uid) {
-        return employees[idx];
+      console.log("employees[idx].uid: " + employees[idx].uid);
+      console.log("uid: " + uid);
+      if(parseInt(employees[idx].uid, 10) == uid) {
+        var retval = employees[idx];
+        retval.uid = parseInt(employees[idx].uid, 10);
+        return retval;
       }
     }
     return null;
   };
 
   this.addEmployee = function(employee) {
+    if (!employee.uid) {
+      employee.uid = self.nextUid();
+    }
     var employees = JSON.parse(localStorage.employees);
     employees.push(employee);
-    localStorage.employees = employees;
+    localStorage.employees = JSON.stringify(employees);
+    return employee.uid;
   };
 
   this.removeEmployee = function (uid) {
     var employees = JSON.parse(localStorage.employees);
     for (var i = 0; i < employees.length; i++) {
-      if(employees[i].uid == uid) {
+      if(parseInt(employees[i].uid, 10) == uid) {
         employees.splice(i,1);
-        localStorage.employees = employees;
+        localStorage.employees = JSON.stringify(employees);
         break;
       }
     }
@@ -50,25 +81,31 @@ var ActiveTemplate = function() {
   this.getRole = function(uid) {
     var roles = JSON.parse(localStorage.roles);
     for (var idx in roles) {
-      if(roles[idx].uid == uid) {
-        return roles[idx];
+      if(parseInt(roles[idx].uid, 10) == uid) {
+        var retval = roles[idx];
+        retval.uid = parseInt(roles[idx].uid, 10);
+        return retval;
       }
     }
     return null;
   };
 
   this.addRole = function(role) {
+    if (!role.uid) {
+      role.uid = self.nextUid();
+    }
     var roles = JSON.parse(localStorage.roles);
     roles.push(role);
-    localStorage.roles = roles;
+    localStorage.roles = JSON.stringify(roles);
+    return role.uid;
   };
 
   this.removeRole = function (uid) {
     var roles = JSON.parse(localStorage.roles);
     for (var i = 0; i < roles.length; i++) {
-      if(roles[i].uid == uid) {
+      if(parseInt(roles[i].uid, 10) == uid) {
         roles.splice(i,1);
-        localStorage.roles = roles;
+        localStorage.roles = JSON.stringify(roles);
         break;
       }
     }
@@ -86,25 +123,31 @@ var ActiveTemplate = function() {
   this.getDayTemplate = function(uid) {
     var dayTemplates = JSON.parse(localStorage.dayTemplates);
     for (var idx in dayTemplates) {
-      if(dayTemplates[idx].uid == uid) {
-        return dayTemplates[idx];
+      if(parseInt(dayTemplates[idx].uid, 10) == uid) {
+        var retval = dayTemplates[idx];
+        retval.uid = parseInt(dayTemplates[idx].uid, 10);
+        return retval;
       }
     }
     return null;
   };
 
   this.addDayTemplate = function(dayTemplate) {
-    var days = localStorage.dayTemplates;
+    if (!dayTemplate.uid) {
+      dayTemplate.uid = self.nextUid();
+    }
+    var days = JSON.parse(localStorage.dayTemplates);
     days.push(dayTemplate);
-    localStorage.dayTemplates = days;
+    localStorage.dayTemplates = JSON.stringify(days);
+    return dayTemplate.uid;
   };
 
   this.removeDayTemplate = function (uid) {
-    var days = localStorage.dayTemplates;
-    for (var i = 0; i < dayTemplates.length; i++) {
-      if(dayTemplates[i].uid == uid) {
-        dayTemplates.splice(i,1);
-        localStorage.dayTemplates = days;
+    var days = JSON.parse(localStorage.dayTemplates);
+    for (var i = 0; i < days.length; i++) {
+      if(parseInt(days[i].uid, 10) == uid) {
+        days.splice(i,1);
+        localStorage.dayTemplates = JSON.stringify(days);
         break;
       }
     }
@@ -120,27 +163,33 @@ var ActiveTemplate = function() {
   };
 
   this.getWeekTemplate = function(uid) {
-    var weeks = localStorage.weeks;
+    var weeks = JSON.parse(localStorage.weeks);
     for (var idx in weeks) {
-      if(weeks[idx].uid == uid) {
-        return weeks[idx];
+      if(parseInt(weeks[idx].uid, 10) == uid) {
+        var retval = weeks[idx];
+        retval.uid = parseInt(weeks[idx].uid, 10);
+        return retval;
       }
     }
     return null;
   };
 
   this.addWeekTemplate = function(week) {
+    if (!week.uid) {
+      week.uid = self.nextUid();
+    }
     var weeks = JSON.parse(localStorage.weeks);
     weeks.push(week);
-    localStorage.weeks = weeks;
+    localStorage.weeks = JSON.stringify(weeks);
+    return week.uid;
   };
 
   this.removeWeekTemplate = function (uid) {
-    var weeks = localStorage.weeks;
+    var weeks = JSON.parse(localStorage.weeks);
     for (var i = 0; i < weeks.length; i++) {
-      if(weeks[i].uid == uid) {
+      if(parseInt(weeks[i].uid, 10) == uid) {
         weeks.splice(i,1);
-        localStorage.weeks = week;
+        localStorage.weeks = JSON.stringify(weeks);
         break;
       }
     }
