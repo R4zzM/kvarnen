@@ -97,19 +97,6 @@ public class EngineController implements Serializable {
 			throw new RuntimeException(e.getMessage());
 		}
 		
-		// skills to employees
-//		julia.addRole(cafe);
-//		julia.addRole(washing);
-//		
-//		ida.addRole(cafe);
-//		ida.addRole(washing);
-//		
-//		catharina.addRole(kitchen);
-//		catharina.addRole(cafe);
-//		catharina.addRole(washing);
-//		
-//		hans.addRole(washing);
-		
 		// employees to skills
 		kitchen.associateEmployee(catharina);
 		

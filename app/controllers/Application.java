@@ -626,5 +626,9 @@ public class Application extends Controller {
 		return templateDay;
 	}
 	
-	// NEW DAWN!!	
+	// NEW DAWN!!
+	public static Result generateSchedule() {
+		
+		// {"employees" : [...], "roles": [...], "week": []}
+	}
 }
