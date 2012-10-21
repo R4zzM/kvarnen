@@ -211,9 +211,15 @@ public class EngineController implements Serializable {
 		}
 	}
 	
-//	public void addEmployee(String name, int minHoursDay, int maxHoursDay, int minHoursWeek, int maxHoursWeek) throws OutOfUidsException {
-//		employeeDirectory.createNewEmployee(name, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
-//	}
+	// More or less temporary methods to add schedule generation data
+	
+	public void addEmployee(int uid, int minHoursDay, int maxHoursDay, int minHoursWeek, int maxHoursWeek) throws OutOfUidsException {
+		employeeDirectory.createNewEmployee(uid, minHoursDay, maxHoursDay, minHoursWeek, maxHoursWeek);
+	}
+	
+	public void addRole(int uid, List<Employee> associatedEmployees) throws OutOfUidsException {
+		roleDirectory.createNewRole(uid, associatedEmployees);
+	}
 	
 	
 	
