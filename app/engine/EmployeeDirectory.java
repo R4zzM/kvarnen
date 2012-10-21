@@ -31,9 +31,9 @@ public class EmployeeDirectory implements Serializable {
 	 * @param name
 	 * @throws Exception
 	 */
-	public Employee createNewEmployee(String name, int minHoursPerDay, int maxHoursPerDay, int minHoursPerWeek, int maxHoursPerWeek) throws OutOfUidsException {
-		int uid = ec.getUidManager().generateEmployeeUid();
-		EmployeeImpl employee = new EmployeeImpl(name, uid, minHoursPerDay, maxHoursPerDay, minHoursPerWeek, maxHoursPerWeek);
+	public Employee createNewEmployee(int uid, int minHoursPerDay, int maxHoursPerDay, int minHoursPerWeek, int maxHoursPerWeek) throws OutOfUidsException {
+		// int uid = ec.getUidManager().generateEmployeeUid();
+		EmployeeImpl employee = new EmployeeImpl(uid, minHoursPerDay, maxHoursPerDay, minHoursPerWeek, maxHoursPerWeek);
 		allEmployees.add(employee);
 		return employee;
 	}
@@ -133,7 +133,7 @@ public class EmployeeDirectory implements Serializable {
 			roles = new ArrayList<Role>();
 		}
 		
-		public EmployeeImpl(String name, int id, int minHoursPerDay, int maxHoursPerDay, int minHoursPerWeek, int maxHoursPerWeek) {
+		public EmployeeImpl(int id, int minHoursPerDay, int maxHoursPerDay, int minHoursPerWeek, int maxHoursPerWeek) {
 			this.name = name;
 			this.uid = id;
 			this.minHoursPerDay = minHoursPerDay;

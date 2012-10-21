@@ -56,8 +56,8 @@ public class Day implements Serializable {
 		this.positions = new ArrayList<Position>();
 	}
 
-	public Position newPosition(Role role, Date startTime, Date endTime) throws OutOfUidsException {
-		int uid = ec.getUidManager().generatePositionUid();
+	public Position newPosition(int uid, Role role, Date startTime, Date endTime) throws OutOfUidsException {
+//		int uid = ec.getUidManager().generatePositionUid();
 		Position position = new Position(role, uid, startTime, endTime);
 		positions.add(position);
 		return position;
@@ -103,7 +103,7 @@ public class Day implements Serializable {
 			int endHour = endTime.get(Calendar.HOUR_OF_DAY);
 
 			for (int j = startHour; j< endHour; j++) {
-				templateSchedule[j][i] = positions.get(i).getId();
+				templateSchedule[j][i] = positions.get(i).getRole().getUid();
 			}
 		}
 
